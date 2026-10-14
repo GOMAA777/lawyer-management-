@@ -288,9 +288,10 @@ export function DashboardSidebar() {
       >
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeItem === item.id;
+          const isChildActive = Boolean(item.subItems?.some((sub) => sub.id === activeItem));
+          const isActive = activeItem === item.id || isChildActive;
           const hasDropdown = Boolean(item.subItems && item.subItems.length > 0);
-          const isOpen = Boolean(openDropdowns[item.id]);
+          const isOpen = Boolean(openDropdowns[item.id] !== undefined ? openDropdowns[item.id] : isChildActive);
 
           return (
             <div
@@ -358,22 +359,34 @@ export function DashboardSidebar() {
 
               {/* Sub-menu Dropdown List (rendered directly below the item) */}
               {!isCollapsed && hasDropdown && isOpen && item.subItems && (
-                <div className="ps-8 pe-2 pt-1 pb-1 space-y-1 w-full flex flex-col">
-                  {item.subItems.map((sub) => (
-                    <Link
-                      key={sub.id}
-                      href={sub.href}
-                      onClick={() => setActiveItem(sub.id)}
-                      className={cn(
-                        "block px-2.5 py-1.5 rounded-lg text-[11px] transition-colors text-start",
-                        activeItem === sub.id
-                          ? "bg-[#faf5eb] dark:bg-[#2b2419] text-[#b8863b] dark:text-[#d4a759] font-semibold"
-                          : "text-[#6c645b] dark:text-[#9e968a] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf8f4] dark:hover:bg-[#201d1a]"
-                      )}
-                    >
-                      {sub.label}
-                    </Link>
-                  ))}
+                <div className="ms-6 ps-2.5 border-s border-[#ded5c6] dark:border-[#2f2a24] my-1 space-y-0.5 flex flex-col">
+                  {item.subItems.map((sub) => {
+                    const isSubActive = activeItem === sub.id;
+                    return (
+                      <Link
+                        key={sub.id}
+                        href={sub.href}
+                        onClick={() => setActiveItem(sub.id)}
+                        className={cn(
+                          "group/sub flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors text-start",
+                          isSubActive
+                            ? "bg-[#faf5eb] dark:bg-[#2b2419] text-[#b8863b] dark:text-[#d4a759] font-semibold"
+                            : "text-[#6c645b] dark:text-[#9e968a] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf8f4] dark:hover:bg-[#201d1a]"
+                        )}
+                      >
+                        {/* Dot indicator showing child item relationship */}
+                        <span
+                          className={cn(
+                            "w-1.5 h-1.5 rounded-full shrink-0 transition-all",
+                            isSubActive
+                              ? "bg-[#c29547] dark:bg-[#d4a759] ring-2 ring-[#c29547]/30 scale-110"
+                              : "bg-[#beb5a8] dark:bg-[#524b42] group-hover/sub:bg-[#c29547] dark:group-hover/sub:bg-[#d4a759]"
+                          )}
+                        />
+                        <span className="truncate">{sub.label}</span>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
