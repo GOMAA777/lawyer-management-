@@ -21,7 +21,7 @@ export default function DashboardPage() {
         <DashboardTopNavbar />
 
         {/* Scrollable Dashboard Workspace Content */}
-        <main className="flex-1 px-4 sm:px-6 md:px-8 py-5 space-y-5 overflow-y-auto scrollbar-thin max-w-[1600px] w-full pb-10">
+        <main className="flex-1 px-4 sm:px-6 md:px-8 py-5 space-y-5 overflow-y-auto scrollbar-thin w-full pb-10">
           {/* Greeting Banner with Date Range Filters */}
           <DashboardWelcomeBanner />
 

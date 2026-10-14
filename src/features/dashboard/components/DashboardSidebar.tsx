@@ -196,11 +196,18 @@ export function DashboardSidebar() {
     <aside
       className={cn(
         "sticky top-0 h-screen shrink-0 flex flex-col border-e border-[#ded5c6] bg-white transition-all duration-300 z-30 select-none shadow-[-3px_0_15px_rgba(60,50,40,0.03)]",
-        isCollapsed ? "w-20" : "w-[260px] xl:w-[275px]"
+        isCollapsed ? "w-16" : "w-[260px] xl:w-[275px]"
       )}
     >
       {/* Top Header with Brand Logo & Collapse Toggle: Icon -> Name -> Arrow */}
-      <div className="flex items-center justify-between px-4 pt-5 pb-4 border-b border-[#ded5c6] shrink-0">
+      <div
+        className={cn(
+          "flex items-center border-b border-[#ded5c6] shrink-0 transition-all",
+          isCollapsed
+            ? "h-14 justify-center px-2"
+            : "px-4 pt-5 pb-4 justify-between"
+        )}
+      >
         {!isCollapsed ? (
           <>
             {/* 1. Icon & 2. Name */}
@@ -242,29 +249,14 @@ export function DashboardSidebar() {
             </button>
           </>
         ) : (
-          <div className="w-full flex flex-col items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#c29547] flex items-center justify-center text-white font-bold text-lg shadow-xs">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5 text-white"
-              >
-                <path d="M19 7V4H5v16h14v-8h-7" />
-              </svg>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsCollapsed(false)}
-              className="w-7 h-7 rounded-full border border-stone-800 hover:border-[#c29547] hover:bg-[#faf7f0] flex items-center justify-center text-stone-600 hover:text-[#c29547] transition-all"
-              title="توسيع القائمة"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsCollapsed(false)}
+            className="w-7 h-7 rounded-full border border-stone-800 hover:border-[#c29547] hover:bg-[#faf7f0] flex items-center justify-center text-stone-600 hover:text-[#c29547] transition-all"
+            title="توسيع القائمة"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
         )}
       </div>
 
@@ -285,7 +277,12 @@ export function DashboardSidebar() {
       )}
 
       {/* Navigation Items List */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1 scrollbar-thin">
+      <div
+        className={cn(
+          "flex-1 overflow-y-auto scrollbar-thin",
+          isCollapsed ? "px-2 py-3 space-y-2" : "px-3 py-2 space-y-1"
+        )}
+      >
         {filteredNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
@@ -293,12 +290,12 @@ export function DashboardSidebar() {
           const isOpen = Boolean(openDropdowns[item.id]);
 
           return (
-            <div key={item.id} className="space-y-0.5">
+            <div key={item.id} className="relative group flex justify-center">
               <Link
                 href={item.href}
                 onClick={() => {
                   setActiveItem(item.id);
-                  if (hasDropdown) {
+                  if (hasDropdown && !isCollapsed) {
                     setOpenDropdowns((prev) => ({
                       ...prev,
                       [item.id]: !prev[item.id],
@@ -306,10 +303,13 @@ export function DashboardSidebar() {
                   }
                 }}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group relative",
+                  "flex items-center rounded-xl text-xs font-medium transition-all relative",
+                  isCollapsed
+                    ? "w-10 h-10 justify-center p-0 mx-auto"
+                    : "w-full gap-3 px-3 py-2.5",
                   isActive
-                    ? "bg-[#faf5eb] text-[#b8863b] font-semibold border border-[#eeddbb]/60 shadow-[0_1px_2px_rgba(194,149,71,0.06)]"
-                    : "text-[#4a443e] hover:text-[#b8863b] hover:bg-[#faf8f4]"
+                    ? "bg-[#faf5eb] text-[#b8863b] font-semibold border border-[#eeddbb] shadow-[0_2px_8px_-1px_rgba(194,149,71,0.15)]"
+                    : "text-[#524b43] hover:text-[#b8863b] hover:bg-[#faf8f4] border border-transparent"
                 )}
                 title={item.label}
               >
@@ -344,9 +344,16 @@ export function DashboardSidebar() {
                 )}
               </Link>
 
+              {/* Floating Tooltip when collapsed */}
+              {isCollapsed && (
+                <div className="absolute end-full top-1/2 -translate-y-1/2 me-2 px-2.5 py-1 rounded-md bg-[#1c1917] text-white text-[11px] font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 shadow-md">
+                  {item.label}
+                </div>
+              )}
+
               {/* Sub-menu Dropdown List */}
               {!isCollapsed && hasDropdown && isOpen && item.subItems && (
-                <div className="ps-8 pe-2 py-1 space-y-1">
+                <div className="ps-8 pe-2 py-1 space-y-1 w-full">
                   {item.subItems.map((sub) => (
                     <Link
                       key={sub.id}
