@@ -21,7 +21,7 @@ export function DashboardTopNavbar() {
   };
 
   return (
-    <header className="h-14 border-b border-[#ded5c6] bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-[0_2px_12px_rgba(80,65,45,0.03)]">
+    <header className="h-14 shrink-0 border-b border-[#ded5c6] bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-[0_2px_12px_rgba(80,65,45,0.03)]">
       {/* Right Side (RTL): Breadcrumbs */}
       <nav aria-label="مسار التنقل" className="flex items-center gap-2 text-xs">
         <span className="p-1.5 rounded-lg text-[#8f8679] hover:text-[#c29547] hover:bg-[#faf7f0] transition-colors cursor-pointer">

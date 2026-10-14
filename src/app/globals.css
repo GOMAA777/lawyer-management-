@@ -101,3 +101,27 @@
   --sidebar-border: #2e2a25;
   --sidebar-ring: #d4a759;
 }
+
+/* Custom sleek scrollbar for sidebar & dashboard workspace */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #ded5c6 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #ded5c6;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #c29547;
+}

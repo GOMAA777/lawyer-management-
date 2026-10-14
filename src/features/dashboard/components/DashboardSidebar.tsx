@@ -195,12 +195,12 @@ export function DashboardSidebar() {
   return (
     <aside
       className={cn(
-        "relative flex flex-col h-screen border-e border-[#ded5c6] bg-white transition-all duration-300 z-30 select-none shadow-[-3px_0_15px_rgba(60,50,40,0.03)]",
+        "sticky top-0 h-screen shrink-0 flex flex-col border-e border-[#ded5c6] bg-white transition-all duration-300 z-30 select-none shadow-[-3px_0_15px_rgba(60,50,40,0.03)]",
         isCollapsed ? "w-20" : "w-[260px] xl:w-[275px]"
       )}
     >
       {/* Top Header with Brand Logo & Collapse Toggle */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#ded5c6]">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#ded5c6] shrink-0">
         <button
           type="button"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -242,7 +242,7 @@ export function DashboardSidebar() {
 
       {/* Search Input Bar */}
       {!isCollapsed && (
-        <div className="px-4 pt-4 pb-2">
+        <div className="px-4 pt-4 pb-2 shrink-0">
           <div className="relative flex items-center">
             <input
               type="text"
@@ -343,7 +343,7 @@ export function DashboardSidebar() {
 
       {/* Bottom Footer Info */}
       {!isCollapsed && (
-        <div className="px-5 py-4 border-t border-[#f4f1ea] text-[10px] text-[#aaa193] flex items-center justify-between">
+        <div className="px-5 py-3.5 border-t border-[#ded5c6] text-[10px] text-[#aaa193] flex items-center justify-between shrink-0">
           <span>الجودي للتسويق الرقمي</span>
           <span className="font-mono text-[#b3aaa0]">v1.5</span>
         </div>

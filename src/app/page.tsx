@@ -11,17 +11,17 @@ import { DashboardBulkCampaignsCard } from "@/features/dashboard/components/Dash
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-[#fcfbfa] text-[#1c1917]">
+    <div className="flex h-screen overflow-hidden bg-[#fcfbfa] text-[#1c1917]">
       {/* 1. Main Navigation Sidebar (Right side in RTL) */}
       <DashboardSidebar />
 
       {/* 2. Main Application Body Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Top Navigation Bar with breadcrumbs and actions */}
         <DashboardTopNavbar />
 
         {/* Scrollable Dashboard Workspace Content */}
-        <main className="flex-1 px-4 sm:px-6 md:px-8 py-5 space-y-5 overflow-y-auto max-w-[1600px] w-full">
+        <main className="flex-1 px-4 sm:px-6 md:px-8 py-5 space-y-5 overflow-y-auto scrollbar-thin max-w-[1600px] w-full pb-10">
           {/* Greeting Banner with Date Range Filters */}
           <DashboardWelcomeBanner />
 
