@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-heading: var(--font-cairo), sans-serif;
@@ -124,4 +124,16 @@
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #c29547;
+}
+
+.dark .scrollbar-thin {
+  scrollbar-color: #383229 transparent;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #383229;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #d4a759;
 }

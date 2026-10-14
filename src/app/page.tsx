@@ -11,7 +11,7 @@ import { DashboardBulkCampaignsCard } from "@/features/dashboard/components/Dash
 
 export default function DashboardPage() {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#fcfbfa] text-[#1c1917]">
+    <div className="flex h-screen overflow-hidden bg-[#fcfbfa] dark:bg-[#121110] text-[#1c1917] dark:text-[#f5f4f0] transition-colors duration-200">
       {/* 1. Main Navigation Sidebar (Right side in RTL) */}
       <DashboardSidebar />
 
