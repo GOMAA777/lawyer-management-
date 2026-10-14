@@ -72,118 +72,118 @@ export function DashboardSidebar() {
   const navItems: NavItem[] = [
     {
       id: "dashboard",
-      label: "Dashboard",
+      label: "لوحة التحكم",
       href: "/",
       icon: DashboardGaugeIcon,
     },
     {
       id: "manage-client",
-      label: "Manage Client",
+      label: "إدارة العملاء",
       href: "#",
       icon: User,
     },
     {
       id: "subscription",
-      label: "Subscription",
+      label: "الاشتراكات",
       href: "#",
       icon: CreditCard,
     },
     {
       id: "price-plans",
-      label: "Price Plans",
+      label: "خطط الأسعار",
       href: "#",
       icon: Banknote,
     },
     {
       id: "staff",
-      label: "Staff",
+      label: "فريق العمل",
       href: "#",
       icon: Users,
       subItems: [
-        { id: "staff-list", label: "Staff List", href: "#" },
-        { id: "staff-roles", label: "Roles & Permissions", href: "#" },
+        { id: "staff-list", label: "قائمة الموظفين", href: "#" },
+        { id: "staff-roles", label: "الأدوار والصلاحيات", href: "#" },
       ],
     },
     {
       id: "ai-assistant",
-      label: "AI Assistant",
+      label: "المساعد الذكي",
       href: "#",
       icon: Bot,
       subItems: [
-        { id: "ai-models", label: "Chatbot Models", href: "#" },
-        { id: "ai-kb", label: "Knowledge Base", href: "#" },
+        { id: "ai-models", label: "نماذج الروبوت", href: "#" },
+        { id: "ai-kb", label: "قاعدة المعرفة", href: "#" },
       ],
     },
     {
       id: "payment-gateway",
-      label: "Payment Gateway",
+      label: "بوابات الدفع",
       href: "#",
       icon: CreditCard,
     },
     {
       id: "notification",
-      label: "Notification",
+      label: "الإشعارات",
       href: "#",
       icon: Bell,
     },
     {
       id: "support",
-      label: "Support",
+      label: "الدعم الفني",
       href: "#",
       icon: Headphones,
       subItems: [
-        { id: "support-all", label: "All Tickets", href: "#" },
-        { id: "support-pending", label: "Pending", href: "#" },
+        { id: "support-all", label: "جميع التذاكر", href: "#" },
+        { id: "support-pending", label: "تذاكر قيد الانتظار", href: "#" },
       ],
     },
     {
       id: "website-settings",
-      label: "Website Settings",
+      label: "إعدادات الموقع",
       href: "#",
       icon: Settings,
       subItems: [
-        { id: "web-general", label: "General", href: "#" },
-        { id: "web-seo", label: "SEO & Branding", href: "#" },
+        { id: "web-general", label: "الإعدادات العامة", href: "#" },
+        { id: "web-seo", label: "الهوية ومحركات البحث", href: "#" },
       ],
     },
     {
       id: "email-settings",
-      label: "Email Settings",
+      label: "إعدادات البريد",
       href: "#",
       icon: Mail,
       subItems: [
-        { id: "email-smtp", label: "SMTP Configuration", href: "#" },
-        { id: "email-templates", label: "Email Templates", href: "#" },
+        { id: "email-smtp", label: "تهيئة SMTP", href: "#" },
+        { id: "email-templates", label: "قوالب الرسائل", href: "#" },
       ],
     },
     {
       id: "system-settings",
-      label: "System Settings",
+      label: "إعدادات النظام",
       href: "#",
       icon: Sliders,
       subItems: [
-        { id: "sys-general", label: "General Config", href: "#" },
-        { id: "sys-backups", label: "Backups", href: "#" },
+        { id: "sys-general", label: "الإعدادات العامة", href: "#" },
+        { id: "sys-backups", label: "النسخ الاحتياطي", href: "#" },
       ],
     },
     {
       id: "addon",
-      label: "Addon",
+      label: "الإضافات",
       href: "#",
       icon: Puzzle,
       subItems: [
-        { id: "addon-installed", label: "Installed Addons", href: "#" },
-        { id: "addon-market", label: "Marketplace", href: "#" },
+        { id: "addon-installed", label: "الإضافات المثبتة", href: "#" },
+        { id: "addon-market", label: "متجر الإضافات", href: "#" },
       ],
     },
     {
       id: "utility",
-      label: "Utility",
+      label: "الأدوات المساعدة",
       href: "#",
       icon: Boxes,
       subItems: [
-        { id: "util-logs", label: "Activity Logs", href: "#" },
-        { id: "util-cache", label: "System Cache", href: "#" },
+        { id: "util-logs", label: "سجل النشاطات", href: "#" },
+        { id: "util-cache", label: "ذاكرة التخزين المؤقت", href: "#" },
       ],
     },
   ];
@@ -246,7 +246,7 @@ export function DashboardSidebar() {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder="...Search menu"
+              placeholder="...ابحث في القائمة"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-[#faf8f4] text-[#2c2825] placeholder-[#b2a899] text-xs font-medium rounded-full py-2.5 ps-9 pe-4 border border-[#eeeae1] focus:border-[#c29547] focus:bg-white focus:outline-none transition-all text-start"
