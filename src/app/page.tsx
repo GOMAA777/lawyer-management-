@@ -29,12 +29,12 @@ export default function DashboardPage() {
           {/* Row 2: Main Middle 2-Column Grid (Earning Report + Contacts & Plans) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
             {/* Wider Column: Earning Report Chart */}
-            <div className="lg:col-span-8 flex flex-col">
+            <div className="lg:col-span-8 flex flex-col h-full">
               <DashboardEarningReportCard />
             </div>
 
             {/* Narrower Column: Total Contact Lists, Total Contacts, and Best Selling Plan */}
-            <div className="lg:col-span-4 flex flex-col">
+            <div className="lg:col-span-4 flex flex-col h-full">
               <DashboardContactsAndPlansSection />
             </div>
           </div>

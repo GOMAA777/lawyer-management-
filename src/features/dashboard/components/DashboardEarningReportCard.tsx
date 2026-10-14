@@ -34,9 +34,9 @@ export function DashboardEarningReportCard() {
   const t = translations[language].overview;
 
   return (
-    <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)]">
+    <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)] h-full flex flex-col justify-between">
       {/* Header with Title */}
-      <div className="border-b border-[#ded5c6]/60 dark:border-[#2f2a24] pb-4 mb-4">
+      <div className="border-b border-[#ded5c6]/60 dark:border-[#2f2a24] pb-4 mb-4 shrink-0">
         <h2 className="text-base font-bold text-[#1c1917] dark:text-[#f5f4f0] text-start">
           {t.earningReport}
         </h2>
@@ -107,7 +107,7 @@ export function DashboardEarningReportCard() {
       </div>
 
       {/* Main Chart */}
-      <div className="w-full h-72 sm:h-80">
+      <div className="w-full flex-1 min-h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={monthlyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>

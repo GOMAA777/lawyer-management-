@@ -19,12 +19,14 @@ export function DashboardContactsAndPlansSection() {
     { name: "Advance Pro", price: "$300.00", subscriptions: 27 },
     { name: "basic", price: "$133.00", subscriptions: 5 },
     { name: "Pro", price: "$250.00", subscriptions: 2 },
+    { name: "Enterprise Custom", price: "$599.00", subscriptions: 1 },
+    { name: "Starter Tier", price: "$49.00", subscriptions: 1 },
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full">
       {/* Top 2 Cards: Total Contact Lists & Total Contacts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 shrink-0">
         {/* Card 1: Total Contact Lists */}
         <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-4.5 flex flex-col justify-between shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)]">
           <div className="flex items-center justify-between">
@@ -73,35 +75,35 @@ export function DashboardContactsAndPlansSection() {
       </div>
 
       {/* Bottom Card: Best Selling Plan */}
-      <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)] flex-1">
-        <div className="border-b border-[#ded5c6]/60 dark:border-[#2f2a24] pb-3 mb-3">
+      <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)] flex-1 flex flex-col justify-between">
+        <div className="border-b border-[#ded5c6]/60 dark:border-[#2f2a24] pb-3 mb-3 shrink-0">
           <h2 className="text-sm font-bold text-[#1c1917] dark:text-[#f5f4f0] text-start">
             {t.bestSellingPlan}
           </h2>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-start">
-            <thead>
+        <div className="overflow-x-auto flex-1 flex flex-col justify-between">
+          <table className="w-full text-xs text-start flex-1 h-full">
+            <thead className="shrink-0">
               <tr className="border-b border-[#ded5c6]/40 dark:border-[#2f2a24] text-[#8c8279] dark:text-[#787166]">
                 <th className="pb-2.5 font-semibold text-start">{t.plan}</th>
                 <th className="pb-2.5 font-semibold text-start">{t.price}</th>
                 <th className="pb-2.5 font-semibold text-end">{t.subscriptions}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#ded5c6]/30 dark:divide-[#25201a]">
+            <tbody className="divide-y divide-[#ded5c6]/30 dark:divide-[#25201a] h-full">
               {plans.map((p, idx) => (
                 <tr
                   key={idx}
                   className="hover:bg-[#faf8f4] dark:hover:bg-[#201d1a] transition-colors"
                 >
-                  <td className="py-3 font-semibold text-[#2c2825] dark:text-[#e4ded5] text-start">
+                  <td className="py-3 sm:py-3.5 font-semibold text-[#2c2825] dark:text-[#e4ded5] text-start align-middle">
                     {p.name}
                   </td>
-                  <td className="py-3 font-medium text-[#6c645b] dark:text-[#9e968a] text-start">
+                  <td className="py-3 sm:py-3.5 font-medium text-[#6c645b] dark:text-[#9e968a] text-start align-middle">
                     {p.price}
                   </td>
-                  <td className="py-3 font-bold text-[#1c1917] dark:text-[#f5f4f0] text-end">
+                  <td className="py-3 sm:py-3.5 font-bold text-[#1c1917] dark:text-[#f5f4f0] text-end align-middle">
                     {p.subscriptions}
                   </td>
                 </tr>
