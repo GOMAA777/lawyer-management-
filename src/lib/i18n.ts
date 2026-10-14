@@ -4,7 +4,7 @@ export const translations = {
   ar: {
     brand: {
       name: "الجودي",
-      tagline: "للتسويق الرقمي",
+      tagline: "للحلول القانونية وإدارة المحاماة",
       version: "v1.5",
     },
     nav: {
@@ -118,16 +118,16 @@ export const translations = {
     },
     auth: {
       signIn: "تسجيل الدخول",
-      signUp: "إنشاء حساب",
+      signUp: "إنشاء حساب مكتب جديد",
       emailOrUsername: "البريد الإلكتروني أو اسم المستخدم",
       password: "كلمة المرور",
       forgotPassword: "نسيت كلمة المرور؟",
-      signInButton: "تسجيل الدخول",
+      signInButton: "تسجيل الدخول للنظام",
       contactUs: "تواصل معنا",
-      copyright: "© 2005-2026 شركة الجودي. جميع الحقوق محفوظة.",
-      leftTagline: "حلول التسويق الذكي والأتمتة السحابية عبر واتساب لأعمالك.",
-      leftHeading: "إدارة محادثاتك وأعمالك",
-      leftSubheading: "منصة متكاملة لإدارة الحملات والمحادثات الذكية بكل سهولة وسلاسة.",
+      copyright: "© 2005-2026 شركة الجودي للحلول القانونية. جميع الحقوق محفوظة.",
+      leftTagline: "المنظومة الرقمية السحابية لإدارة مكاتب وشركات المحاماة والاستشارات القانونية.",
+      leftHeading: "إدارة قضاياك وأعمالك",
+      leftSubheading: "منصة متكاملة لإدارة ملفات القضايا، الجلسات، الموكلين، والعقود بكل سهولة وسرية تامة.",
       loginSuccess: "تم تسجيل الدخول بنجاح!",
       signingIn: "جاري تسجيل الدخول...",
     },
@@ -135,7 +135,7 @@ export const translations = {
   en: {
     brand: {
       name: "El-Joudy",
-      tagline: "Digital Marketing",
+      tagline: "Legal Practice & Law Firm Management",
       version: "v1.5",
     },
     nav: {
@@ -255,10 +255,10 @@ export const translations = {
       forgotPassword: "Forgot password?",
       signInButton: "Sign In",
       contactUs: "Contact Us",
-      copyright: "© 2005-2026 El-Joudy Inc.",
-      leftTagline: "Global payments made simple – online payment solutions for you.",
-      leftHeading: "Manage your money",
-      leftSubheading: "All-in-one platform for managing campaigns and smart conversations with ease.",
+      copyright: "© 2005-2026 El-Joudy Legal Systems Inc. All rights reserved.",
+      leftTagline: "Smart cloud management platform for law firms and legal practices.",
+      leftHeading: "Manage your legal cases & practice",
+      leftSubheading: "All-in-one platform for managing cases, court hearings, clients, and contracts with total confidentiality.",
       loginSuccess: "Signed in successfully!",
       signingIn: "Signing in...",
     },

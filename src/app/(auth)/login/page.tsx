@@ -4,8 +4,8 @@ import { AuthSideVisual } from "@/features/auth/components/AuthSideVisual";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export const metadata: Metadata = {
-  title: "تسجيل الدخول | شركة الجودي للتسويق الإلكتروني",
-  description: "تسجيل الدخول إلى لوحة التحكم - منصة الجودي لإدارة حملات الواتساب والأتمتة السحابية",
+  title: "تسجيل الدخول | الجودي لإدارة مكاتب وشركات المحاماة",
+  description: "تسجيل الدخول إلى لوحة التحكم - منظومة الجودي السحابية لإدارة القضايا، الجلسات، والموكلين القانونيين",
 };
 
 export default function LoginPage() {

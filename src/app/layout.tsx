@@ -13,8 +13,8 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "لوحة التحكم - الجودي للتسويق الرقمي",
-  description: "منصة إدارة رسائل وحملات واتساب والتسويق الرقمي - الجودي",
+  title: "لوحة التحكم - الجودي لإدارة مكاتب وشركات المحاماة",
+  description: "المنصة السحابية المتكاملة لإدارة مكاتب المحاماة، القضايا، الجلسات، والموكلين - الجودي",
 };
 
 export default function RootLayout({

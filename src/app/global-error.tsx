@@ -48,7 +48,7 @@ export default function GlobalError({
                   الجودي للتسويق الإلكتروني
                 </span>
                 <span className="text-[10px] font-medium text-[#8c8279] block">
-                  منصة إدارة محادثات وأعمال واتساب
+                  منصة إدارة القضايا والمكاتب القانونية
                 </span>
               </div>
             </Link>

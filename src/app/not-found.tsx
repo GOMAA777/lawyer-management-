@@ -42,7 +42,7 @@ export default function NotFound() {
               الجودي للتسويق الإلكتروني
             </span>
             <span className="text-[10px] font-medium text-[#8c8279] dark:text-[#9e968a] block">
-              منصة إدارة محادثات وأعمال واتساب
+              منصة إدارة القضايا والمكاتب القانونية
             </span>
           </div>
         </Link>

@@ -3,7 +3,7 @@
 import React from "react";
 import { useUIStore } from "@/stores/use-ui-store";
 import { translations } from "@/lib/i18n";
-import { BarChart3, ShieldCheck } from "lucide-react";
+import { Scale, ShieldCheck } from "lucide-react";
 
 export function AuthSideVisual() {
   const { language } = useUIStore();
@@ -36,7 +36,7 @@ export function AuthSideVisual() {
         </p>
       </div>
 
-      {/* Center-Bottom: Realistic 3D Angled Smartphone Mockup */}
+      {/* Center-Bottom: Realistic 3D Angled Smartphone Mockup with Legal Cases UI */}
       <div className="relative z-10 flex items-center justify-center mt-2 pb-6">
         <div className="w-[240px] sm:w-[260px] bg-[#1a1816] rounded-[38px] border-[5px] border-[#38332c] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),0_0_30px_rgba(194,149,71,0.1)] p-3 text-start transform -rotate-3 hover:rotate-0 transition-transform duration-500">
           {/* Dynamic Island / Notch */}
@@ -48,13 +48,16 @@ export function AuthSideVisual() {
           <div className="bg-[#23201d] rounded-[26px] p-3 border border-[#3f382e] text-xs">
             {/* Header info */}
             <div className="flex items-center justify-between text-[10px] text-[#a8a195] mb-1">
-              <span>Week 4-10 July</span>
-              <BarChart3 className="w-3.5 h-3.5 text-[#c29547]" />
+              <span>{language === "ar" ? "قضايا هذا الأسبوع" : "Weekly Hearings"}</span>
+              <Scale className="w-3.5 h-3.5 text-[#c29547]" />
             </div>
 
             {/* Main Metric */}
-            <div className="text-xl font-black text-white tracking-tight mb-2">
-              $10,976.00
+            <div className="text-xl font-black text-white tracking-tight mb-2 flex items-baseline gap-1.5">
+              <span>{language === "ar" ? "١٢٤ قضية" : "124 Cases"}</span>
+              <span className="text-[10px] font-semibold text-[#c29547]">
+                {language === "ar" ? "قيد التداول" : "Active"}
+              </span>
             </div>
 
             {/* Mini Bar Chart inside phone */}
@@ -75,12 +78,20 @@ export function AuthSideVisual() {
             {/* Categories */}
             <div className="grid grid-cols-2 gap-1.5 mt-2.5">
               <div className="bg-[#1a1816] p-2 rounded-xl border border-[#38332c]">
-                <span className="text-[9px] text-[#8c8279] block">Category</span>
-                <span className="text-[11px] font-bold text-white block mt-0.5">$950.00</span>
+                <span className="text-[9px] text-[#8c8279] block">
+                  {language === "ar" ? "الجلسات القادمة" : "Hearings"}
+                </span>
+                <span className="text-[11px] font-bold text-white block mt-0.5">
+                  {language === "ar" ? "١٤ جلسة" : "14 Sessions"}
+                </span>
               </div>
               <div className="bg-[#1a1816] p-2 rounded-xl border border-[#38332c]">
-                <span className="text-[9px] text-[#8c8279] block">WhatsApp</span>
-                <span className="text-[11px] font-bold text-[#c29547] block mt-0.5">Active</span>
+                <span className="text-[9px] text-[#8c8279] block">
+                  {language === "ar" ? "نظام المحاماة" : "Legal Suite"}
+                </span>
+                <span className="text-[11px] font-bold text-[#c29547] block mt-0.5">
+                  {language === "ar" ? "ساري ونشط" : "Active"}
+                </span>
               </div>
             </div>
           </div>
@@ -97,7 +108,11 @@ export function AuthSideVisual() {
       {/* Bottom: Subtle Security Badge */}
       <div className="relative z-10 flex items-center justify-start gap-2 text-[11px] text-[#8c8279] pt-2">
         <ShieldCheck className="w-3.5 h-3.5 text-[#c29547]" />
-        <span>End-to-end encrypted messaging & cloud automation</span>
+        <span>
+          {language === "ar"
+            ? "سرية تامة وتشفير شامل لبيانات القضايا وأسرار الموكلين"
+            : "End-to-end encrypted legal case records & client privacy"}
+        </span>
       </div>
     </div>
   );
