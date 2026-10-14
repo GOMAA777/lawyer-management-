@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   User,
   CreditCard,
@@ -202,36 +203,47 @@ export function DashboardSidebar() {
         className={cn(
           "flex items-center border-b border-[#ded5c6] dark:border-[#2f2a24] shrink-0 transition-all",
           isCollapsed
-            ? "h-14 justify-center px-2"
-            : "px-5 pt-5 pb-4 justify-between"
+            ? "h-16 justify-center px-2"
+            : "px-5 py-4 justify-between"
         )}
       >
-        {!isCollapsed && (
+        {!isCollapsed ? (
           <div className="flex items-center gap-3">
-            {/* Geometric Gold Logo Icon with 'G' */}
-            <div className="w-9 h-9 rounded-xl bg-[#c29547] dark:bg-[#d4a759] flex items-center justify-center text-white dark:text-[#171513] font-bold text-lg shadow-xs shrink-0">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <path d="M19 7V4H5v16h14v-8h-7" />
-              </svg>
+            {/* Real Golden Brand Logo */}
+            <div className="w-10 h-10 rounded-xl bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs shrink-0 hover:scale-105 transition-transform">
+              <Image
+                src="/logo.png"
+                alt={brand.name}
+                width={36}
+                height={36}
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
 
             {/* Name */}
             <div className="text-start">
-              <h1 className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] leading-tight tracking-tight">
+              <h1 className="text-base font-extrabold text-[#c29547] dark:text-[#d4a759] leading-tight tracking-tight">
                 {brand.name}
               </h1>
               <span className="text-[10px] font-medium text-[#8c8279] dark:text-[#9e968a] tracking-wide block">
                 {brand.tagline}
               </span>
             </div>
+          </div>
+        ) : (
+          <div
+            className="w-9 h-9 rounded-xl bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1 flex items-center justify-center shadow-xs mx-auto hover:scale-105 transition-transform"
+            title={brand.name}
+          >
+            <Image
+              src="/logo.png"
+              alt={brand.name}
+              width={32}
+              height={32}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
         )}
       </div>
