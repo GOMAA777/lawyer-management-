@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, UserPlus, LogIn, ChevronDown, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck, LogIn, ChevronDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useUIStore } from "@/stores/use-ui-store";
 import { translations } from "@/lib/i18n";
@@ -73,14 +73,11 @@ export function LoginForm() {
           </span>
         </Link>
 
-        {/* Sign Up Action */}
-        <Link
-          href="#"
-          className="flex items-center gap-1.5 text-xs font-semibold text-[#524b43] dark:text-[#c4bcb1] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors"
-        >
-          <UserPlus className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
-          <span>{t.signUp}</span>
-        </Link>
+        {/* Secure Lawyers Portal Badge */}
+        <div className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-[#faf5eb] dark:bg-[#201c17] text-[#c29547] dark:text-[#d4a759] border border-[#eeddbb] dark:border-[#382b18] shadow-2xs">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#c29547]" />
+          <span>{language === "ar" ? "بوابة الدخول المصرح بها" : "Authorized Portal"}</span>
+        </div>
       </div>
 
       {/* Main Form Center Area */}
