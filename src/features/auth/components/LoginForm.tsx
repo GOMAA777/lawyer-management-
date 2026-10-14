@@ -133,15 +133,6 @@ export function LoginForm() {
             )}
           </div>
 
-          {/* Forgot Password Link */}
-          <div className="pt-1">
-            <Link
-              href="#"
-              className="text-xs font-semibold text-[#c29547] dark:text-[#d4a759] hover:underline"
-            >
-              {t.forgotPassword}
-            </Link>
-          </div>
 
           {/* Sign In Primary Pill Button */}
           <div className="pt-3">
