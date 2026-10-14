@@ -28,49 +28,29 @@ export function DashboardContactsAndPlansSection() {
       {/* Top 2 Cards: Total Contact Lists & Total Contacts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 shrink-0">
         {/* Card 1: Total Contact Lists */}
-        <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-4.5 flex flex-col justify-between shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)]">
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] shrink-0">
-              <BookUser className="w-5 h-5" />
-            </div>
-            {/* Wave curve */}
-            <div className="w-20 h-9">
-              <svg viewBox="0 0 80 32" fill="none" className="w-full h-full">
-                <path
-                  d="M0,28 C15,28 20,4 35,4 C 45,4 50,24 60,16 C 68,10 75,22 80,22"
-                  stroke="#c29547"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+        <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 flex flex-col items-center justify-center text-center shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)] transition-all">
+          <div className="w-11 h-11 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] shrink-0 mb-2.5 shadow-2xs">
+            <BookUser className="w-5 h-5" />
           </div>
-          <div className="mt-3 text-start">
-            <span className="text-[11px] font-medium text-[#7c7366] dark:text-[#9e968a] block">
-              {t.totalContactLists}
-            </span>
-            <span className="text-2xl font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight mt-0.5 block">
-              157
-            </span>
-          </div>
+          <span className="text-xs font-semibold text-[#7c7366] dark:text-[#9e968a] block">
+            {t.totalContactLists}
+          </span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight mt-1 block">
+            157
+          </span>
         </div>
 
         {/* Card 2: Total Contacts */}
-        <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-4.5 flex flex-col justify-between shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)]">
-          <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-full bg-[#fdf7ed] dark:bg-[#251e16] border border-[#f5dfbc] dark:border-[#44331e] flex items-center justify-center text-[#b87928] dark:text-[#e59a3c] shrink-0">
-              <Users className="w-5 h-5" />
-            </div>
+        <div className="bg-white dark:bg-[#1a1816] rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] p-5 flex flex-col items-center justify-center text-center shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.5)] transition-all">
+          <div className="w-11 h-11 rounded-full bg-[#fdf7ed] dark:bg-[#251e16] border border-[#f5dfbc] dark:border-[#44331e] flex items-center justify-center text-[#b87928] dark:text-[#e59a3c] shrink-0 mb-2.5 shadow-2xs">
+            <Users className="w-5 h-5" />
           </div>
-          <div className="mt-3 text-start">
-            <span className="text-[11px] font-medium text-[#7c7366] dark:text-[#9e968a] block">
-              {t.totalContacts}
-            </span>
-            <span className="text-2xl font-extrabold text-[#b87928] dark:text-[#e59a3c] tracking-tight mt-0.5 block">
-              135.11 K
-            </span>
-          </div>
+          <span className="text-xs font-semibold text-[#7c7366] dark:text-[#9e968a] block">
+            {t.totalContacts}
+          </span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-[#b87928] dark:text-[#e59a3c] tracking-tight mt-1 block">
+            135.11 K
+          </span>
         </div>
       </div>
 
