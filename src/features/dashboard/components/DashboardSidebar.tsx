@@ -205,74 +205,71 @@ export function DashboardSidebar() {
         isCollapsed ? "w-16" : "w-[260px] xl:w-[275px]"
       )}
     >
-      {/* Top Header with Brand Logo & Collapse Toggle: Icon -> Name -> Arrow */}
+      {/* Top Header with Brand Logo */}
       <div
         className={cn(
           "flex items-center border-b border-[#ded5c6] dark:border-[#2f2a24] shrink-0 transition-all",
           isCollapsed
             ? "h-14 justify-center px-2"
-            : "px-4 pt-5 pb-4 justify-between"
+            : "px-5 pt-5 pb-4 justify-between"
         )}
       >
-        {!isCollapsed ? (
-          <>
-            {/* 1. Icon & 2. Name */}
-            <div className="flex items-center gap-3">
-              {/* Geometric Gold Logo Icon with 'G' */}
-              <div className="w-9 h-9 rounded-xl bg-[#c29547] dark:bg-[#d4a759] flex items-center justify-center text-white dark:text-[#171513] font-bold text-lg shadow-xs shrink-0">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-5 h-5"
-                >
-                  <path d="M19 7V4H5v16h14v-8h-7" />
-                </svg>
-              </div>
-
-              {/* Name */}
-              <div className="text-start">
-                <h1 className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] leading-tight tracking-tight">
-                  {brand.name}
-                </h1>
-                <span className="text-[10px] font-medium text-[#8c8279] dark:text-[#9e968a] tracking-wide block">
-                  {brand.tagline}
-                </span>
-              </div>
+        {!isCollapsed && (
+          <div className="flex items-center gap-3">
+            {/* Geometric Gold Logo Icon with 'G' */}
+            <div className="w-9 h-9 rounded-xl bg-[#c29547] dark:bg-[#d4a759] flex items-center justify-center text-white dark:text-[#171513] font-bold text-lg shadow-xs shrink-0">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <path d="M19 7V4H5v16h14v-8h-7" />
+              </svg>
             </div>
 
-            {/* 3. Arrow Collapse Toggle Button (Circle with chevron) */}
-            <button
-              type="button"
-              onClick={() => setIsCollapsed(true)}
-              className="w-7 h-7 rounded-full border border-stone-800 dark:border-stone-600 hover:border-[#c29547] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] flex items-center justify-center text-stone-600 dark:text-stone-300 hover:text-[#c29547] dark:hover:text-[#d4a759] transition-all shrink-0"
-              title={t.collapse}
-            >
-              {language === "ar" ? (
-                <ChevronRight className="w-3.5 h-3.5" />
-              ) : (
-                <ChevronLeft className="w-3.5 h-3.5" />
-              )}
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setIsCollapsed(false)}
-            className="w-7 h-7 rounded-full border border-stone-800 dark:border-stone-600 hover:border-[#c29547] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] flex items-center justify-center text-stone-600 dark:text-stone-300 hover:text-[#c29547] dark:hover:text-[#d4a759] transition-all"
-            title={t.expand}
-          >
-            {language === "ar" ? (
-              <ChevronLeft className="w-3.5 h-3.5" />
-            ) : (
-              <ChevronRight className="w-3.5 h-3.5" />
-            )}
-          </button>
+            {/* Name */}
+            <div className="text-start">
+              <h1 className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] leading-tight tracking-tight">
+                {brand.name}
+              </h1>
+              <span className="text-[10px] font-medium text-[#8c8279] dark:text-[#9e968a] tracking-wide block">
+                {brand.tagline}
+              </span>
+            </div>
+          </div>
         )}
       </div>
+
+      {/* Floating Collapse / Expand Toggle Button on the Outside Border Line */}
+      <button
+        type="button"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className={cn(
+          "absolute top-5 z-40 w-7 h-7 rounded-full bg-white dark:bg-[#1a1816] border border-stone-800 dark:border-stone-500 hover:border-[#c29547] dark:hover:border-[#d4a759] flex items-center justify-center text-stone-700 dark:text-stone-300 hover:text-[#c29547] dark:hover:text-[#d4a759] shadow-sm hover:shadow-md transition-all hover:scale-105 active:scale-95",
+          language === "ar"
+            ? "left-0 -translate-x-1/2"
+            : "right-0 translate-x-1/2"
+        )}
+        title={isCollapsed ? t.expand : t.collapse}
+      >
+        {isCollapsed ? (
+          language === "ar" ? (
+            <ChevronLeft className="w-3.5 h-3.5" />
+          ) : (
+            <ChevronRight className="w-3.5 h-3.5" />
+          )
+        ) : (
+          language === "ar" ? (
+            <ChevronRight className="w-3.5 h-3.5" />
+          ) : (
+            <ChevronLeft className="w-3.5 h-3.5" />
+          )
+        )}
+      </button>
 
       {/* Search Input Bar */}
       {!isCollapsed && (
