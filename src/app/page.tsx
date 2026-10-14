@@ -2,12 +2,10 @@ import React from "react";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
 import { DashboardTopNavbar } from "@/features/dashboard/components/DashboardTopNavbar";
 import { DashboardWelcomeBanner } from "@/features/dashboard/components/DashboardWelcomeBanner";
-import { DashboardKpiStatCards } from "@/features/dashboard/components/DashboardKpiStatCards";
-import { DashboardMessageActivityCard } from "@/features/dashboard/components/DashboardMessageActivityCard";
-import { DashboardChatbotActivityCard } from "@/features/dashboard/components/DashboardChatbotActivityCard";
-import { DashboardUnreadMessagesCard } from "@/features/dashboard/components/DashboardUnreadMessagesCard";
-import { DashboardActiveChatbotsCard } from "@/features/dashboard/components/DashboardActiveChatbotsCard";
-import { DashboardBulkCampaignsCard } from "@/features/dashboard/components/DashboardBulkCampaignsCard";
+import { DashboardOverviewKpis } from "@/features/dashboard/components/DashboardOverviewKpis";
+import { DashboardEarningReportCard } from "@/features/dashboard/components/DashboardEarningReportCard";
+import { DashboardContactsAndPlansSection } from "@/features/dashboard/components/DashboardContactsAndPlansSection";
+import { DashboardSubscriptionsAndClientsTables } from "@/features/dashboard/components/DashboardSubscriptionsAndClientsTables";
 
 export default function DashboardPage() {
   return (
@@ -25,24 +23,24 @@ export default function DashboardPage() {
           {/* Greeting Banner with Date Range Filters */}
           <DashboardWelcomeBanner />
 
-          {/* Top 4 KPI Summary Cards */}
-          <DashboardKpiStatCards />
+          {/* Row 1: Top 4 Overview KPI Cards with Sparklines */}
+          <DashboardOverviewKpis />
 
-          {/* Main 2-Column Analytics & Activity Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-            {/* Wider Column (Right in RTL): Message & Chatbot Activity Charts */}
-            <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
-              <DashboardMessageActivityCard />
-              <DashboardChatbotActivityCard />
+          {/* Row 2: Main Middle 2-Column Grid (Earning Report + Contacts & Plans) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+            {/* Wider Column: Earning Report Chart */}
+            <div className="lg:col-span-8 flex flex-col">
+              <DashboardEarningReportCard />
             </div>
 
-            {/* Narrower Column (Left in RTL): Unread Messages, Active Bots & Campaigns */}
-            <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-4">
-              <DashboardUnreadMessagesCard />
-              <DashboardActiveChatbotsCard />
-              <DashboardBulkCampaignsCard />
+            {/* Narrower Column: Total Contact Lists, Total Contacts, and Best Selling Plan */}
+            <div className="lg:col-span-4 flex flex-col">
+              <DashboardContactsAndPlansSection />
             </div>
           </div>
+
+          {/* Row 3: Bottom 2 Tables (Recent Subscription + Best Client) */}
+          <DashboardSubscriptionsAndClientsTables />
         </main>
       </div>
     </div>
