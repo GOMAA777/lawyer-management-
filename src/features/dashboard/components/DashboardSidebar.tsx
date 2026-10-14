@@ -3,20 +3,26 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  LayoutDashboard,
-  Inbox,
-  Kanban,
-  FileText,
-  MessageSquare,
-  MessageCircle,
+  User,
+  CreditCard,
+  Banknote,
+  Users,
   Bot,
-  Search,
+  Bell,
+  Headphones,
+  Settings,
+  Mail,
+  Sliders,
+  Puzzle,
+  Boxes,
+  ChevronDown,
   ChevronRight,
   ChevronLeft,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function InstagramIcon({ className }: { className?: string }) {
+function DashboardGaugeIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -27,27 +33,17 @@ function InstagramIcon({ className }: { className?: string }) {
       strokeLinejoin="round"
       className={className}
     >
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 12l4-4" />
+      <circle cx="12" cy="12" r="1.5" />
     </svg>
   );
 }
 
-function MessengerIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
-    </svg>
-  );
+interface SubNavItem {
+  id: string;
+  label: string;
+  href: string;
 }
 
 interface NavItem {
@@ -55,94 +51,146 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  isNew?: boolean;
-}
-
-interface NavSection {
-  title?: string;
-  items: NavItem[];
+  subItems?: SubNavItem[];
 }
 
 export function DashboardSidebar() {
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const [activeItem, setActiveItem] = useState("manage-client");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
 
-  const navigationSections: NavSection[] = [
+  const toggleDropdown = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const navItems: NavItem[] = [
     {
-      items: [
-        {
-          id: "dashboard",
-          label: "لوحة التحكم",
-          href: "/",
-          icon: LayoutDashboard,
-        },
-        {
-          id: "inbox",
-          label: "صندوق الوارد",
-          href: "#",
-          icon: Inbox,
-        },
-        {
-          id: "tasks",
-          label: "لوحة المهام",
-          href: "#",
-          icon: Kanban,
-        },
-        {
-          id: "templates",
-          label: "نماذج واتساب",
-          href: "#",
-          icon: FileText,
-        },
+      id: "dashboard",
+      label: "Dashboard",
+      href: "/",
+      icon: DashboardGaugeIcon,
+    },
+    {
+      id: "manage-client",
+      label: "Manage Client",
+      href: "#",
+      icon: User,
+    },
+    {
+      id: "subscription",
+      label: "Subscription",
+      href: "#",
+      icon: CreditCard,
+    },
+    {
+      id: "price-plans",
+      label: "Price Plans",
+      href: "#",
+      icon: Banknote,
+    },
+    {
+      id: "staff",
+      label: "Staff",
+      href: "#",
+      icon: Users,
+      subItems: [
+        { id: "staff-list", label: "Staff List", href: "#" },
+        { id: "staff-roles", label: "Roles & Permissions", href: "#" },
       ],
     },
     {
-      title: "إنستغرام",
-      items: [
-        {
-          id: "instagram-connect",
-          label: "ربط إنستغرام",
-          href: "#",
-          icon: InstagramIcon,
-          isNew: true,
-        },
-        {
-          id: "instagram-bot",
-          label: "روبوت رسائل إنستغرام",
-          href: "#",
-          icon: MessageSquare,
-          isNew: true,
-        },
-        {
-          id: "instagram-comments",
-          label: "الرد على التعليقات",
-          href: "#",
-          icon: MessageCircle,
-          isNew: true,
-        },
+      id: "ai-assistant",
+      label: "AI Assistant",
+      href: "#",
+      icon: Bot,
+      subItems: [
+        { id: "ai-models", label: "Chatbot Models", href: "#" },
+        { id: "ai-kb", label: "Knowledge Base", href: "#" },
       ],
     },
     {
-      title: "ماسنجر",
-      items: [
-        {
-          id: "messenger-accounts",
-          label: "حسابات ماسنجر",
-          href: "#",
-          icon: MessengerIcon,
-          isNew: true,
-        },
-        {
-          id: "messenger-bot",
-          label: "روبوت محادثة ماسنجر",
-          href: "#",
-          icon: Bot,
-          isNew: true,
-        },
+      id: "payment-gateway",
+      label: "Payment Gateway",
+      href: "#",
+      icon: CreditCard,
+    },
+    {
+      id: "notification",
+      label: "Notification",
+      href: "#",
+      icon: Bell,
+    },
+    {
+      id: "support",
+      label: "Support",
+      href: "#",
+      icon: Headphones,
+      subItems: [
+        { id: "support-all", label: "All Tickets", href: "#" },
+        { id: "support-pending", label: "Pending", href: "#" },
+      ],
+    },
+    {
+      id: "website-settings",
+      label: "Website Settings",
+      href: "#",
+      icon: Settings,
+      subItems: [
+        { id: "web-general", label: "General", href: "#" },
+        { id: "web-seo", label: "SEO & Branding", href: "#" },
+      ],
+    },
+    {
+      id: "email-settings",
+      label: "Email Settings",
+      href: "#",
+      icon: Mail,
+      subItems: [
+        { id: "email-smtp", label: "SMTP Configuration", href: "#" },
+        { id: "email-templates", label: "Email Templates", href: "#" },
+      ],
+    },
+    {
+      id: "system-settings",
+      label: "System Settings",
+      href: "#",
+      icon: Sliders,
+      subItems: [
+        { id: "sys-general", label: "General Config", href: "#" },
+        { id: "sys-backups", label: "Backups", href: "#" },
+      ],
+    },
+    {
+      id: "addon",
+      label: "Addon",
+      href: "#",
+      icon: Puzzle,
+      subItems: [
+        { id: "addon-installed", label: "Installed Addons", href: "#" },
+        { id: "addon-market", label: "Marketplace", href: "#" },
+      ],
+    },
+    {
+      id: "utility",
+      label: "Utility",
+      href: "#",
+      icon: Boxes,
+      subItems: [
+        { id: "util-logs", label: "Activity Logs", href: "#" },
+        { id: "util-cache", label: "System Cache", href: "#" },
       ],
     },
   ];
+
+  const filteredNavItems = navItems.filter((item) =>
+    item.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <aside
@@ -198,7 +246,7 @@ export function DashboardSidebar() {
           <div className="relative flex items-center">
             <input
               type="text"
-              placeholder="...ابحث في التطبيق"
+              placeholder="...Search menu"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-[#faf8f4] text-[#2c2825] placeholder-[#b2a899] text-xs font-medium rounded-full py-2.5 ps-9 pe-4 border border-[#eeeae1] focus:border-[#c29547] focus:bg-white focus:outline-none transition-all text-start"
@@ -208,56 +256,89 @@ export function DashboardSidebar() {
         </div>
       )}
 
-      {/* Navigation Sections */}
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-5 scrollbar-thin">
-        {navigationSections.map((section, idx) => (
-          <div key={idx} className="space-y-1">
-            {section.title && !isCollapsed && (
-              <div className="px-3 pt-2 pb-1 text-[11px] font-semibold text-[#a89e90]">
-                {section.title}
-              </div>
-            )}
+      {/* Navigation Items List */}
+      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1 scrollbar-thin">
+        {filteredNavItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeItem === item.id;
+          const hasDropdown = Boolean(item.subItems && item.subItems.length > 0);
+          const isOpen = Boolean(openDropdowns[item.id]);
 
-            {section.items.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeItem === item.id;
-
-              return (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  onClick={() => setActiveItem(item.id)}
+          return (
+            <div key={item.id} className="space-y-0.5">
+              <Link
+                href={item.href}
+                onClick={() => {
+                  setActiveItem(item.id);
+                  if (hasDropdown) {
+                    setOpenDropdowns((prev) => ({
+                      ...prev,
+                      [item.id]: !prev[item.id],
+                    }));
+                  }
+                }}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group relative",
+                  isActive
+                    ? "bg-[#faf5eb] text-[#b8863b] font-semibold border border-[#eeddbb]/60 shadow-[0_1px_2px_rgba(194,149,71,0.06)]"
+                    : "text-[#4a443e] hover:text-[#b8863b] hover:bg-[#faf8f4]"
+                )}
+                title={item.label}
+              >
+                <Icon
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group relative",
+                    "w-4 h-4 shrink-0 transition-colors",
                     isActive
-                      ? "bg-[#faf5eb] text-[#b8863b] font-semibold border border-[#eeddbb]/60 shadow-[0_1px_2px_rgba(194,149,71,0.06)]"
-                      : "text-[#4a443e] hover:text-[#b8863b] hover:bg-[#faf8f4]"
+                      ? "text-[#c29547]"
+                      : "text-[#877e72] group-hover:text-[#c29547]"
                   )}
-                  title={item.label}
-                >
-                  <Icon
-                    className={cn(
-                      "w-4 h-4 shrink-0 transition-colors",
-                      isActive
-                        ? "text-[#c29547]"
-                        : "text-[#877e72] group-hover:text-[#c29547]"
-                    )}
-                  />
+                />
 
-                  {!isCollapsed && (
-                    <span className="flex-1 text-start">{item.label}</span>
-                  )}
+                {!isCollapsed && (
+                  <span className="flex-1 text-start font-medium tracking-tight">
+                    {item.label}
+                  </span>
+                )}
 
-                  {!isCollapsed && item.isNew && (
-                    <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-md bg-[#fdf5e6] text-[#b8863b] border border-[#f3dfba]">
-                      جديد
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+                {!isCollapsed && hasDropdown && (
+                  <button
+                    type="button"
+                    onClick={(e) => toggleDropdown(item.id, e)}
+                    className="p-1 rounded text-[#a89e90] hover:text-[#b8863b] transition-colors"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        "w-3.5 h-3.5 transition-transform duration-200",
+                        isOpen && "rotate-180 text-[#b8863b]"
+                      )}
+                    />
+                  </button>
+                )}
+              </Link>
+
+              {/* Sub-menu Dropdown List */}
+              {!isCollapsed && hasDropdown && isOpen && item.subItems && (
+                <div className="ps-8 pe-2 py-1 space-y-1">
+                  {item.subItems.map((sub) => (
+                    <Link
+                      key={sub.id}
+                      href={sub.href}
+                      onClick={() => setActiveItem(sub.id)}
+                      className={cn(
+                        "block px-2.5 py-1.5 rounded-lg text-[11px] transition-colors text-start",
+                        activeItem === sub.id
+                          ? "bg-[#faf5eb] text-[#b8863b] font-semibold"
+                          : "text-[#6c645b] hover:text-[#b8863b] hover:bg-[#faf8f4]"
+                      )}
+                    >
+                      {sub.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {/* Bottom Footer Info */}
