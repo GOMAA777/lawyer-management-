@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import {
   Home,
   ChevronLeft,
@@ -243,9 +244,9 @@ export function DashboardTopNavbar() {
                   )}
                 </button>
 
-                {/* Logout Button */}
-                <button
-                  type="button"
+                {/* Logout Link */}
+                <Link
+                  href="/login"
                   onClick={() => setIsProfileOpen(false)}
                   className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-[#fff5f5] dark:hover:bg-[#2e1919] transition-colors group cursor-pointer text-start mt-2"
                 >
@@ -257,7 +258,7 @@ export function DashboardTopNavbar() {
                       {t.menuLogout}
                     </span>
                   </div>
-                </button>
+                </Link>
               </div>
             </div>
           )}

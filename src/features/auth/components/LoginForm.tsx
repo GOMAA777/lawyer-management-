@@ -1,0 +1,196 @@
+"use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, UserPlus, LogIn, ChevronDown, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useUIStore } from "@/stores/use-ui-store";
+import { translations } from "@/lib/i18n";
+import { loginSchema, LoginInput } from "../schemas/login.schema";
+import { loginAction } from "../actions/login.action";
+
+export function LoginForm() {
+  const router = useRouter();
+  const { language, toggleLanguage } = useUIStore();
+  const t = translations[language].auth;
+  const brand = translations[language].brand;
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      identifier: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginInput) => {
+    setIsSubmitting(true);
+    try {
+      const res = await loginAction(data);
+
+      if (res?.data?.success) {
+        toast.success(t.loginSuccess);
+        router.push("/");
+      } else {
+        toast.error(res?.serverError || "Failed to sign in. Please check credentials.");
+      }
+    } catch {
+      toast.error("An error occurred during sign in.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="w-full h-full bg-white dark:bg-[#1a1816] p-8 md:p-12 lg:p-16 flex flex-col justify-between select-none">
+      {/* Top Bar: Brand Logo & Sign Up Link */}
+      <div className="flex items-center justify-between">
+        {/* Brand Logo & Name */}
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+            <Image
+              src="/logo.png"
+              alt={brand.name}
+              width={32}
+              height={32}
+              className="w-full h-full object-contain"
+              priority
+            />
+          </div>
+          <span className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight">
+            {brand.name}
+          </span>
+        </Link>
+
+        {/* Sign Up Action */}
+        <Link
+          href="#"
+          className="flex items-center gap-1.5 text-xs font-semibold text-[#524b43] dark:text-[#c4bcb1] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors"
+        >
+          <UserPlus className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
+          <span>{t.signUp}</span>
+        </Link>
+      </div>
+
+      {/* Main Form Center Area */}
+      <div className="max-w-md w-full mx-auto my-auto py-8">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1c1917] dark:text-[#f5f4f0] text-start mb-8 tracking-tight">
+          {t.signIn}
+        </h1>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-start">
+          {/* Email or Username Pill Input */}
+          <div className="space-y-1.5">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={t.emailOrUsername}
+                {...register("identifier")}
+                className="w-full h-12.5 rounded-full px-5 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] placeholder-[#8c8279] dark:placeholder-[#787166] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+              />
+            </div>
+            {errors.identifier && (
+              <p className="text-[11px] font-medium text-red-500 px-4">
+                {errors.identifier.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password Pill Input */}
+          <div className="space-y-1.5">
+            <div className="relative flex items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder={t.password}
+                {...register("password")}
+                className="w-full h-12.5 rounded-full ps-5 pe-12 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] placeholder-[#8c8279] dark:placeholder-[#787166] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute end-4 p-1 text-[#8c8279] dark:text-[#787166] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-[11px] font-medium text-red-500 px-4">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Forgot Password Link */}
+          <div className="pt-1">
+            <Link
+              href="#"
+              className="text-xs font-semibold text-[#c29547] dark:text-[#d4a759] hover:underline"
+            >
+              {t.forgotPassword}
+            </Link>
+          </div>
+
+          {/* Sign In Primary Pill Button */}
+          <div className="pt-3">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full h-12.5 rounded-full bg-gradient-to-r from-[#d4a759] via-[#c29547] to-[#b38032] hover:opacity-95 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-[0_6px_20px_rgba(194,149,71,0.35)] hover:shadow-[0_8px_25px_rgba(194,149,71,0.45)] hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer disabled:opacity-60 disabled:pointer-events-none"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{t.signingIn}</span>
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-4 h-4" />
+                  <span>{t.signInButton}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Bottom Footer: Copyright & Language Selector */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8c8279] dark:text-[#787166] pt-4 border-t border-[#ded5c6]/40 dark:border-[#2f2a24]/60">
+        <span className="text-[11px]">{t.copyright}</span>
+
+        <div className="flex items-center gap-4">
+          <Link
+            href="#"
+            className="hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors"
+          >
+            {t.contactUs}
+          </Link>
+
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="flex items-center gap-1 font-semibold text-[#524b43] dark:text-[#c4bcb1] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer"
+          >
+            <span>{language === "ar" ? "العربية" : "English"}</span>
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
