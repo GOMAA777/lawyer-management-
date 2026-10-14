@@ -3,12 +3,14 @@ import { create } from "zustand";
 export type TableDensity = "compact" | "normal" | "comfortable";
 export type ThemePreference = "light" | "dark";
 export type AppLanguage = "ar" | "en";
+export type TextDirection = "rtl" | "ltr";
 
 interface UIState {
   sidebarOpen: boolean;
   tableDensity: TableDensity;
   theme: ThemePreference;
   language: AppLanguage;
+  direction: TextDirection;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   setTableDensity: (density: TableDensity) => void;
@@ -16,6 +18,8 @@ interface UIState {
   toggleTheme: () => void;
   setLanguage: (lang: AppLanguage) => void;
   toggleLanguage: () => void;
+  setDirection: (dir: TextDirection) => void;
+  toggleDirection: () => void;
 }
 
 function applyThemeToDOM(theme: ThemePreference) {
@@ -36,9 +40,19 @@ function applyThemeToDOM(theme: ThemePreference) {
 function applyLanguageToDOM(lang: AppLanguage) {
   if (typeof document !== "undefined") {
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     try {
       localStorage.setItem("app-language", lang);
+    } catch {
+      // Ignore in private browsing
+    }
+  }
+}
+
+function applyDirectionToDOM(dir: TextDirection) {
+  if (typeof document !== "undefined") {
+    document.documentElement.dir = dir;
+    try {
+      localStorage.setItem("app-direction", dir);
     } catch {
       // Ignore in private browsing
     }
@@ -50,6 +64,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   tableDensity: "normal",
   theme: "light",
   language: "ar",
+  direction: "rtl",
 
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
@@ -73,8 +88,21 @@ export const useUIStore = create<UIState>((set, get) => ({
 
   toggleLanguage: () => {
     const nextLang: AppLanguage = get().language === "ar" ? "en" : "ar";
+    const nextDir: TextDirection = nextLang === "ar" ? "rtl" : "ltr";
     applyLanguageToDOM(nextLang);
-    set({ language: nextLang });
+    applyDirectionToDOM(nextDir);
+    set({ language: nextLang, direction: nextDir });
+  },
+
+  setDirection: (dir: TextDirection) => {
+    applyDirectionToDOM(dir);
+    set({ direction: dir });
+  },
+
+  toggleDirection: () => {
+    const nextDir: TextDirection = get().direction === "rtl" ? "ltr" : "rtl";
+    applyDirectionToDOM(nextDir);
+    set({ direction: nextDir });
   },
 }));
 
@@ -90,6 +118,15 @@ if (typeof window !== "undefined") {
     if (savedLang === "ar" || savedLang === "en") {
       applyLanguageToDOM(savedLang);
       useUIStore.setState({ language: savedLang });
+    }
+    const savedDir = localStorage.getItem("app-direction") as TextDirection | null;
+    if (savedDir === "rtl" || savedDir === "ltr") {
+      applyDirectionToDOM(savedDir);
+      useUIStore.setState({ direction: savedDir });
+    } else if (savedLang) {
+      const defaultDir = savedLang === "ar" ? "rtl" : "ltr";
+      applyDirectionToDOM(defaultDir);
+      useUIStore.setState({ direction: defaultDir });
     }
   } catch {
     // Ignore in private browsing mode

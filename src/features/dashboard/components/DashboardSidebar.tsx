@@ -57,7 +57,7 @@ interface NavItem {
 }
 
 export function DashboardSidebar() {
-  const { language } = useUIStore();
+  const { language, direction } = useUIStore();
   const t = translations[language].nav;
   const brand = translations[language].brand;
 
@@ -242,20 +242,20 @@ export function DashboardSidebar() {
         onClick={() => setIsCollapsed(!isCollapsed)}
         className={cn(
           "absolute top-5 z-40 w-7 h-7 rounded-full bg-white dark:bg-[#1a1816] border border-stone-800 dark:border-stone-500 hover:border-[#c29547] dark:hover:border-[#d4a759] flex items-center justify-center text-stone-700 dark:text-stone-300 hover:text-[#c29547] dark:hover:text-[#d4a759] shadow-sm hover:shadow-md transition-all hover:scale-105 active:scale-95",
-          language === "ar"
+          direction === "rtl"
             ? "left-0 -translate-x-1/2"
             : "right-0 translate-x-1/2"
         )}
         title={isCollapsed ? t.expand : t.collapse}
       >
         {isCollapsed ? (
-          language === "ar" ? (
+          direction === "rtl" ? (
             <ChevronLeft className="w-3.5 h-3.5" />
           ) : (
             <ChevronRight className="w-3.5 h-3.5" />
           )
         ) : (
-          language === "ar" ? (
+          direction === "rtl" ? (
             <ChevronRight className="w-3.5 h-3.5" />
           ) : (
             <ChevronLeft className="w-3.5 h-3.5" />
