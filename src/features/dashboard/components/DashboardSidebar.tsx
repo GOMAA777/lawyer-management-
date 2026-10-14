@@ -199,43 +199,71 @@ export function DashboardSidebar() {
         isCollapsed ? "w-20" : "w-[260px] xl:w-[275px]"
       )}
     >
-      {/* Top Header with Brand Logo & Collapse Toggle */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#ded5c6] shrink-0">
-        <button
-          type="button"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="text-[#a89f91] hover:text-[#c29547] hover:bg-[#faf7f0] p-1.5 rounded-lg transition-colors"
-          title={isCollapsed ? "توسيع القائمة" : "طي القائمة"}
-        >
-          {isCollapsed ? (
-            <ChevronLeft className="w-4 h-4" />
-          ) : (
-            <ChevronRight className="w-4 h-4" />
-          )}
-        </button>
+      {/* Top Header with Brand Logo & Collapse Toggle: Icon -> Name -> Arrow */}
+      <div className="flex items-center justify-between px-4 pt-5 pb-4 border-b border-[#ded5c6] shrink-0">
+        {!isCollapsed ? (
+          <>
+            {/* 1. Icon & 2. Name */}
+            <div className="flex items-center gap-3">
+              {/* Geometric Gold Logo Icon with 'G' */}
+              <div className="w-9 h-9 rounded-xl bg-[#c29547] flex items-center justify-center text-white font-bold text-lg shadow-xs shrink-0">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5 text-white"
+                >
+                  <path d="M19 7V4H5v16h14v-8h-7" />
+                </svg>
+              </div>
 
-        {!isCollapsed && (
-          <div className="flex items-center gap-3">
-            <div className="text-end">
-              <h1 className="text-xl font-extrabold text-[#c29547] leading-tight tracking-tight">
-                الجودي
-              </h1>
-              <span className="text-[10px] font-medium text-[#9c9384] tracking-wide block">
-                للتسويق الرقمي
-              </span>
+              {/* Name */}
+              <div className="text-start">
+                <h1 className="text-lg font-extrabold text-[#c29547] leading-tight tracking-tight">
+                  الجودي
+                </h1>
+                <span className="text-[10px] font-medium text-[#8c8279] tracking-wide block">
+                  للتسويق الرقمي
+                </span>
+              </div>
             </div>
-            {/* Geometric Gold Logo Icon */}
-            <div className="w-9 h-9 rounded-lg bg-[#c29547] flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-[#c29547]/20">
+
+            {/* 3. Arrow Collapse Toggle Button (Circle with chevron) */}
+            <button
+              type="button"
+              onClick={() => setIsCollapsed(true)}
+              className="w-7 h-7 rounded-full border border-stone-800 hover:border-[#c29547] hover:bg-[#faf7f0] flex items-center justify-center text-stone-600 hover:text-[#c29547] transition-all shrink-0"
+              title="طي القائمة"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </>
+        ) : (
+          <div className="w-full flex flex-col items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#c29547] flex items-center justify-center text-white font-bold text-lg shadow-xs">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2.5"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="w-5 h-5 text-white"
               >
                 <path d="M19 7V4H5v16h14v-8h-7" />
               </svg>
             </div>
+            <button
+              type="button"
+              onClick={() => setIsCollapsed(false)}
+              className="w-7 h-7 rounded-full border border-stone-800 hover:border-[#c29547] hover:bg-[#faf7f0] flex items-center justify-center text-stone-600 hover:text-[#c29547] transition-all"
+              title="توسيع القائمة"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
           </div>
         )}
       </div>
