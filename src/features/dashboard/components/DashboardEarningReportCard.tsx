@@ -46,7 +46,7 @@ export function DashboardEarningReportCard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         {/* Metric 1: New Clients */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6]/70 dark:border-[#2f2a24]">
-          <div className="w-10 h-10 rounded-xl bg-[#ece6fd] dark:bg-[#2a223f] flex items-center justify-center text-[#6366f1] shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] shrink-0">
             <Users className="w-5 h-5" />
           </div>
           <div className="text-start">
@@ -61,7 +61,7 @@ export function DashboardEarningReportCard() {
 
         {/* Metric 2: Total Subscription */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6]/70 dark:border-[#2f2a24]">
-          <div className="w-10 h-10 rounded-xl bg-[#e6f8f1] dark:bg-[#183428] flex items-center justify-center text-[#10b981] shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#fdf7ed] dark:bg-[#251e16] border border-[#f5dfbc] dark:border-[#44331e] flex items-center justify-center text-[#b87928] dark:text-[#e59a3c] shrink-0">
             <Tag className="w-5 h-5" />
           </div>
           <div className="text-start">
@@ -76,7 +76,7 @@ export function DashboardEarningReportCard() {
 
         {/* Metric 3: Total Sale */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6]/70 dark:border-[#2f2a24]">
-          <div className="w-10 h-10 rounded-xl bg-[#faf5eb] dark:bg-[#2f2618] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] shrink-0">
             <Coins className="w-5 h-5" />
           </div>
           <div className="text-start">
@@ -93,11 +93,11 @@ export function DashboardEarningReportCard() {
       {/* Chart Legends */}
       <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold mb-3">
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-sm bg-[#3b82f6]" />
+          <span className="w-3 h-3 rounded-sm bg-[#8c7b68] dark:bg-[#9e8f7c]" />
           <span className="text-[#6c645b] dark:text-[#a8a195]">Total Client</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-sm bg-[#10b981]" />
+          <span className="w-3 h-3 rounded-sm bg-[#d4a759]" />
           <span className="text-[#6c645b] dark:text-[#a8a195]">Total Active Subscriptions</span>
         </div>
         <div className="flex items-center gap-1.5">
