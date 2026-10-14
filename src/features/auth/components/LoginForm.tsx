@@ -87,15 +87,22 @@ export function LoginForm() {
         </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-start">
-          {/* Email or Username Pill Input */}
+          {/* Email or Username Pill Input with Animated Floating Label */}
           <div className="space-y-1.5">
             <div className="relative">
               <input
+                id="identifier"
                 type="text"
-                placeholder={t.emailOrUsername}
+                placeholder=" "
                 {...register("identifier")}
-                className="w-full h-12.5 rounded-full px-5 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] placeholder-[#8c8279] dark:placeholder-[#787166] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                className="peer w-full h-13 rounded-full ps-5 pe-5 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
               />
+              <label
+                htmlFor="identifier"
+                className="pointer-events-none absolute start-5 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1816] px-2 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816] peer-autofill:top-0 peer-autofill:text-xs peer-autofill:font-bold peer-autofill:text-[#c29547] peer-autofill:bg-white dark:peer-autofill:bg-[#1a1816]"
+              >
+                {t.emailOrUsername}
+              </label>
             </div>
             {errors.identifier && (
               <p className="text-[11px] font-medium text-red-500 px-4">
@@ -104,19 +111,26 @@ export function LoginForm() {
             )}
           </div>
 
-          {/* Password Pill Input */}
+          {/* Password Pill Input with Animated Floating Label */}
           <div className="space-y-1.5">
             <div className="relative flex items-center">
               <input
+                id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder={t.password}
+                placeholder=" "
                 {...register("password")}
-                className="w-full h-12.5 rounded-full ps-5 pe-12 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] placeholder-[#8c8279] dark:placeholder-[#787166] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                className="peer w-full h-13 rounded-full ps-5 pe-12 text-sm bg-white dark:bg-[#201d1a] text-[#1c1917] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
               />
+              <label
+                htmlFor="password"
+                className="pointer-events-none absolute start-5 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1816] px-2 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816] peer-autofill:top-0 peer-autofill:text-xs peer-autofill:font-bold peer-autofill:text-[#c29547] peer-autofill:bg-white dark:peer-autofill:bg-[#1a1816]"
+              >
+                {t.password}
+              </label>
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute end-4 p-1 text-[#8c8279] dark:text-[#787166] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer"
+                className="absolute end-4 p-1 text-[#8c8279] dark:text-[#787166] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer z-10"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
