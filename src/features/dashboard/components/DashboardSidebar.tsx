@@ -195,7 +195,7 @@ export function DashboardSidebar() {
     <aside
       className={cn(
         "sticky top-0 h-screen shrink-0 flex flex-col border-e border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#171513] transition-all duration-300 z-30 select-none shadow-[-3px_0_15px_rgba(60,50,40,0.03)] dark:shadow-[-3px_0_15px_rgba(0,0,0,0.4)]",
-        isCollapsed ? "w-16" : "w-[260px] xl:w-[275px]"
+        isCollapsed ? "w-20" : "w-[260px] xl:w-[275px]"
       )}
     >
       {/* Top Header with Brand Logo */}
@@ -210,7 +210,7 @@ export function DashboardSidebar() {
         {!isCollapsed ? (
           <div className="flex items-center gap-3">
             {/* Real Golden Brand Logo */}
-            <div className="w-10 h-10 rounded-xl bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs shrink-0 hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs shrink-0 hover:scale-105 transition-transform">
               <Image
                 src="/logo.png"
                 alt={brand.name}
@@ -233,14 +233,14 @@ export function DashboardSidebar() {
           </div>
         ) : (
           <div
-            className="w-9 h-9 rounded-xl bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1 flex items-center justify-center shadow-xs mx-auto hover:scale-105 transition-transform"
+            className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs mx-auto rtl:translate-x-1.5 ltr:-translate-x-1.5 hover:scale-105 transition-transform"
             title={brand.name}
           >
             <Image
               src="/logo.png"
               alt={brand.name}
-              width={32}
-              height={32}
+              width={34}
+              height={34}
               className="w-full h-full object-contain"
               priority
             />
