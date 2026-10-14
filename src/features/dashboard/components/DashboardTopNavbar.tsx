@@ -21,7 +21,7 @@ export function DashboardTopNavbar() {
   };
 
   return (
-    <header className="h-14 border-b border-[#eeeae2] bg-white/70 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-14 border-b border-[#ded5c6] bg-white/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-[0_2px_12px_rgba(80,65,45,0.03)]">
       {/* Right Side (RTL): Breadcrumbs */}
       <nav aria-label="مسار التنقل" className="flex items-center gap-2 text-xs">
         <span className="p-1.5 rounded-lg text-[#8f8679] hover:text-[#c29547] hover:bg-[#faf7f0] transition-colors cursor-pointer">
@@ -38,7 +38,7 @@ export function DashboardTopNavbar() {
         {/* Language Switcher */}
         <button
           type="button"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#4a443e] hover:bg-[#faf7f0] hover:text-[#b8863b] transition-colors border border-[#eeeae2]"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#4a443e] hover:bg-[#faf7f0] hover:text-[#b8863b] transition-colors border border-[#ded5c6] shadow-2xs hover:border-[#c29547]"
         >
           <Globe className="w-3.5 h-3.5 text-[#a89e90]" />
           <span>العربية</span>

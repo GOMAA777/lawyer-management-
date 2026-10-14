@@ -38,7 +38,7 @@ export function DashboardWelcomeBanner({
         <button
           type="button"
           onClick={onRefresh}
-          className="p-2 rounded-xl border border-[#ede7de] bg-white text-[#7d7467] hover:text-[#c29547] hover:border-[#dfd7ca] hover:bg-[#faf7f0] shadow-sm transition-all"
+          className="p-2 rounded-xl border border-[#ded5c6] bg-white text-[#7d7467] hover:text-[#c29547] hover:border-[#c29547] hover:bg-[#faf7f0] shadow-xs hover:shadow-sm transition-all"
           title="تحديث البيانات"
         >
           <RefreshCw
@@ -51,10 +51,10 @@ export function DashboardWelcomeBanner({
           type="button"
           onClick={() => setSelectedRange("7d")}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border",
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border shadow-xs",
             selectedRange === "7d"
-              ? "bg-[#faf5eb] text-[#b8863b] border-[#f1dfb8] shadow-sm"
-              : "bg-white text-[#6b6359] border-[#ede7de] hover:bg-[#faf7f0]"
+              ? "bg-[#faf5eb] text-[#b8863b] border-[#d8c29d] shadow-sm"
+              : "bg-white text-[#6b6359] border-[#ded5c6] hover:bg-[#faf7f0] hover:border-[#c29547]"
           )}
         >
           <Calendar className="w-3.5 h-3.5 text-[#b8863b]" />
@@ -66,10 +66,10 @@ export function DashboardWelcomeBanner({
           type="button"
           onClick={() => setSelectedRange("30d")}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border",
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border shadow-xs",
             selectedRange === "30d"
-              ? "bg-[#faf5eb] text-[#b8863b] border-[#f1dfb8] shadow-sm"
-              : "bg-white text-[#6b6359] border-[#ede7de] hover:bg-[#faf7f0]"
+              ? "bg-[#faf5eb] text-[#b8863b] border-[#d8c29d] shadow-sm"
+              : "bg-white text-[#6b6359] border-[#ded5c6] hover:bg-[#faf7f0] hover:border-[#c29547]"
           )}
         >
           <Calendar className="w-3.5 h-3.5 text-[#a89e90]" />

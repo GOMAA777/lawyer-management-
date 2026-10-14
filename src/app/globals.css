@@ -59,8 +59,8 @@
   --accent: #fbf6ec;
   --accent-foreground: #9a6f29;
   --destructive: #ef4444;
-  --border: #ece7de;
-  --input: #ece7de;
+  --border: #ddd4c5;
+  --input: #ddd4c5;
   --ring: #c29547;
   --radius: 0.75rem;
   --sidebar: #ffffff;
@@ -69,7 +69,7 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #fbf6ec;
   --sidebar-accent-foreground: #9a6f29;
-  --sidebar-border: #eeeae2;
+  --sidebar-border: #ded5c6;
   --sidebar-ring: #c29547;
 }
 

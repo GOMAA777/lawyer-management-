@@ -51,7 +51,7 @@ export function DashboardKpiStatCards() {
         return (
           <div
             key={kpi.id}
-            className="bg-white rounded-2xl border border-[#ece7de] p-4 flex flex-col justify-between shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-[#dfd7ca] hover:shadow-sm transition-all relative overflow-hidden"
+            className="bg-white rounded-2xl border border-[#ded5c6] p-4 flex flex-col justify-between shadow-[0_4px_16px_-2px_rgba(80,65,45,0.06),0_1px_3px_rgba(0,0,0,0.03)] hover:border-[#c29547]/60 hover:shadow-[0_8px_24px_-4px_rgba(194,149,71,0.18)] hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden"
           >
             {/* Top row: Title on right (RTL), Icon on left (RTL) */}
             <div className="flex items-center justify-between">

@@ -195,12 +195,12 @@ export function DashboardSidebar() {
   return (
     <aside
       className={cn(
-        "relative flex flex-col h-screen border-s border-[#eeeae2] bg-white transition-all duration-300 z-30 select-none",
+        "relative flex flex-col h-screen border-e border-[#ded5c6] bg-white transition-all duration-300 z-30 select-none shadow-[-3px_0_15px_rgba(60,50,40,0.03)]",
         isCollapsed ? "w-20" : "w-[260px] xl:w-[275px]"
       )}
     >
       {/* Top Header with Brand Logo & Collapse Toggle */}
-      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#f4f1ea]/80">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-[#ded5c6]">
         <button
           type="button"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -249,7 +249,7 @@ export function DashboardSidebar() {
               placeholder="...ابحث في القائمة"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#faf8f4] text-[#2c2825] placeholder-[#b2a899] text-xs font-medium rounded-full py-2.5 ps-9 pe-4 border border-[#eeeae1] focus:border-[#c29547] focus:bg-white focus:outline-none transition-all text-start"
+              className="w-full bg-[#faf8f4] text-[#2c2825] placeholder-[#b2a899] text-xs font-medium rounded-full py-2.5 ps-9 pe-4 border border-[#ded5c6] focus:border-[#c29547] focus:bg-white focus:outline-none shadow-2xs transition-all text-start"
             />
             <Search className="w-4 h-4 text-[#aba293] absolute start-3 pointer-events-none" />
           </div>
