@@ -66,14 +66,6 @@ export function DashboardSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
 
-  const toggleDropdown = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpenDropdowns((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   const navItems: NavItem[] = [
     {
@@ -301,7 +293,13 @@ export function DashboardSidebar() {
           const isOpen = Boolean(openDropdowns[item.id]);
 
           return (
-            <div key={item.id} className="relative group flex justify-center">
+            <div
+              key={item.id}
+              className={cn(
+                "relative group flex flex-col transition-all",
+                isCollapsed ? "items-center justify-center" : "w-full"
+              )}
+            >
               <Link
                 href={item.href}
                 onClick={() => {
@@ -340,18 +338,14 @@ export function DashboardSidebar() {
                 )}
 
                 {!isCollapsed && hasDropdown && (
-                  <button
-                    type="button"
-                    onClick={(e) => toggleDropdown(item.id, e)}
-                    className="p-1 rounded text-[#a89e90] dark:text-[#787166] hover:text-[#b8863b] dark:hover:text-[#d4a759] transition-colors"
-                  >
+                  <span className="p-1 rounded text-[#a89e90] dark:text-[#787166] group-hover:text-[#b8863b] dark:group-hover:text-[#d4a759] transition-colors">
                     <ChevronDown
                       className={cn(
                         "w-3.5 h-3.5 transition-transform duration-200",
                         isOpen && "rotate-180 text-[#b8863b] dark:text-[#d4a759]"
                       )}
                     />
-                  </button>
+                  </span>
                 )}
               </Link>
 
@@ -362,9 +356,9 @@ export function DashboardSidebar() {
                 </div>
               )}
 
-              {/* Sub-menu Dropdown List */}
+              {/* Sub-menu Dropdown List (rendered directly below the item) */}
               {!isCollapsed && hasDropdown && isOpen && item.subItems && (
-                <div className="ps-8 pe-2 py-1 space-y-1 w-full">
+                <div className="ps-8 pe-2 pt-1 pb-1 space-y-1 w-full flex flex-col">
                   {item.subItems.map((sub) => (
                     <Link
                       key={sub.id}
