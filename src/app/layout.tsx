@@ -1,24 +1,33 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Cairo } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-cairo",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "WhatsApp Dashboard",
-  description: "Admin Dashboard built with Next.js App Router",
+  title: "لوحة التحكم - الجودي للتسويق الرقمي",
+  description: "منصة إدارة رسائل وحملات واتساب والتسويق الرقمي - الجودي",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-background text-foreground antialiased">
+    <html lang="ar" dir="rtl" className={cn(cairo.variable, "font-sans")}>
+      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-[#f3e3c3] selection:text-[#78541c]">
         <NuqsAdapter>
           {children}
-          <Toaster richColors position="top-right" />
+          <Toaster richColors position="top-left" />
         </NuqsAdapter>
       </body>
     </html>
