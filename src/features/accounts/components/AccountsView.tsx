@@ -43,7 +43,7 @@ interface AdminAccount {
   name: string;
   nameEn: string;
   email: string;
-  role: "super_admin" | "finance_admin" | "support_lead" | "security_auditor";
+  role: "super_admin" | "sales" | "support" | "finance";
   roleNameAr: string;
   roleNameEn: string;
   scope: string;
@@ -60,10 +60,10 @@ const initialAccounts: AdminAccount[] = [
     nameEn: "Abdallah Al-Mansoor",
     email: "a.mansoor@eljudy.com",
     role: "super_admin",
-    roleNameAr: "سوبر أدمن (صلاحية كاملة)",
-    roleNameEn: "Super Admin (Full Access)",
-    scope: "كافة المكاتب والأنظمة",
-    scopeEn: "All Firms & Systems",
+    roleNameAr: "مدير النظام",
+    roleNameEn: "System Admin",
+    scope: "يشوف ويعمل أي حاجة (صلاحية كاملة)",
+    scopeEn: "Full Access (View & Manage Everything)",
     status: "active",
     lastLogin: "الآن (نشط)",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -73,11 +73,11 @@ const initialAccounts: AdminAccount[] = [
     name: "سارة عبد العزيز",
     nameEn: "Sara Abdulaziz",
     email: "s.abdulaziz@eljudy.com",
-    role: "finance_admin",
-    roleNameAr: "مدير الاشتراكات والمالية",
-    roleNameEn: "Billing & Subscriptions Manager",
-    scope: "الفوترة، بوابات الدفع، الباقات",
-    scopeEn: "Billing, Gateways & Plans",
+    role: "finance",
+    roleNameAr: "المالية",
+    roleNameEn: "Finance",
+    scope: "الاشتراكات والفواتير وطرق الدفع",
+    scopeEn: "Subscriptions, Invoices & Payment Methods",
     status: "active",
     lastLogin: "منذ 15 دقيقة",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -87,25 +87,25 @@ const initialAccounts: AdminAccount[] = [
     name: "م. طارق العتيبي",
     nameEn: "Eng. Tariq Al-Otaibi",
     email: "t.otaibi@eljudy.com",
-    role: "support_lead",
-    roleNameAr: "رئيس الدعم الفني والعمليات",
-    roleNameEn: "Support & Operations Lead",
-    scope: "تذاكر المكاتب ومتابعة الخوادم",
-    scopeEn: "Firm Tickets & Server Monitoring",
+    role: "support",
+    roleNameAr: "الدعم الفني",
+    roleNameEn: "Technical Support",
+    scope: "التذاكر فقط",
+    scopeEn: "Support Tickets Only",
     status: "active",
     lastLogin: "منذ ساعتين",
     avatarColor: "from-[#d4a759] to-[#b38032]",
   },
   {
     id: "acc-4",
-    name: "د. خالد السليمان",
-    nameEn: "Dr. Khaled Al-Sulaiman",
+    name: "خالد السليمان",
+    nameEn: "Khaled Al-Sulaiman",
     email: "k.sulaiman@eljudy.com",
-    role: "security_auditor",
-    roleNameAr: "مدقق الأمان والامتثال القضائي",
-    roleNameEn: "Security & Legal Compliance Auditor",
-    scope: "سجلات النشاط والنسخ الاحتياطي",
-    scopeEn: "Audit Logs & System Backups",
+    role: "sales",
+    roleNameAr: "السيلز",
+    roleNameEn: "Sales",
+    scope: "متابعة التجارب المجانية والتواصل مع المكاتب",
+    scopeEn: "Free Trials Follow-up & Firm Communications",
     status: "active",
     lastLogin: "منذ يوم واحد",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -115,11 +115,11 @@ const initialAccounts: AdminAccount[] = [
     name: "فهد بن ناصر",
     nameEn: "Fahad Bin Nasser",
     email: "f.nasser@eljudy.com",
-    role: "support_lead",
-    roleNameAr: "أخصائي دعم فني",
-    roleNameEn: "Support Specialist",
-    scope: "تذاكر المكاتب والمحادثات",
-    scopeEn: "Firm Tickets & Chat",
+    role: "support",
+    roleNameAr: "الدعم الفني",
+    roleNameEn: "Technical Support",
+    scope: "التذاكر فقط",
+    scopeEn: "Support Tickets Only",
     status: "suspended",
     lastLogin: "منذ 14 يوماً",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -129,11 +129,11 @@ const initialAccounts: AdminAccount[] = [
     name: "ريم الهذلي",
     nameEn: "Reem Al-Hothali",
     email: "r.hothali@eljudy.com",
-    role: "finance_admin",
-    roleNameAr: "مدير الاشتراكات والمالية",
-    roleNameEn: "Billing & Subscriptions Manager",
-    scope: "الفوترة والباقات السحابية",
-    scopeEn: "Billing & Cloud Packages",
+    role: "finance",
+    roleNameAr: "المالية",
+    roleNameEn: "Finance",
+    scope: "الاشتراكات والفواتير وطرق الدفع",
+    scopeEn: "Subscriptions, Invoices & Payment Methods",
     status: "active",
     lastLogin: "منذ 3 ساعات",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -143,11 +143,11 @@ const initialAccounts: AdminAccount[] = [
     name: "عمر القحطاني",
     nameEn: "Omar Al-Qahtani",
     email: "o.qahtani@eljudy.com",
-    role: "support_lead",
-    roleNameAr: "أخصائي دعم فني",
-    roleNameEn: "Support Specialist",
-    scope: "تذاكر المكاتب والمحادثات",
-    scopeEn: "Firm Tickets & Chat",
+    role: "sales",
+    roleNameAr: "السيلز",
+    roleNameEn: "Sales",
+    scope: "متابعة التجارب المجانية والتواصل مع المكاتب",
+    scopeEn: "Free Trials Follow-up & Firm Communications",
     status: "active",
     lastLogin: "منذ 5 ساعات",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -157,11 +157,11 @@ const initialAccounts: AdminAccount[] = [
     name: "نورة الشهري",
     nameEn: "Noura Al-Shehri",
     email: "n.shehri@eljudy.com",
-    role: "security_auditor",
-    roleNameAr: "مدقق الأمان والأنظمة",
-    roleNameEn: "Security & Systems Auditor",
-    scope: "سجلات الدخول ومراجعة الصلاحيات",
-    scopeEn: "Audit Logs & Permission Reviews",
+    role: "support",
+    roleNameAr: "الدعم الفني",
+    roleNameEn: "Technical Support",
+    scope: "التذاكر فقط",
+    scopeEn: "Support Tickets Only",
     status: "suspended",
     lastLogin: "منذ أسبوع",
     avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -239,7 +239,7 @@ export function AccountsView() {
   const [newAdminConfirmPassword, setNewAdminConfirmPassword] = useState("");
   const [showNewAdminPassword, setShowNewAdminPassword] = useState(false);
   const [showNewAdminConfirmPassword, setShowNewAdminConfirmPassword] = useState(false);
-  const [newRole, setNewRole] = useState<AdminAccount["role"]>("support_lead");
+  const [newRole, setNewRole] = useState<AdminAccount["role"]>("sales");
   const [newStatus, setNewStatus] = useState<AdminAccount["status"]>("active");
 
   // Edit account modal state
@@ -247,7 +247,7 @@ export function AccountsView() {
   const [editingAccount, setEditingAccount] = useState<AdminAccount | null>(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
-  const [editRole, setEditRole] = useState<AdminAccount["role"]>("support_lead");
+  const [editRole, setEditRole] = useState<AdminAccount["role"]>("sales");
   const [editStatus, setEditStatus] = useState<AdminAccount["status"]>("active");
 
   // Change password modal state
@@ -576,33 +576,33 @@ export function AccountsView() {
       return;
     }
 
-    const roleMap: Record<
+    const roleConfigMap: Record<
       AdminAccount["role"],
       { ar: string; en: string; scopeAr: string; scopeEn: string }
     > = {
       super_admin: {
-        ar: "سوبر أدمن (صلاحية كاملة)",
-        en: "Super Admin (Full Access)",
-        scopeAr: "كافة المكاتب والأنظمة",
-        scopeEn: "All Firms & Systems",
+        ar: "مدير النظام",
+        en: "System Admin",
+        scopeAr: "يشوف ويعمل أي حاجة (صلاحية كاملة)",
+        scopeEn: "Full Access (View & Manage Everything)",
       },
-      finance_admin: {
-        ar: "مدير الاشتراكات والمالية",
-        en: "Billing & Subscriptions Manager",
-        scopeAr: "الفوترة، بوابات الدفع، الباقات",
-        scopeEn: "Billing, Gateways & Plans",
+      sales: {
+        ar: "السيلز",
+        en: "Sales",
+        scopeAr: "متابعة التجارب المجانية والتواصل مع المكاتب",
+        scopeEn: "Free Trials Follow-up & Firm Communications",
       },
-      support_lead: {
-        ar: "أخصائي دعم فني وتشغيل",
-        en: "Support & Operations Lead",
-        scopeAr: "تذاكر المكاتب ومتابعة الخوادم",
-        scopeEn: "Firm Tickets & Server Monitoring",
+      support: {
+        ar: "الدعم الفني",
+        en: "Technical Support",
+        scopeAr: "التذاكر فقط",
+        scopeEn: "Support Tickets Only",
       },
-      security_auditor: {
-        ar: "مدقق الأمان والأنظمة",
-        en: "Security & Legal Compliance Auditor",
-        scopeAr: "سجلات النشاط والنسخ الاحتياطي",
-        scopeEn: "Audit Logs & System Backups",
+      finance: {
+        ar: "المالية",
+        en: "Finance",
+        scopeAr: "الاشتراكات والفواتير وطرق الدفع",
+        scopeEn: "Subscriptions, Invoices & Payment Methods",
       },
     };
 
@@ -612,10 +612,10 @@ export function AccountsView() {
       nameEn: newName.trim(),
       email: newEmail.trim(),
       role: newRole,
-      roleNameAr: roleMap[newRole].ar,
-      roleNameEn: roleMap[newRole].en,
-      scope: roleMap[newRole].scopeAr,
-      scopeEn: roleMap[newRole].scopeEn,
+      roleNameAr: roleConfigMap[newRole].ar,
+      roleNameEn: roleConfigMap[newRole].en,
+      scope: roleConfigMap[newRole].scopeAr,
+      scopeEn: roleConfigMap[newRole].scopeEn,
       status: newStatus,
       lastLogin: isAr ? "تم الإنشاء للتو" : "Just created",
       avatarColor: "from-[#d4a759] to-[#b38032]",
@@ -634,7 +634,7 @@ export function AccountsView() {
     setNewAdminConfirmPassword("");
     setShowNewAdminPassword(false);
     setShowNewAdminConfirmPassword(false);
-    setNewRole("support_lead");
+    setNewRole("sales");
     setNewStatus("active");
   };
 
@@ -703,13 +703,43 @@ export function AccountsView() {
   const suspendedCount = accounts.filter((a) => a.status === "suspended").length;
   const superCount = accounts.filter((a) => a.role === "super_admin").length;
 
+  const roleConfigMap: Record<
+    AdminAccount["role"],
+    { ar: string; en: string; scopeAr: string; scopeEn: string }
+  > = {
+    super_admin: {
+      ar: "مدير النظام",
+      en: "System Admin",
+      scopeAr: "يشوف ويعمل أي حاجة (صلاحية كاملة)",
+      scopeEn: "Full Access (View & Manage Everything)",
+    },
+    sales: {
+      ar: "السيلز",
+      en: "Sales",
+      scopeAr: "متابعة التجارب المجانية والتواصل مع المكاتب",
+      scopeEn: "Free Trials Follow-up & Firm Communications",
+    },
+    support: {
+      ar: "الدعم الفني",
+      en: "Technical Support",
+      scopeAr: "التذاكر فقط",
+      scopeEn: "Support Tickets Only",
+    },
+    finance: {
+      ar: "المالية",
+      en: "Finance",
+      scopeAr: "الاشتراكات والفواتير وطرق الدفع",
+      scopeEn: "Subscriptions, Invoices & Payment Methods",
+    },
+  };
+
   // Combobox Options
   const roleOptions: SelectOption<string>[] = [
     { value: "all", label: isAr ? "كل الرتب والأدوار" : "All Roles" },
-    { value: "super_admin", label: isAr ? "سوبر أدمن" : "Super Admin" },
-    { value: "finance_admin", label: isAr ? "المالية والاشتراكات" : "Finance Admin" },
-    { value: "support_lead", label: isAr ? "الدعم الفني" : "Support Lead" },
-    { value: "security_auditor", label: isAr ? "مدقق الأمان" : "Security Auditor" },
+    { value: "super_admin", label: isAr ? "مدير النظام" : "System Admin" },
+    { value: "sales", label: isAr ? "السيلز" : "Sales" },
+    { value: "support", label: isAr ? "الدعم الفني" : "Technical Support" },
+    { value: "finance", label: isAr ? "المالية" : "Finance" },
   ];
 
   const statusOptions: SelectOption<string>[] = [
@@ -726,10 +756,30 @@ export function AccountsView() {
   ];
 
   const newRoleOptions: SelectOption<AdminAccount["role"]>[] = [
-    { value: "super_admin", label: isAr ? "سوبر أدمن (تحكم كامل)" : "Super Admin" },
-    { value: "finance_admin", label: isAr ? "مدير الاشتراكات والمالية" : "Finance Admin" },
-    { value: "support_lead", label: isAr ? "أخصائي دعم فني وتشغيل" : "Support Lead" },
-    { value: "security_auditor", label: isAr ? "مدقق الأمان والأنظمة" : "Security Auditor" },
+    {
+      value: "super_admin",
+      label: isAr
+        ? "مدير النظام (يشوف ويعمل أي حاجة)"
+        : "System Admin (Full Access)",
+    },
+    {
+      value: "sales",
+      label: isAr
+        ? "السيلز (متابعة التجارب والتواصل مع المكاتب)"
+        : "Sales (Free Trials & Firm Outreach)",
+    },
+    {
+      value: "support",
+      label: isAr
+        ? "الدعم الفني (التذاكر فقط)"
+        : "Technical Support (Tickets Only)",
+    },
+    {
+      value: "finance",
+      label: isAr
+        ? "المالية (الاشتراكات والفواتير وطرق الدفع)"
+        : "Finance (Billing, Invoices & Payment)",
+    },
   ];
 
   const adminStatusSelectOptions: SelectOption<AdminAccount["status"]>[] = [
@@ -751,7 +801,7 @@ export function AccountsView() {
   const handleSaveEdit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingAccount) return;
-    const roleOpt = newRoleOptions.find((r) => r.value === editRole);
+    const roleConfig = roleConfigMap[editRole];
     setAccounts((prev) =>
       prev.map((acc) =>
         acc.id === editingAccount.id
@@ -761,8 +811,10 @@ export function AccountsView() {
               nameEn: editName.trim(),
               email: editEmail.trim(),
               role: editRole,
-              roleNameAr: roleOpt?.label || acc.roleNameAr,
-              roleNameEn: roleOpt?.label || acc.roleNameEn,
+              roleNameAr: roleConfig.ar,
+              roleNameEn: roleConfig.en,
+              scope: roleConfig.scopeAr,
+              scopeEn: roleConfig.scopeEn,
               status: isCurrentUser(acc.id) ? "active" : editStatus,
             }
           : acc
@@ -933,7 +985,7 @@ export function AccountsView() {
               <div className="p-4 sm:p-5 rounded-2xl border border-[#ded5c6]/70 dark:border-[#2f2a24] bg-white dark:bg-[#1a1714] shadow-xs">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-semibold text-[#7c7366] dark:text-[#a8a196]">
-                    {isAr ? "سوبر أدمن (صلاحية كاملة)" : "Super Admins"}
+                    {isAr ? "مدراء النظام (صلاحية كاملة)" : "System Admins"}
                   </span>
                   <div className="w-8 h-8 rounded-lg bg-[#faf5eb] dark:bg-[#282218] flex items-center justify-center text-[#c29547]">
                     <ShieldCheck className="w-4 h-4" />
@@ -943,7 +995,7 @@ export function AccountsView() {
                   {superCount}
                 </div>
                 <div className="text-[11px] text-[#8c8279] mt-1">
-                  {isAr ? "تحكم كامل في السيرفر والإعدادات" : "Full master authority"}
+                  {isAr ? "يشوف ويعمل أي حاجة بالمنظومة" : "Full master authority"}
                 </div>
               </div>
 
