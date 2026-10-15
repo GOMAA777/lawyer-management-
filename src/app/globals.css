@@ -139,7 +139,7 @@
 }
 
 /* ==========================================================================
-   Luxury Brand Toast Notifications (Sonner Customization)
+   Luxury Brand Toast Notifications (Light & Dark Mode Differentiated)
    ========================================================================== */
 [data-sonner-toaster] {
   font-family: var(--font-cairo), sans-serif !important;
@@ -152,116 +152,152 @@
   right: auto !important;
 }
 
+/* --------------------------------------------------------------------------
+   1. Light Mode (Morning / صباح مود) - Clean Ivory & Gold Card
+   -------------------------------------------------------------------------- */
 [data-sonner-toast] {
   font-family: var(--font-cairo), sans-serif !important;
   direction: rtl !important;
   text-align: right !important;
-  background: #181513 !important;
-  color: #fdfcfb !important;
-  border: 1.5px solid #c29547 !important;
+  background: #ffffff !important;
+  color: #1c1917 !important;
+  border: 1.5px solid #eeddbb !important;
   border-radius: 1.15rem !important;
   padding: 12px 18px !important;
-  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.55), 0 0 22px -2px rgba(194, 149, 71, 0.38) !important;
+  box-shadow: 0 16px 36px -6px rgba(80, 65, 45, 0.12), 0 0 20px -2px rgba(194, 149, 71, 0.2) !important;
   backdrop-filter: blur(14px) !important;
   gap: 12px !important;
   min-width: 310px !important;
   max-width: 440px !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.dark [data-sonner-toast] {
-  background: #141210 !important;
-  border-color: #d4a759 !important;
-  box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.75), 0 0 26px -2px rgba(212, 167, 89, 0.45) !important;
-}
-
-/* Toast Title */
+/* Light Mode: Title & Description */
 [data-sonner-toast] [data-title] {
   font-family: var(--font-cairo), sans-serif !important;
   font-size: 0.85rem !important;
   font-weight: 800 !important;
-  color: #ffffff !important;
+  color: #1c1917 !important;
   line-height: 1.4 !important;
   text-align: right !important;
 }
 
-/* Toast Description */
 [data-sonner-toast] [data-description] {
   font-family: var(--font-cairo), sans-serif !important;
   font-size: 0.75rem !important;
   font-weight: 600 !important;
-  color: #d4a759 !important;
+  color: #9a6f29 !important;
   margin-top: 3px !important;
   text-align: right !important;
 }
 
-/* Success Type Badge */
+/* Light Mode: Success Badge */
 [data-sonner-toast][data-type="success"] {
-  border-color: #c29547 !important;
+  border-color: #eeddbb !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-icon] {
   width: 26px !important;
   height: 26px !important;
   border-radius: 9999px !important;
-  background: linear-gradient(135deg, #c29547, #dfb262) !important;
-  color: #161412 !important;
+  background: linear-gradient(135deg, #faf5eb, #f5ecd8) !important;
+  border: 1.5px solid #eeddbb !important;
+  color: #c29547 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 0 12px rgba(194, 149, 71, 0.6) !important;
+  box-shadow: 0 2px 8px rgba(194, 149, 71, 0.18) !important;
   flex-shrink: 0 !important;
 }
 
 [data-sonner-toast][data-type="success"] [data-icon] svg {
-  width: 15px !important;
-  height: 15px !important;
+  width: 14px !important;
+  height: 14px !important;
   stroke-width: 3 !important;
 }
 
-/* Error Type Badge */
+/* Light Mode: Error Badge */
 [data-sonner-toast][data-type="error"] {
-  border-color: #ef4444 !important;
-  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.55), 0 0 22px -2px rgba(239, 68, 68, 0.35) !important;
+  border-color: #fbd0d0 !important;
+  box-shadow: 0 16px 36px -6px rgba(239, 68, 68, 0.12), 0 0 20px -2px rgba(239, 68, 68, 0.15) !important;
 }
 
 [data-sonner-toast][data-type="error"] [data-icon] {
   width: 26px !important;
   height: 26px !important;
   border-radius: 9999px !important;
-  background: #ef4444 !important;
-  color: #ffffff !important;
+  background: #fdeeee !important;
+  border: 1.5px solid #fbd0d0 !important;
+  color: #d9383a !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6) !important;
   flex-shrink: 0 !important;
 }
 
-/* Info & Warning Badges */
-[data-sonner-toast][data-type="info"] [data-icon],
-[data-sonner-toast][data-type="warning"] [data-icon] {
-  width: 26px !important;
-  height: 26px !important;
-  border-radius: 9999px !important;
-  background: #c29547 !important;
-  color: #181513 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 0 12px rgba(194, 149, 71, 0.5) !important;
-  flex-shrink: 0 !important;
-}
-
-/* Close Button */
+/* Light Mode: Close Button */
 [data-sonner-toast] [data-close-button] {
-  background: #231f1a !important;
-  color: #c29547 !important;
-  border: 1px solid #453a2b !important;
+  background: #faf8f4 !important;
+  color: #8c8279 !important;
+  border: 1px solid #ded5c6 !important;
   border-radius: 9999px !important;
   transition: all 0.2s !important;
 }
 
 [data-sonner-toast] [data-close-button]:hover {
-  background: #c29547 !important;
-  color: #181513 !important;
+  background: #faf5eb !important;
+  color: #c29547 !important;
+  border-color: #c29547 !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Dark Mode (Night / نايت مود) - Deep Obsidian & Glowing Gold
+   -------------------------------------------------------------------------- */
+.dark [data-sonner-toast] {
+  background: #141210 !important;
+  color: #fdfcfb !important;
+  border: 1.5px solid #d4a759 !important;
+  box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.75), 0 0 26px -2px rgba(212, 167, 89, 0.45) !important;
+}
+
+.dark [data-sonner-toast] [data-title] {
+  color: #ffffff !important;
+}
+
+.dark [data-sonner-toast] [data-description] {
+  color: #d4a759 !important;
+}
+
+.dark [data-sonner-toast][data-type="success"] {
+  border-color: #d4a759 !important;
+}
+
+.dark [data-sonner-toast][data-type="success"] [data-icon] {
+  background: linear-gradient(135deg, #c29547, #dfb262) !important;
+  border: none !important;
+  color: #161412 !important;
+  box-shadow: 0 0 14px rgba(212, 167, 89, 0.6) !important;
+}
+
+.dark [data-sonner-toast][data-type="error"] {
+  border-color: #ef4444 !important;
+  box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.75), 0 0 26px -2px rgba(239, 68, 68, 0.45) !important;
+}
+
+.dark [data-sonner-toast][data-type="error"] [data-icon] {
+  background: #ef4444 !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.6) !important;
+}
+
+.dark [data-sonner-toast] [data-close-button] {
+  background: #231f1a !important;
+  color: #d4a759 !important;
+  border: 1px solid #453a2b !important;
+}
+
+.dark [data-sonner-toast] [data-close-button]:hover {
+  background: #d4a759 !important;
+  color: #161412 !important;
 }
