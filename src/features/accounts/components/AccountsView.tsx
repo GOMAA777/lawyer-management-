@@ -165,6 +165,10 @@ const initialAccounts: AdminAccount[] = [
   },
 ];
 
+// ID of the currently logged-in administrator session
+export const CURRENT_LOGGED_IN_ADMIN_ID = "acc-1";
+export const isCurrentUser = (id: string) => id === CURRENT_LOGGED_IN_ADMIN_ID;
+
 export function AccountsView() {
   const language = useUIStore((state) => state.language);
   const isAr = language === "ar";
@@ -238,15 +242,16 @@ export function AccountsView() {
   });
 
   const requestBulkActivate = () => {
-    const count = selectedAccountIds.length;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
     if (count === 0) return;
     setConfirmDialog({
       isOpen: true,
       variant: "success",
       title: isAr ? "تأكيد تنشيط وتفعيل الحسابات" : "Confirm Activate Selected Accounts",
       description: isAr
-        ? `هل أنت متأكد من رغبتك في تفعيل كافة الحسابات المحددة؟ سيتمكن المشرفون من تسجيل الدخول واستخدام صلاحياتهم فوراً.`
-        : "Are you sure you want to activate all selected accounts?",
+        ? `هل أنت متأكد من رغبتك في تفعيل كافة الحسابات المحددة (${count})؟ سيتمكن المشرفون من تسجيل الدخول واستخدام صلاحياتهم فوراً.`
+        : `Are you sure you want to activate all selected accounts (${count})?`,
       confirmLabel: isAr ? "تنشيط وتفعيل الكل" : "Activate All",
       itemDetails: { count },
       onConfirm: () => handleBulkActivate(),
@@ -254,15 +259,23 @@ export function AccountsView() {
   };
 
   const requestBulkSuspend = () => {
-    const count = selectedAccountIds.length;
-    if (count === 0) return;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
+    if (count === 0) {
+      toast.error(
+        isAr
+          ? "لا توجد حسابات قابلة للتعليق (حسابك الحالي نشط ومحمي)"
+          : "No suspendable accounts selected (current user is protected)"
+      );
+      return;
+    }
     setConfirmDialog({
       isOpen: true,
       variant: "warning",
       title: isAr ? "تأكيد إلغاء تفعيل وتعليق الحسابات" : "Confirm Suspend Selected Accounts",
       description: isAr
-        ? `هل أنت متأكد من رغبتك في تعليق كافة الحسابات المحددة مؤقتاً؟ سيتوقف وصول المشرفين المحددين للوحة التحكم.`
-        : "Are you sure you want to suspend and deactivate all selected accounts?",
+        ? `هل أنت متأكد من رغبتك في تعليق كافة الحسابات المحددة (${count}) مؤقتاً؟ سيتوقف وصول المشرفين المحددين للوحة التحكم (حسابك الحالي محمي تلقائياً).`
+        : `Are you sure you want to suspend and deactivate all selected accounts (${count})? (Your current account is protected)`,
       confirmLabel: isAr ? "إلغاء التفعيل والتعليق" : "Deactivate All",
       itemDetails: { count },
       onConfirm: () => handleBulkSuspend(),
@@ -270,15 +283,23 @@ export function AccountsView() {
   };
 
   const requestBulkDelete = () => {
-    const count = selectedAccountIds.length;
-    if (count === 0) return;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
+    if (count === 0) {
+      toast.error(
+        isAr
+          ? "لا توجد حسابات قابلة للحذف (حسابك الحالي محمي من الحذف تماماً)"
+          : "No deletable accounts selected (current account is protected)"
+      );
+      return;
+    }
     setConfirmDialog({
       isOpen: true,
       variant: "danger",
       title: isAr ? "تأكيد مسح وحذف الحسابات المحددة" : "Confirm Delete Selected Accounts",
       description: isAr
-        ? `هل أنت متأكد من مسح وحذف كافة الحسابات المحددة نهائياً؟ هذا الإجراء لا يمكن التراجع عنه أبداً وسيتم حذف كافة بياناتهم.`
-        : "Are you sure you want to permanently delete all selected accounts? This action cannot be undone.",
+        ? `هل أنت متأكد من مسح وحذف كافة الحسابات المحددة (${count}) نهائياً؟ هذا الإجراء لا يمكن التراجع عنه أبداً (حسابك الحالي محمي تلقائياً من الحذف).`
+        : `Are you sure you want to permanently delete all selected accounts (${count})? (Your current account is protected)`,
       confirmLabel: isAr ? "نعم، مسح وحذف الكل" : "Yes, Delete All",
       itemDetails: { count },
       onConfirm: () => handleBulkDelete(),
@@ -287,6 +308,14 @@ export function AccountsView() {
 
   const requestDeleteAccount = (id: string, name: string, email: string) => {
     setOpenActionMenuId(null);
+    if (isCurrentUser(id)) {
+      toast.error(
+        isAr
+          ? "لا يمكن حذف الحساب المسجل به حالياً منعاً لفقدان السيطرة على لوحة التحكم!"
+          : "Cannot delete the currently authenticated account!"
+      );
+      return;
+    }
     setConfirmDialog({
       isOpen: true,
       variant: "danger",
@@ -302,6 +331,14 @@ export function AccountsView() {
 
   const requestToggleStatus = (acc: AdminAccount) => {
     setOpenActionMenuId(null);
+    if (isCurrentUser(acc.id)) {
+      toast.error(
+        isAr
+          ? "حسابك الحالي نشط ومحمي من التعليق أو تغيير حالته منعاً لقفل الوصول للنظام"
+          : "Your active account is protected from suspension"
+      );
+      return;
+    }
     const isCurrentlyActive = acc.status === "active";
     const name = isAr ? acc.name : acc.nameEn;
 
@@ -333,10 +370,12 @@ export function AccountsView() {
   };
 
   const handleBulkActivate = () => {
-    const count = selectedAccountIds.length;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
+    if (count === 0) return;
     setAccounts((prev) =>
       prev.map((acc) =>
-        selectedAccountIds.includes(acc.id) ? { ...acc, status: "active" } : acc
+        targetIds.includes(acc.id) ? { ...acc, status: "active" } : acc
       )
     );
     toast.success(
@@ -348,37 +387,48 @@ export function AccountsView() {
   };
 
   const handleBulkSuspend = () => {
-    const count = selectedAccountIds.length;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
+    if (count === 0) return;
     setAccounts((prev) =>
       prev.map((acc) =>
-        selectedAccountIds.includes(acc.id)
+        targetIds.includes(acc.id) && !isCurrentUser(acc.id)
           ? { ...acc, status: "suspended" }
           : acc
       )
     );
     toast.success(
       isAr
-        ? `تم إلغاء تفعيل وتعليق ${count} حساب بنجاح`
-        : `Deactivated ${count} accounts`
+        ? `تم إلغاء تفعيل وتعليق ${count} حساب بنجاح (حسابك الحالي محمي)`
+        : `Deactivated ${count} accounts (current user protected)`
     );
     setSelectedAccountIds([]);
   };
 
   const handleBulkDelete = () => {
-    const count = selectedAccountIds.length;
+    const targetIds = selectedAccountIds.filter((id) => !isCurrentUser(id));
+    const count = targetIds.length;
     if (count === 0) return;
     setAccounts((prev) =>
-      prev.filter((acc) => !selectedAccountIds.includes(acc.id))
+      prev.filter((acc) => !targetIds.includes(acc.id) || isCurrentUser(acc.id))
     );
     toast.success(
       isAr
-        ? `تم مسح وحذف ${count} من حسابات المشرفين المحددة بنجاح`
-        : `Deleted ${count} selected accounts successfully`
+        ? `تم مسح وحذف ${count} من حسابات المشرفين المحددة بنجاح (حسابك الحالي محمي تلقائياً)`
+        : `Deleted ${count} selected accounts successfully (current user protected)`
     );
     setSelectedAccountIds([]);
   };
 
   const handleDeleteAccount = (id: string, name: string) => {
+    if (isCurrentUser(id)) {
+      toast.error(
+        isAr
+          ? "إجراء محظور: لا يمكن حذف الحساب الحالي المسجل به!"
+          : "Action forbidden: cannot delete currently logged-in account!"
+      );
+      return;
+    }
     setAccounts((prev) => prev.filter((acc) => acc.id !== id));
     setSelectedAccountIds((prev) => prev.filter((item) => item !== id));
     setOpenActionMenuId(null);
@@ -390,6 +440,14 @@ export function AccountsView() {
   };
 
   const handleToggleStatus = (id: string) => {
+    if (isCurrentUser(id)) {
+      toast.error(
+        isAr
+          ? "حسابك الحالي نشط ومحمي من التعليق"
+          : "Your current account is protected"
+      );
+      return;
+    }
     setAccounts((prev) =>
       prev.map((acc) => {
         if (acc.id === id) {
@@ -468,28 +526,41 @@ export function AccountsView() {
   const fromIndex = totalFiltered === 0 ? 0 : startIndex + 1;
   const toIndex = Math.min(startIndex + pageSize, totalFiltered);
 
+  // Only accounts other than the currently logged-in account are selectable for bulk actions
+  const selectableAccounts = paginatedAccounts.filter(
+    (acc) => !isCurrentUser(acc.id)
+  );
+
   const isAllSelected =
-    paginatedAccounts.length > 0 &&
-    paginatedAccounts.every((acc) => selectedAccountIds.includes(acc.id));
+    selectableAccounts.length > 0 &&
+    selectableAccounts.every((acc) => selectedAccountIds.includes(acc.id));
 
   const isIndeterminate =
     !isAllSelected &&
-    paginatedAccounts.some((acc) => selectedAccountIds.includes(acc.id));
+    selectableAccounts.some((acc) => selectedAccountIds.includes(acc.id));
 
   const handleSelectAll = () => {
     if (isAllSelected) {
-      const pageIds = new Set(paginatedAccounts.map((a) => a.id));
-      setSelectedAccountIds((prev) => prev.filter((id) => !pageIds.has(id)));
+      const pageSelectableIds = new Set(selectableAccounts.map((a) => a.id));
+      setSelectedAccountIds((prev) => prev.filter((id) => !pageSelectableIds.has(id)));
     } else {
       const newIds = new Set([
         ...selectedAccountIds,
-        ...paginatedAccounts.map((a) => a.id),
+        ...selectableAccounts.map((a) => a.id),
       ]);
       setSelectedAccountIds(Array.from(newIds));
     }
   };
 
   const handleToggleSelect = (id: string) => {
+    if (isCurrentUser(id)) {
+      toast.info(
+        isAr
+          ? "حسابك الحالي محمي تلقائياً من التحديد أو الحذف"
+          : "Current account is protected from selection and deletion"
+      );
+      return;
+    }
     setSelectedAccountIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
@@ -760,17 +831,26 @@ export function AccountsView() {
                       ? `تم تحديد ${selectedAccountIds.length} من حسابات المشرفين`
                       : `${selectedAccountIds.length} accounts selected`}
                   </span>
-                  {selectedAccountIds.length < filtered.length && (
+                  {selectedAccountIds.length <
+                    filtered.filter((a) => !isCurrentUser(a.id)).length && (
                     <button
                       type="button"
                       onClick={() =>
-                        setSelectedAccountIds(filtered.map((a) => a.id))
+                        setSelectedAccountIds(
+                          filtered
+                            .filter((a) => !isCurrentUser(a.id))
+                            .map((a) => a.id)
+                        )
                       }
                       className="text-xs text-[#c29547] hover:text-[#966e2e] underline cursor-pointer font-bold"
                     >
                       {isAr
-                        ? `(تحديد كافة الـ ${filtered.length} حساب)`
-                        : `(Select all ${filtered.length})`}
+                        ? `(تحديد كافة الـ ${
+                            filtered.filter((a) => !isCurrentUser(a.id)).length
+                          } حساب المتاحة)`
+                        : `(Select all ${
+                            filtered.filter((a) => !isCurrentUser(a.id)).length
+                          } available)`}
                     </button>
                   )}
                 </div>
@@ -830,7 +910,11 @@ export function AccountsView() {
                             checked={isAllSelected}
                             indeterminate={isIndeterminate}
                             onChange={handleSelectAll}
-                            title={isAr ? "تحديد كل الصفحة" : "Select all on page"}
+                            title={
+                              isAr
+                                ? "تحديد كل الحسابات في الصفحة (يستثني حسابك الحالي تلقائياً)"
+                                : "Select all accounts on page (excludes your current account)"
+                            }
                           />
                         </div>
                       </th>
@@ -872,222 +956,325 @@ export function AccountsView() {
                         </td>
                       </tr>
                     ) : (
-                      paginatedAccounts.map((acc) => (
-                      <tr
-                        key={acc.id}
-                        className={`transition-colors ${
-                          selectedAccountIds.includes(acc.id)
-                            ? "bg-[#faf5eb]/90 dark:bg-[#282218]/50"
-                            : "hover:bg-[#faf5eb]/50 dark:hover:bg-[#201d1a]/50"
-                        }`}
-                      >
-                        {/* Checkbox */}
-                        <td className="py-4 px-4 w-11 text-center">
-                          <div className="flex items-center justify-center">
-                            <LuxuryCheckbox
-                              checked={selectedAccountIds.includes(acc.id)}
-                              onChange={() => handleToggleSelect(acc.id)}
-                              title={isAr ? `تحديد حساب ${acc.name}` : `Select ${acc.nameEn}`}
-                            />
-                          </div>
-                        </td>
-                        {/* Admin Name & Avatar */}
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`w-9 h-9 rounded-full bg-gradient-to-tr ${acc.avatarColor} text-white font-bold flex items-center justify-center text-xs shadow-xs shrink-0`}
-                            >
-                              {acc.name.charAt(0)}
-                            </div>
-                            <div>
-                              <div className="font-bold text-[#1c1917] dark:text-[#f5f4f0]">
-                                {isAr ? acc.name : acc.nameEn}
-                              </div>
-                              <div className="text-[11px] text-[#8c8279] flex items-center gap-1 font-mono">
-                                <Mail className="w-3 h-3 text-[#c29547]" />
-                                <span>{acc.email}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Role Badge - Unified to the first user's luxury gold aesthetic */}
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30 shadow-2xs">
-                            <ShieldCheck className="w-3 h-3 text-[#c29547] shrink-0" />
-                            <span>{isAr ? acc.roleNameAr : acc.roleNameEn}</span>
-                          </span>
-                        </td>
-
-                        {/* Scope */}
-                        <td className="py-4 px-4 text-[#524b43] dark:text-[#c4bcb1]">
-                          <div className="flex items-center gap-1.5">
-                            <Building2 className="w-3.5 h-3.5 text-[#8c8279] shrink-0" />
-                            <span>{isAr ? acc.scope : acc.scopeEn}</span>
-                          </div>
-                        </td>
-
-                        {/* Status Switch (Green for active, Red for suspended) */}
-                        <td className="py-4 px-4">
-                          <button
-                            type="button"
-                            onClick={() => requestToggleStatus(acc)}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all border ${
-                              acc.status === "active"
-                                ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 shadow-2xs"
-                                : "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-300/80 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/40 shadow-2xs"
+                      paginatedAccounts.map((acc) => {
+                        const isCurrent = isCurrentUser(acc.id);
+                        return (
+                          <tr
+                            key={acc.id}
+                            className={`transition-colors ${
+                              isCurrent
+                                ? "bg-[#faf5eb]/50 dark:bg-[#201c16]/50 border-s-2 border-s-[#c29547]"
+                                : selectedAccountIds.includes(acc.id)
+                                ? "bg-[#faf5eb]/90 dark:bg-[#282218]/50"
+                                : "hover:bg-[#faf5eb]/40 dark:hover:bg-[#201d1a]/40"
                             }`}
                           >
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full ${
-                                acc.status === "active" ? "bg-emerald-500" : "bg-rose-500"
-                              }`}
-                            />
-                            <span>
-                              {acc.status === "active"
-                                ? isAr
-                                  ? "نشط"
-                                  : "Active"
-                                : isAr
-                                ? "معلق"
-                                : "Suspended"}
-                            </span>
-                          </button>
-                        </td>
-
-                        {/* Last Login */}
-                        <td className="py-4 px-4 font-mono text-[11px] text-[#7c7366] dark:text-[#a8a196]">
-                          {acc.lastLogin}
-                        </td>
-
-                        {/* Action Buttons */}
-                        <td className="py-4 px-4 text-center">
-                          <div className="flex items-center justify-center gap-1.5 relative action-menu-container">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                toast.info(
-                                  isAr
-                                    ? `تم إرسال رابط إعادة تعيين كلمة المرور إلى ${acc.email}`
-                                    : `Password reset link sent to ${acc.email}`
-                                );
-                              }}
-                              title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
-                              className="p-1.5 rounded-lg text-[#8c8279] hover:text-[#c29547] hover:bg-[#faf5eb] dark:hover:bg-[#201d1a] transition-colors cursor-pointer"
-                            >
-                              <KeyRound className="w-4 h-4" />
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setOpenActionMenuId((prev) =>
-                                  prev === acc.id ? null : acc.id
-                                )
-                              }
-                              title={isAr ? "خيارات الحساب" : "Account options"}
-                              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                                openActionMenuId === acc.id
-                                  ? "bg-[#faf5eb] dark:bg-[#282218] text-[#c29547]"
-                                  : "text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
-                              }`}
-                            >
-                              <MoreVertical className="w-4 h-4" />
-                            </button>
-
-                            {/* Dropdown Action Popover Menu */}
-                            {openActionMenuId === acc.id && (
+                            {/* Checkbox */}
+                            <td className="py-4 px-4 w-11 text-center">
                               <div
-                                className="absolute end-0 top-full mt-1.5 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start"
+                                className="flex items-center justify-center"
+                                title={
+                                  isCurrent
+                                    ? isAr
+                                      ? "حسابك الحالي محمي تلقائياً من التحديد أو الحذف"
+                                      : "Current account is protected from selection and deletion"
+                                    : undefined
+                                }
                               >
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setOpenActionMenuId(null);
-                                    toast.info(
-                                      isAr
-                                        ? `نافذة تعديل بيانات ${acc.name} - قيد التطوير`
-                                        : `Edit details for ${acc.name}`
-                                    );
-                                  }}
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                >
-                                  <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
-                                  <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
-                                </button>
+                                <LuxuryCheckbox
+                                  checked={!isCurrent && selectedAccountIds.includes(acc.id)}
+                                  disabled={isCurrent}
+                                  onChange={() => handleToggleSelect(acc.id)}
+                                  title={
+                                    isCurrent
+                                      ? isAr
+                                        ? "حسابك الحالي محمي تلقائياً من التحديد أو الحذف"
+                                        : "Current account is protected from selection and deletion"
+                                      : isAr
+                                      ? `تحديد حساب ${acc.name}`
+                                      : `Select ${acc.nameEn}`
+                                  }
+                                />
+                              </div>
+                            </td>
+                            {/* Admin Name & Avatar */}
+                            <td className="py-4 px-4">
+                              <div className="flex items-center gap-3">
+                                <div className="relative shrink-0">
+                                  <div
+                                    className={`w-9 h-9 rounded-full bg-gradient-to-tr ${acc.avatarColor} text-white font-bold flex items-center justify-center text-xs shadow-xs`}
+                                  >
+                                    {acc.name.charAt(0)}
+                                  </div>
+                                  {isCurrent && (
+                                    <span
+                                      title={isAr ? "متصل الآن (جلستك الحالية)" : "Online now (Your session)"}
+                                      className="absolute -bottom-0.5 -end-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white dark:border-[#1a1714]"
+                                    />
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-[#1c1917] dark:text-[#f5f4f0]">
+                                      {isAr ? acc.name : acc.nameEn}
+                                    </span>
+                                    {isCurrent && (
+                                      <span
+                                        title={
+                                          isAr
+                                            ? "هذا هو الحساب المسجل به حالياً في لوحة التحكم"
+                                            : "This is your currently active session account"
+                                        }
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#c29547]/15 dark:bg-[#c29547]/25 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30 shadow-2xs shrink-0 select-none"
+                                      >
+                                        <ShieldCheck className="w-3 h-3 text-[#c29547]" />
+                                        <span>{isAr ? "أنت (الحساب الحالي)" : "You (Current)"}</span>
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="text-[11px] text-[#8c8279] flex items-center gap-1 font-mono">
+                                    <Mail className="w-3 h-3 text-[#c29547]" />
+                                    <span>{acc.email}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
 
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setOpenActionMenuId(null);
-                                    toast.info(
-                                      isAr
-                                        ? `إدارة صلاحيات ${acc.name} في تاب الصلاحيات`
-                                        : `Manage permissions for ${acc.name}`
-                                    );
-                                  }}
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                >
-                                  <Shield className="w-3.5 h-3.5 text-[#c29547]" />
-                                  <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
-                                </button>
+                            {/* Role Badge - Unified to the first user's luxury gold aesthetic */}
+                            <td className="py-4 px-4">
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30 shadow-2xs">
+                                <ShieldCheck className="w-3 h-3 text-[#c29547] shrink-0" />
+                                <span>{isAr ? acc.roleNameAr : acc.roleNameEn}</span>
+                              </span>
+                            </td>
 
+                            {/* Scope */}
+                            <td className="py-4 px-4 text-[#524b43] dark:text-[#c4bcb1]">
+                              <div className="flex items-center gap-1.5">
+                                <Building2 className="w-3.5 h-3.5 text-[#8c8279] shrink-0" />
+                                <span>{isAr ? acc.scope : acc.scopeEn}</span>
+                              </div>
+                            </td>
+
+                            {/* Status Switch (Green for active, Red for suspended) */}
+                            <td className="py-4 px-4">
+                              {isCurrent ? (
+                                <span
+                                  title={
+                                    isAr
+                                      ? "حسابك الحالي نشط ومحمي من الإيقاف أو التعليق"
+                                      : "Current account is active and protected from suspension"
+                                  }
+                                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800/60 shadow-2xs select-none cursor-default"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                  <span>{isAr ? "نشط" : "Active"}</span>
+                                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-200/60 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-extrabold">
+                                    {isAr ? "محمي" : "Protected"}
+                                  </span>
+                                </span>
+                              ) : (
                                 <button
                                   type="button"
                                   onClick={() => requestToggleStatus(acc)}
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all border ${
+                                    acc.status === "active"
+                                      ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 shadow-2xs"
+                                      : "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-300/80 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/40 shadow-2xs"
+                                  }`}
                                 >
-                                  {acc.status === "active" ? (
-                                    <>
-                                      <Lock className="w-3.5 h-3.5 text-amber-600" />
-                                      <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-                                      <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
-                                    </>
-                                  )}
+                                  <span
+                                    className={`w-1.5 h-1.5 rounded-full ${
+                                      acc.status === "active" ? "bg-emerald-500" : "bg-rose-500"
+                                    }`}
+                                  />
+                                  <span>
+                                    {acc.status === "active"
+                                      ? isAr
+                                        ? "نشط"
+                                        : "Active"
+                                      : isAr
+                                      ? "معلق"
+                                      : "Suspended"}
+                                  </span>
                                 </button>
+                              )}
+                            </td>
 
+                            {/* Last Login */}
+                            <td className="py-4 px-4 font-mono text-[11px] text-[#7c7366] dark:text-[#a8a196]">
+                              {acc.lastLogin}
+                            </td>
+
+                            {/* Action Buttons */}
+                            <td className="py-4 px-4 text-center">
+                              <div className="flex items-center justify-center gap-1.5 relative action-menu-container">
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    setOpenActionMenuId(null);
-                                    toast.success(
+                                    toast.info(
                                       isAr
-                                        ? `تم إرسال رابط إعادة التعيين إلى ${acc.email}`
-                                        : `Password reset dispatched to ${acc.email}`
+                                        ? `تم إرسال رابط إعادة تعيين كلمة المرور إلى ${acc.email}`
+                                        : `Password reset link sent to ${acc.email}`
                                     );
                                   }}
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                  title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+                                  className="p-1.5 rounded-lg text-[#8c8279] hover:text-[#c29547] hover:bg-[#faf5eb] dark:hover:bg-[#201d1a] transition-colors cursor-pointer"
                                 >
-                                  <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
-                                  <span>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</span>
+                                  <KeyRound className="w-4 h-4" />
                                 </button>
-
-                                <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
 
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    requestDeleteAccount(
-                                      acc.id,
-                                      isAr ? acc.name : acc.nameEn,
-                                      acc.email
+                                    setOpenActionMenuId((prev) =>
+                                      prev === acc.id ? null : acc.id
                                     )
                                   }
-                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                  title={isAr ? "خيارات الحساب" : "Account options"}
+                                  className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                    openActionMenuId === acc.id
+                                      ? "bg-[#faf5eb] dark:bg-[#282218] text-[#c29547]"
+                                      : "text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                                  }`}
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                  <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
+                                  <MoreVertical className="w-4 h-4" />
                                 </button>
+
+                                {/* Dropdown Action Popover Menu */}
+                                {openActionMenuId === acc.id && (
+                                  <div
+                                    className="absolute end-0 top-full mt-1.5 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start"
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setOpenActionMenuId(null);
+                                        toast.info(
+                                          isAr
+                                            ? `نافذة تعديل بيانات ${acc.name} - قيد التطوير`
+                                            : `Edit details for ${acc.name}`
+                                        );
+                                      }}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                    >
+                                      <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
+                                      <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setOpenActionMenuId(null);
+                                        toast.info(
+                                          isAr
+                                            ? `إدارة صلاحيات ${acc.name} في تاب الصلاحيات`
+                                            : `Manage permissions for ${acc.name}`
+                                        );
+                                      }}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                    >
+                                      <Shield className="w-3.5 h-3.5 text-[#c29547]" />
+                                      <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
+                                    </button>
+
+                                    {/* Suspend or Protected */}
+                                    {isCurrent ? (
+                                      <div
+                                        title={
+                                          isAr
+                                            ? "لا يمكنك تعليق حسابك النشط الحالي منعاً لفقدان الوصول"
+                                            : "You cannot suspend your own active account"
+                                        }
+                                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#8c8279] dark:text-[#6b6256] cursor-not-allowed opacity-60 bg-[#faf8f4] dark:bg-[#1a1714] select-none"
+                                      >
+                                        <span className="flex items-center gap-2.5">
+                                          <Lock className="w-3.5 h-3.5 text-[#8c8279]" />
+                                          <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
+                                        </span>
+                                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#f0ebd8] dark:bg-[#282218] text-[#966e2e] dark:text-[#eeddbb] font-bold">
+                                          {isAr ? "محمي" : "Protected"}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => requestToggleStatus(acc)}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                      >
+                                        {acc.status === "active" ? (
+                                          <>
+                                            <Lock className="w-3.5 h-3.5 text-amber-600" />
+                                            <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Unlock className="w-3.5 h-3.5 text-emerald-600" />
+                                            <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
+                                          </>
+                                        )}
+                                      </button>
+                                    )}
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setOpenActionMenuId(null);
+                                        toast.success(
+                                          isAr
+                                            ? `تم إرسال رابط إعادة التعيين إلى ${acc.email}`
+                                            : `Password reset dispatched to ${acc.email}`
+                                        );
+                                      }}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                    >
+                                      <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
+                                      <span>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</span>
+                                    </button>
+
+                                    <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
+
+                                    {/* Delete or Protected */}
+                                    {isCurrent ? (
+                                      <div
+                                        title={
+                                          isAr
+                                            ? "لا يمكن حذف الحساب المسجل به حالياً في النظام منعاً لفقدان السيطرة على لوحة التحكم"
+                                            : "Cannot delete the currently logged-in account"
+                                        }
+                                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#8c8279] dark:text-[#6b6256] cursor-not-allowed opacity-60 bg-rose-50/40 dark:bg-rose-950/20 border border-dashed border-rose-200 dark:border-rose-900/40 select-none"
+                                      >
+                                        <span className="flex items-center gap-2.5">
+                                          <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                                          <span>{isAr ? "حذف الحساب" : "Delete Account"}</span>
+                                        </span>
+                                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 font-bold">
+                                          {isAr ? "غير مسموح" : "Not Allowed"}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          requestDeleteAccount(
+                                            acc.id,
+                                            isAr ? acc.name : acc.nameEn,
+                                            acc.email
+                                          )
+                                        }
+                                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                      ))
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
