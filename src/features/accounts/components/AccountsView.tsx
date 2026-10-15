@@ -1431,39 +1431,47 @@ export function AccountsView() {
               </button>
             </div>
 
-            <form onSubmit={handleCreateAccount} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-[#2c2825] dark:text-[#e4ded5] mb-1.5">
-                  {isAr ? "اسم المشرف بالكامل" : "Full Name"}
-                </label>
+            <form onSubmit={handleCreateAccount} className="p-6 pt-7 space-y-5">
+              {/* 1. Full Name Floating Input */}
+              <div className="relative">
                 <input
+                  id="modal-admin-name"
                   type="text"
                   required
+                  placeholder=" "
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder={isAr ? "مثال: عبد العزيز الشمري" : "e.g. John Doe"}
-                  className="w-full h-11 rounded-2xl px-3.5 bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-bold bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
                 />
+                <label
+                  htmlFor="modal-admin-name"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "اسم المشرف بالكامل" : "Full Name"}
+                </label>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-[#2c2825] dark:text-[#e4ded5] mb-1.5">
-                  {isAr ? "البريد الإلكتروني الرسمي" : "Official Email"}
-                </label>
+              {/* 2. Official Email Floating Input */}
+              <div className="relative">
                 <input
+                  id="modal-admin-email"
                   type="email"
                   required
+                  placeholder=" "
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="admin@eljudy.com"
-                  className="w-full h-11 rounded-2xl px-3.5 bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-mono text-[#2c2825] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
                 />
+                <label
+                  htmlFor="modal-admin-email"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "البريد الإلكتروني الرسمي" : "Official Email"}
+                </label>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-[#2c2825] dark:text-[#e4ded5] mb-1.5">
-                  {isAr ? "الرتبة الإدارية (Role)" : "Administrative Role"}
-                </label>
+              {/* 3. Administrative Role Floating Select */}
+              <div className="relative">
                 <LuxurySelect<AdminAccount["role"]>
                   value={newRole}
                   onChange={(val) => setNewRole(val)}
@@ -1471,19 +1479,27 @@ export function AccountsView() {
                   className="w-full"
                   minWidth="w-full"
                 />
+                <label className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] z-10 transition-colors">
+                  {isAr ? "الرتبة الإدارية (Role)" : "Administrative Role"}
+                </label>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-[#2c2825] dark:text-[#e4ded5] mb-1.5">
-                  {isAr ? "نطاق الصلاحيات المسندة (Scope)" : "Access Scope"}
-                </label>
+              {/* 4. Scope Floating Input */}
+              <div className="relative">
                 <input
+                  id="modal-admin-scope"
                   type="text"
+                  placeholder=" "
                   value={newScope}
                   onChange={(e) => setNewScope(e.target.value)}
-                  placeholder={isAr ? "مثال: مكاتب منطقة الرياض والشرقية" : "e.g. All Law Firms"}
-                  className="w-full h-11 rounded-2xl px-3.5 bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-medium text-[#2c2825] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
                 />
+                <label
+                  htmlFor="modal-admin-scope"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "نطاق الصلاحيات المسندة (Scope)" : "Access Scope"}
+                </label>
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-xl bg-[#faf5eb] dark:bg-[#221e1a] border border-[#eeddbb]/80 dark:border-[#4d3a1f] text-xs text-[#8c8279] dark:text-[#aba295]">
