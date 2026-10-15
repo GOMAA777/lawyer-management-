@@ -182,6 +182,30 @@ export function AccountsView() {
   const [pageSize, setPageSize] = useState(5);
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
+  const [menuPlacement, setMenuPlacement] = useState<"down" | "up">("down");
+
+  const toggleActionMenu = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string,
+    rowIndex: number,
+    totalRowsOnPage: number
+  ) => {
+    if (openActionMenuId === id) {
+      setOpenActionMenuId(null);
+      return;
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    // Menu is ~250px tall. If space below is less than 270px or if it's on the bottom rows, flip upwards if there's room above
+    const shouldOpenUp =
+      (spaceBelow < 270 || (totalRowsOnPage >= 3 && rowIndex >= totalRowsOnPage - 2)) &&
+      spaceAbove > 200;
+
+    setMenuPlacement(shouldOpenUp ? "up" : "down");
+    setOpenActionMenuId(id);
+  };
 
   // New account form state
   const [newName, setNewName] = useState("");
@@ -956,7 +980,7 @@ export function AccountsView() {
                         </td>
                       </tr>
                     ) : (
-                      paginatedAccounts.map((acc) => {
+                      paginatedAccounts.map((acc, index) => {
                         const isCurrent = isCurrentUser(acc.id);
                         return (
                           <tr
@@ -1126,9 +1150,12 @@ export function AccountsView() {
 
                                 <button
                                   type="button"
-                                  onClick={() =>
-                                    setOpenActionMenuId((prev) =>
-                                      prev === acc.id ? null : acc.id
+                                  onClick={(e) =>
+                                    toggleActionMenu(
+                                      e,
+                                      acc.id,
+                                      index,
+                                      paginatedAccounts.length
                                     )
                                   }
                                   title={isAr ? "خيارات الحساب" : "Account options"}
@@ -1141,10 +1168,14 @@ export function AccountsView() {
                                   <MoreVertical className="w-4 h-4" />
                                 </button>
 
-                                {/* Dropdown Action Popover Menu */}
+                                {/* Dropdown Action Popover Menu (Auto-placement: opens upwards on bottom rows to prevent scrollbar) */}
                                 {openActionMenuId === acc.id && (
                                   <div
-                                    className="absolute end-0 top-full mt-1.5 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start"
+                                    className={`absolute end-0 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start ${
+                                      menuPlacement === "up"
+                                        ? "bottom-full mb-1.5 origin-bottom-right"
+                                        : "top-full mt-1.5 origin-top-right"
+                                    }`}
                                   >
                                     <button
                                       type="button"
