@@ -162,7 +162,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeItem =
-    pathname === "/payment-gateways"
+    pathname === "/tickets"
+      ? "support-tickets"
+      : pathname === "/payment-gateways"
       ? "sub-payment-gateways"
       : pathname === "/invoices"
       ? "sub-invoices"
@@ -319,7 +321,7 @@ export function DashboardSidebar() {
         {
           id: "support-tickets",
           label: t.supportTickets,
-          href: "#",
+          href: "/tickets",
           icon: Headphones,
           badge: "3",
         },
