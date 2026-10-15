@@ -736,7 +736,15 @@ export function DashboardSidebar() {
         {/* Floating Popover Menu (Floats to the side outside the sidebar into the content area) */}
         {isUserMenuOpen && (
           <div
-            className="absolute bottom-1 end-full me-3 w-[265px] rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.18)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.7)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 select-none z-50 text-start"
+            style={{
+              [direction === "rtl" ? "right" : "left"]: "calc(100% + 14px)",
+            }}
+            className={cn(
+              "absolute bottom-2 w-[270px] max-h-[calc(100vh-24px)] overflow-y-auto scrollbar-thin rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.22)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.7)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 select-none z-50 text-start",
+              direction === "rtl"
+                ? "right-[calc(100%+14px)]"
+                : "left-[calc(100%+14px)]"
+            )}
           >
             {/* Header: User Avatar + Name + Email + Pro Badge */}
             <div className="flex items-center gap-3 p-2.5 rounded-xl text-start">
