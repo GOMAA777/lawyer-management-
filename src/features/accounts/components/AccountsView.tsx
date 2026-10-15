@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   ShieldCheck,
@@ -21,6 +21,10 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Edit3,
+  Trash2,
+  Shield,
+  Unlock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
@@ -170,6 +174,8 @@ export function AccountsView() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+  const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
+  const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
 
   // New account form state
   const [newName, setNewName] = useState("");
@@ -187,6 +193,66 @@ export function AccountsView() {
     setStatusFilter("all");
     setCurrentPage(1);
     toast.info(isAr ? "تمت إعادة ضبط وتفريغ كل الفلاتر" : "All filters reset");
+  };
+
+  // Close action menu on click outside
+  useEffect(() => {
+    function handleActionClickOutside(event: MouseEvent) {
+      if (
+        openActionMenuId &&
+        !(event.target as HTMLElement).closest(".action-menu-container")
+      ) {
+        setOpenActionMenuId(null);
+      }
+    }
+
+    if (openActionMenuId) {
+      document.addEventListener("mousedown", handleActionClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleActionClickOutside);
+    };
+  }, [openActionMenuId]);
+
+  const handleBulkActivate = () => {
+    setAccounts((prev) =>
+      prev.map((acc) =>
+        selectedAccountIds.includes(acc.id) ? { ...acc, status: "active" } : acc
+      )
+    );
+    toast.success(
+      isAr
+        ? `تم تفعيل ${selectedAccountIds.length} حساب بنجاح`
+        : `Activated ${selectedAccountIds.length} accounts`
+    );
+    setSelectedAccountIds([]);
+  };
+
+  const handleBulkSuspend = () => {
+    setAccounts((prev) =>
+      prev.map((acc) =>
+        selectedAccountIds.includes(acc.id)
+          ? { ...acc, status: "suspended" }
+          : acc
+      )
+    );
+    toast.success(
+      isAr
+        ? `تم تعليق ${selectedAccountIds.length} حساب بنجاح`
+        : `Suspended ${selectedAccountIds.length} accounts`
+    );
+    setSelectedAccountIds([]);
+  };
+
+  const handleDeleteAccount = (id: string, name: string) => {
+    setAccounts((prev) => prev.filter((acc) => acc.id !== id));
+    setSelectedAccountIds((prev) => prev.filter((item) => item !== id));
+    setOpenActionMenuId(null);
+    toast.success(
+      isAr
+        ? `تم حذف حساب المشرف "${name}" بنجاح`
+        : `Admin account "${name}" deleted`
+    );
   };
 
   const handleToggleStatus = (id: string) => {
@@ -267,6 +333,29 @@ export function AccountsView() {
   const paginatedAccounts = filtered.slice(startIndex, startIndex + pageSize);
   const fromIndex = totalFiltered === 0 ? 0 : startIndex + 1;
   const toIndex = Math.min(startIndex + pageSize, totalFiltered);
+
+  const isAllSelected =
+    paginatedAccounts.length > 0 &&
+    paginatedAccounts.every((acc) => selectedAccountIds.includes(acc.id));
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      const pageIds = new Set(paginatedAccounts.map((a) => a.id));
+      setSelectedAccountIds((prev) => prev.filter((id) => !pageIds.has(id)));
+    } else {
+      const newIds = new Set([
+        ...selectedAccountIds,
+        ...paginatedAccounts.map((a) => a.id),
+      ]);
+      setSelectedAccountIds(Array.from(newIds));
+    }
+  };
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedAccountIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   const totalCount = accounts.length;
   const activeCount = accounts.filter((a) => a.status === "active").length;
@@ -521,12 +610,60 @@ export function AccountsView() {
               </div>
             </div>
 
+            {/* Bulk Actions Notification Bar */}
+            {selectedAccountIds.length > 0 && (
+              <div className="p-3.5 px-4 rounded-2xl border border-[#c29547]/40 bg-[#faf5eb] dark:bg-[#201c17] flex flex-wrap items-center justify-between gap-3 shadow-xs animate-in fade-in duration-200">
+                <div className="flex items-center gap-2.5 text-xs font-bold text-[#966e2e] dark:text-[#eeddbb]">
+                  <span className="w-6 h-6 rounded-lg bg-[#c29547] text-white flex items-center justify-center text-xs shadow-2xs font-mono">
+                    {selectedAccountIds.length}
+                  </span>
+                  <span>
+                    {isAr
+                      ? `تم تحديد ${selectedAccountIds.length} من حسابات المشرفين`
+                      : `${selectedAccountIds.length} accounts selected`}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleBulkActivate}
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer"
+                  >
+                    {isAr ? "تفعيل المحددة" : "Activate Selected"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBulkSuspend}
+                    className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 text-xs font-bold hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors cursor-pointer"
+                  >
+                    {isAr ? "تعليق المحددة" : "Suspend Selected"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAccountIds([])}
+                    className="px-3 py-1.5 rounded-xl border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#7c7366] dark:text-[#a8a196] hover:bg-white dark:hover:bg-[#282218] transition-colors cursor-pointer"
+                  >
+                    {isAr ? "إلغاء التحديد" : "Deselect"}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Accounts Data Table */}
             <div className="rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#1a1714] shadow-xs overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-start text-xs border-collapse">
                   <thead>
                     <tr className="border-b border-[#ded5c6] dark:border-[#2f2a24] bg-[#faf8f4] dark:bg-[#201d1a] text-[#7c7366] dark:text-[#a8a196]">
+                      <th className="py-3.5 px-4 w-11 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isAllSelected}
+                          onChange={handleSelectAll}
+                          title={isAr ? "تحديد كل الصفحة" : "Select all on page"}
+                          className="w-4 h-4 rounded-md border-[#ded5c6] dark:border-[#382b18] text-[#c29547] accent-[#c29547] focus:ring-0 focus:outline-none cursor-pointer align-middle"
+                        />
+                      </th>
                       <th className="py-3.5 px-4 text-start font-bold">
                         {isAr ? "المشرف" : "Administrator"}
                       </th>
@@ -550,7 +687,7 @@ export function AccountsView() {
                   <tbody className="divide-y divide-[#ded5c6]/60 dark:divide-[#2f2a24]/60">
                     {paginatedAccounts.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="py-12 text-center text-[#8c8279]">
+                        <td colSpan={7} className="py-12 text-center text-[#8c8279]">
                           <div className="flex flex-col items-center justify-center gap-2">
                             <Users className="w-8 h-8 text-[#c29547]/50" />
                             <p className="font-bold text-sm text-[#2c2825] dark:text-[#eeddbb]">
@@ -568,8 +705,21 @@ export function AccountsView() {
                       paginatedAccounts.map((acc) => (
                       <tr
                         key={acc.id}
-                        className="hover:bg-[#faf5eb]/50 dark:hover:bg-[#201d1a]/50 transition-colors"
+                        className={`transition-colors ${
+                          selectedAccountIds.includes(acc.id)
+                            ? "bg-[#faf5eb]/90 dark:bg-[#282218]/50"
+                            : "hover:bg-[#faf5eb]/50 dark:hover:bg-[#201d1a]/50"
+                        }`}
                       >
+                        {/* Checkbox */}
+                        <td className="py-4 px-4 w-11 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedAccountIds.includes(acc.id)}
+                            onChange={() => handleToggleSelect(acc.id)}
+                            className="w-4 h-4 rounded-md border-[#ded5c6] dark:border-[#382b18] text-[#c29547] accent-[#c29547] focus:ring-0 focus:outline-none cursor-pointer align-middle"
+                          />
+                        </td>
                         {/* Admin Name & Avatar */}
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-3">
@@ -606,20 +756,20 @@ export function AccountsView() {
                           </div>
                         </td>
 
-                        {/* Status Switch */}
+                        {/* Status Switch (Green for active, Red for suspended) */}
                         <td className="py-4 px-4">
                           <button
                             type="button"
                             onClick={() => handleToggleStatus(acc.id)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all border ${
                               acc.status === "active"
-                                ? "bg-[#faf5eb] dark:bg-[#282218] text-[#966e2e] dark:text-[#eeddbb] border-[#eeddbb] dark:border-[#4d3a1f] hover:border-[#c29547]"
-                                : "bg-[#f5f2ec] dark:bg-[#201d1a] text-[#7c7366] dark:text-[#a8a196] border-[#ded5c6] dark:border-[#2f2a24] hover:border-[#8c8279]"
+                                ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 shadow-2xs"
+                                : "bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-300/80 dark:border-rose-800/60 hover:bg-rose-100 dark:hover:bg-rose-900/40 shadow-2xs"
                             }`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${
-                                acc.status === "active" ? "bg-[#c29547]" : "bg-[#8c8279]"
+                                acc.status === "active" ? "bg-emerald-500" : "bg-rose-500"
                               }`}
                             />
                             <span>
@@ -641,7 +791,7 @@ export function AccountsView() {
 
                         {/* Action Buttons */}
                         <td className="py-4 px-4 text-center">
-                          <div className="flex items-center justify-center gap-1.5">
+                          <div className="flex items-center justify-center gap-1.5 relative action-menu-container">
                             <button
                               type="button"
                               onClick={() => {
@@ -656,19 +806,112 @@ export function AccountsView() {
                             >
                               <KeyRound className="w-4 h-4" />
                             </button>
+
                             <button
                               type="button"
-                              onClick={() => {
-                                toast.info(
-                                  isAr
-                                    ? `نافذة تعديل صلاحيات ${acc.name} - قيد التطوير`
-                                    : `Edit permissions for ${acc.name}`
-                                );
-                              }}
-                              className="p-1.5 rounded-lg text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                              onClick={() =>
+                                setOpenActionMenuId((prev) =>
+                                  prev === acc.id ? null : acc.id
+                                )
+                              }
+                              title={isAr ? "خيارات الحساب" : "Account options"}
+                              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                openActionMenuId === acc.id
+                                  ? "bg-[#faf5eb] dark:bg-[#282218] text-[#c29547]"
+                                  : "text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                              }`}
                             >
                               <MoreVertical className="w-4 h-4" />
                             </button>
+
+                            {/* Dropdown Action Popover Menu */}
+                            {openActionMenuId === acc.id && (
+                              <div
+                                className="absolute end-0 top-full mt-1.5 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setOpenActionMenuId(null);
+                                    toast.info(
+                                      isAr
+                                        ? `نافذة تعديل بيانات ${acc.name} - قيد التطوير`
+                                        : `Edit details for ${acc.name}`
+                                    );
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                >
+                                  <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
+                                  <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setOpenActionMenuId(null);
+                                    toast.info(
+                                      isAr
+                                        ? `إدارة صلاحيات ${acc.name} في تاب الصلاحيات`
+                                        : `Manage permissions for ${acc.name}`
+                                    );
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                >
+                                  <Shield className="w-3.5 h-3.5 text-[#c29547]" />
+                                  <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleToggleStatus(acc.id);
+                                    setOpenActionMenuId(null);
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                >
+                                  {acc.status === "active" ? (
+                                    <>
+                                      <Lock className="w-3.5 h-3.5 text-amber-600" />
+                                      <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Unlock className="w-3.5 h-3.5 text-emerald-600" />
+                                      <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
+                                    </>
+                                  )}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setOpenActionMenuId(null);
+                                    toast.success(
+                                      isAr
+                                        ? `تم إرسال رابط إعادة التعيين إلى ${acc.email}`
+                                        : `Password reset dispatched to ${acc.email}`
+                                    );
+                                  }}
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                >
+                                  <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
+                                  <span>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</span>
+                                </button>
+
+                                <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
+
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteAccount(acc.id, isAr ? acc.name : acc.nameEn)
+                                  }
+                                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </td>
                       </tr>
