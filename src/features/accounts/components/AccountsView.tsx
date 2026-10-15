@@ -17,6 +17,10 @@ import {
   Check,
   Lock,
   RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
@@ -110,6 +114,48 @@ const initialAccounts: AdminAccount[] = [
     lastLogin: "منذ 14 يوماً",
     avatarColor: "from-[#d4a759] to-[#b38032]",
   },
+  {
+    id: "acc-6",
+    name: "ريم الهذلي",
+    nameEn: "Reem Al-Hothali",
+    email: "r.hothali@eljudy.com",
+    role: "finance_admin",
+    roleNameAr: "مدير الاشتراكات والمالية",
+    roleNameEn: "Billing & Subscriptions Manager",
+    scope: "الفوترة والباقات السحابية",
+    scopeEn: "Billing & Cloud Packages",
+    status: "active",
+    lastLogin: "منذ 3 ساعات",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
+  },
+  {
+    id: "acc-7",
+    name: "عمر القحطاني",
+    nameEn: "Omar Al-Qahtani",
+    email: "o.qahtani@eljudy.com",
+    role: "support_lead",
+    roleNameAr: "أخصائي دعم فني",
+    roleNameEn: "Support Specialist",
+    scope: "تذاكر المكاتب والمحادثات",
+    scopeEn: "Firm Tickets & Chat",
+    status: "active",
+    lastLogin: "منذ 5 ساعات",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
+  },
+  {
+    id: "acc-8",
+    name: "نورة الشهري",
+    nameEn: "Noura Al-Shehri",
+    email: "n.shehri@eljudy.com",
+    role: "security_auditor",
+    roleNameAr: "مدقق الأمان والأنظمة",
+    roleNameEn: "Security & Systems Auditor",
+    scope: "سجلات الدخول ومراجعة الصلاحيات",
+    scopeEn: "Audit Logs & Permission Reviews",
+    status: "suspended",
+    lastLogin: "منذ أسبوع",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
+  },
 ];
 
 export function AccountsView() {
@@ -121,6 +167,8 @@ export function AccountsView() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   // New account form state
   const [newName, setNewName] = useState("");
@@ -136,6 +184,7 @@ export function AccountsView() {
     setSearch("");
     setRoleFilter("all");
     setStatusFilter("all");
+    setCurrentPage(1);
     toast.info(isAr ? "تمت إعادة ضبط وتفريغ كل الفلاتر" : "All filters reset");
   };
 
@@ -208,6 +257,15 @@ export function AccountsView() {
     const matchesStatus = statusFilter === "all" || acc.status === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
   });
+
+  const totalFiltered = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
+  const activePage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const startIndex = (activePage - 1) * pageSize;
+  const paginatedAccounts = filtered.slice(startIndex, startIndex + pageSize);
+  const fromIndex = totalFiltered === 0 ? 0 : startIndex + 1;
+  const toIndex = Math.min(startIndex + pageSize, totalFiltered);
 
   const totalCount = accounts.length;
   const activeCount = accounts.filter((a) => a.status === "active").length;
@@ -370,7 +428,10 @@ export function AccountsView() {
                 <input
                   type="text"
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   placeholder={
                     isAr
                       ? "ابحث بالاسم، البريد، أو الدور..."
@@ -381,7 +442,10 @@ export function AccountsView() {
                 {search && (
                   <button
                     type="button"
-                    onClick={() => setSearch("")}
+                    onClick={() => {
+                      setSearch("");
+                      setCurrentPage(1);
+                    }}
                     title={isAr ? "مسح البحث" : "Clear search"}
                     className="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white transition-colors cursor-pointer"
                   >
@@ -393,7 +457,10 @@ export function AccountsView() {
               <div className="flex flex-wrap items-center gap-2">
                 <select
                   value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value)}
+                  onChange={(e) => {
+                    setRoleFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
                 >
                   <option value="all">{isAr ? "كل الرتب والأدوار" : "All Roles"}</option>
@@ -405,7 +472,10 @@ export function AccountsView() {
 
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
                 >
                   <option value="all">{isAr ? "كل الحالات" : "All Status"}</option>
@@ -456,7 +526,24 @@ export function AccountsView() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#ded5c6]/60 dark:divide-[#2f2a24]/60">
-                    {filtered.map((acc) => (
+                    {paginatedAccounts.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-[#8c8279]">
+                          <div className="flex flex-col items-center justify-center gap-2">
+                            <Users className="w-8 h-8 text-[#c29547]/50" />
+                            <p className="font-bold text-sm text-[#2c2825] dark:text-[#eeddbb]">
+                              {isAr ? "لم يتم العثور على أي حسابات" : "No administrator accounts found"}
+                            </p>
+                            <p className="text-xs">
+                              {isAr
+                                ? "جرّب تغيير عبارة البحث أو إعادة ضبط الفلاتر المحددة"
+                                : "Try adjusting search terms or resetting active filters"}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedAccounts.map((acc) => (
                       <tr
                         key={acc.id}
                         className="hover:bg-[#faf5eb]/50 dark:hover:bg-[#201d1a]/50 transition-colors"
@@ -563,9 +650,98 @@ export function AccountsView() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      ))
+                    )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Pagination Bar */}
+              <div className="p-4 border-t border-[#ded5c6] dark:border-[#2f2a24] bg-[#faf8f4]/60 dark:bg-[#1a1714] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                {/* Left: Rows per page & range summary */}
+                <div className="flex flex-wrap items-center gap-4 text-[#7c7366] dark:text-[#a8a196]">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{isAr ? "صفوف لكل صفحة:" : "Rows per page:"}</span>
+                    <select
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(Number(e.target.value));
+                        setCurrentPage(1);
+                      }}
+                      className="h-8 px-2.5 rounded-lg bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                  </div>
+                  <span className="text-[#ded5c6] dark:text-[#2f2a24] hidden sm:inline">|</span>
+                  <span className="font-medium">
+                    {isAr
+                      ? `عرض ${fromIndex} إلى ${toIndex} من أصل ${totalFiltered} حساب`
+                      : `Showing ${fromIndex} to ${toIndex} of ${totalFiltered} accounts`}
+                  </span>
+                </div>
+
+                {/* Right: Page navigation controls */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={activePage === 1}
+                    title={isAr ? "الصفحة الأولى" : "First page"}
+                    className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    {isAr ? <ChevronsRight className="w-4 h-4" /> : <ChevronsLeft className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={activePage === 1}
+                    title={isAr ? "الصفحة السابقة" : "Previous page"}
+                    className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    {isAr ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                  </button>
+
+                  {/* Page numbers */}
+                  <div className="flex items-center gap-1 px-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`min-w-8 h-8 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          pageNum === activePage
+                            ? "bg-gradient-to-r from-[#d4a759] to-[#b38032] text-white shadow-2xs"
+                            : "border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547]"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={activePage === totalPages}
+                    title={isAr ? "الصفحة التالية" : "Next page"}
+                    className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    {isAr ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={activePage === totalPages}
+                    title={isAr ? "الصفحة الأخيرة" : "Last page"}
+                    className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
+                  >
+                    {isAr ? <ChevronsLeft className="w-4 h-4" /> : <ChevronsRight className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
