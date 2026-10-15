@@ -31,6 +31,7 @@ import { DashboardSidebar } from "@/features/dashboard/components/DashboardSideb
 import { DashboardTopNavbar } from "@/features/dashboard/components/DashboardTopNavbar";
 import { ScalesOfJusticeWatermark } from "@/components/shared/ScalesOfJusticeWatermark";
 import { LuxurySelect, SelectOption } from "@/components/shared/LuxurySelect";
+import { LuxuryCheckbox } from "@/components/shared/LuxuryCheckbox";
 import { useUIStore } from "@/stores/use-ui-store";
 
 interface AdminAccount {
@@ -353,6 +354,10 @@ export function AccountsView() {
   const isAllSelected =
     paginatedAccounts.length > 0 &&
     paginatedAccounts.every((acc) => selectedAccountIds.includes(acc.id));
+
+  const isIndeterminate =
+    !isAllSelected &&
+    paginatedAccounts.some((acc) => selectedAccountIds.includes(acc.id));
 
   const handleSelectAll = () => {
     if (isAllSelected) {
@@ -702,13 +707,14 @@ export function AccountsView() {
                   <thead>
                     <tr className="border-b border-[#ded5c6] dark:border-[#2f2a24] bg-[#faf8f4] dark:bg-[#201d1a] text-[#7c7366] dark:text-[#a8a196]">
                       <th className="py-3.5 px-4 w-11 text-center">
-                        <input
-                          type="checkbox"
-                          checked={isAllSelected}
-                          onChange={handleSelectAll}
-                          title={isAr ? "تحديد كل الصفحة" : "Select all on page"}
-                          className="w-4 h-4 rounded-md border-[#ded5c6] dark:border-[#382b18] text-[#c29547] accent-[#c29547] focus:ring-0 focus:outline-none cursor-pointer align-middle"
-                        />
+                        <div className="flex items-center justify-center">
+                          <LuxuryCheckbox
+                            checked={isAllSelected}
+                            indeterminate={isIndeterminate}
+                            onChange={handleSelectAll}
+                            title={isAr ? "تحديد كل الصفحة" : "Select all on page"}
+                          />
+                        </div>
                       </th>
                       <th className="py-3.5 px-4 text-start font-bold">
                         {isAr ? "المشرف" : "Administrator"}
@@ -759,12 +765,13 @@ export function AccountsView() {
                       >
                         {/* Checkbox */}
                         <td className="py-4 px-4 w-11 text-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedAccountIds.includes(acc.id)}
-                            onChange={() => handleToggleSelect(acc.id)}
-                            className="w-4 h-4 rounded-md border-[#ded5c6] dark:border-[#382b18] text-[#c29547] accent-[#c29547] focus:ring-0 focus:outline-none cursor-pointer align-middle"
-                          />
+                          <div className="flex items-center justify-center">
+                            <LuxuryCheckbox
+                              checked={selectedAccountIds.includes(acc.id)}
+                              onChange={() => handleToggleSelect(acc.id)}
+                              title={isAr ? `تحديد حساب ${acc.name}` : `Select ${acc.nameEn}`}
+                            />
+                          </div>
                         </td>
                         {/* Admin Name & Avatar */}
                         <td className="py-4 px-4">
