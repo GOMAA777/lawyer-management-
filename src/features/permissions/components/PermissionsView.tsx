@@ -302,7 +302,7 @@ export function PermissionsView() {
                             onClick={() => handleToggle(rule.id, "canView")}
                             className={`w-6 h-6 inline-flex items-center justify-center rounded-lg border transition-all cursor-pointer ${
                               rule.canView
-                                ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-600"
+                                ? "bg-[#faf5eb] dark:bg-[#282218] border-[#eeddbb] dark:border-[#4d3a1f] text-[#c29547] dark:text-[#d4a759]"
                                 : "bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400"
                             }`}
                           >
@@ -317,7 +317,7 @@ export function PermissionsView() {
                             onClick={() => handleToggle(rule.id, "canEdit")}
                             className={`w-6 h-6 inline-flex items-center justify-center rounded-lg border transition-all cursor-pointer ${
                               rule.canEdit
-                                ? "bg-blue-50 dark:bg-blue-950/40 border-blue-300 dark:border-blue-700 text-blue-600"
+                                ? "bg-[#faf5eb] dark:bg-[#282218] border-[#eeddbb] dark:border-[#4d3a1f] text-[#c29547] dark:text-[#d4a759]"
                                 : "bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400"
                             }`}
                           >
@@ -332,7 +332,7 @@ export function PermissionsView() {
                             onClick={() => handleToggle(rule.id, "canDelete")}
                             className={`w-6 h-6 inline-flex items-center justify-center rounded-lg border transition-all cursor-pointer ${
                               rule.canDelete
-                                ? "bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-700 text-red-600"
+                                ? "bg-[#faf5eb] dark:bg-[#282218] border-[#eeddbb] dark:border-[#4d3a1f] text-[#c29547] dark:text-[#d4a759]"
                                 : "bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400"
                             }`}
                           >

@@ -304,14 +304,14 @@ export function AccountsView() {
                   <span className="text-xs font-semibold text-[#7c7366] dark:text-[#a8a196]">
                     {isAr ? "الحسابات النشطة" : "Active Accounts"}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600">
+                  <div className="w-8 h-8 rounded-lg bg-[#faf5eb] dark:bg-[#282218] flex items-center justify-center text-[#c29547]">
                     <CheckCircle2 className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="text-2xl font-black text-emerald-700 dark:text-emerald-400">
+                <div className="text-2xl font-black text-[#1c1917] dark:text-[#f5f4f0]">
                   {activeCount}
                 </div>
-                <div className="text-[11px] text-emerald-600/80 mt-1">
+                <div className="text-[11px] text-[#8c8279] mt-1">
                   {isAr ? "جاهزة للعمل وتملك حق الوصول" : "Operational & active"}
                 </div>
               </div>
@@ -325,7 +325,7 @@ export function AccountsView() {
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="text-2xl font-black text-[#c29547] dark:text-[#d4a759]">
+                <div className="text-2xl font-black text-[#1c1917] dark:text-[#f5f4f0]">
                   {superCount}
                 </div>
                 <div className="text-[11px] text-[#8c8279] mt-1">
@@ -338,14 +338,14 @@ export function AccountsView() {
                   <span className="text-xs font-semibold text-[#7c7366] dark:text-[#a8a196]">
                     {isAr ? "الحسابات المعلقة" : "Suspended"}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/40 flex items-center justify-center text-red-600">
+                  <div className="w-8 h-8 rounded-lg bg-[#faf5eb] dark:bg-[#282218] flex items-center justify-center text-[#c29547]">
                     <XCircle className="w-4 h-4" />
                   </div>
                 </div>
-                <div className="text-2xl font-black text-red-600 dark:text-red-400">
+                <div className="text-2xl font-black text-[#1c1917] dark:text-[#f5f4f0]">
                   {suspendedCount}
                 </div>
-                <div className="text-[11px] text-red-500/80 mt-1">
+                <div className="text-[11px] text-[#8c8279] mt-1">
                   {isAr ? "تم إيقاف صلاحيات الدخول مؤقتاً" : "Access temporarily blocked"}
                 </div>
               </div>
@@ -466,15 +466,15 @@ export function AccountsView() {
                           <button
                             type="button"
                             onClick={() => handleToggleStatus(acc.id)}
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all border ${
                               acc.status === "active"
-                                ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200"
-                                : "bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300 hover:bg-red-200"
+                                ? "bg-[#faf5eb] dark:bg-[#282218] text-[#966e2e] dark:text-[#eeddbb] border-[#eeddbb] dark:border-[#4d3a1f] hover:border-[#c29547]"
+                                : "bg-[#f5f2ec] dark:bg-[#201d1a] text-[#7c7366] dark:text-[#a8a196] border-[#ded5c6] dark:border-[#2f2a24] hover:border-[#8c8279]"
                             }`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${
-                                acc.status === "active" ? "bg-emerald-500" : "bg-red-500"
+                                acc.status === "active" ? "bg-[#c29547]" : "bg-[#8c8279]"
                               }`}
                             />
                             <span>
