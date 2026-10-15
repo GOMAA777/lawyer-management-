@@ -36,6 +36,7 @@ import { LuxurySelect, SelectOption } from "@/components/shared/LuxurySelect";
 import { LuxuryCheckbox } from "@/components/shared/LuxuryCheckbox";
 import { LuxuryAlertDialog } from "@/components/shared/LuxuryAlertDialog";
 import { useUIStore } from "@/stores/use-ui-store";
+import { cn } from "@/lib/utils";
 
 interface AdminAccount {
   id: string;
@@ -183,30 +184,52 @@ export function AccountsView() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [selectedAccountIds, setSelectedAccountIds] = useState<string[]>([]);
-  const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
-  const [menuPlacement, setMenuPlacement] = useState<"down" | "up">("down");
+  const [activeMenuAccount, setActiveMenuAccount] = useState<AdminAccount | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    top?: number;
+    bottom?: number;
+    left: number;
+    placement: "down" | "up";
+  } | null>(null);
 
   const toggleActionMenu = (
     e: React.MouseEvent<HTMLButtonElement>,
-    id: string,
-    rowIndex: number,
-    totalRowsOnPage: number
+    acc: AdminAccount
   ) => {
-    if (openActionMenuId === id) {
-      setOpenActionMenuId(null);
+    e.stopPropagation();
+    if (activeMenuAccount?.id === acc.id) {
+      setActiveMenuAccount(null);
+      setMenuPosition(null);
       return;
     }
+
     const rect = e.currentTarget.getBoundingClientRect();
+    const isCurrent = isCurrentUser(acc.id);
+    const menuEstimatedHeight = isCurrent ? 140 : 230;
+    const menuWidth = 224; // w-56
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
 
-    // Menu is ~250px tall. If space below is less than 270px or if it's on the bottom rows, flip upwards if there's room above
-    const shouldOpenUp =
-      (spaceBelow < 270 || (totalRowsOnPage >= 3 && rowIndex >= totalRowsOnPage - 2)) &&
-      spaceAbove > 200;
+    // Prefer opening downwards if there is enough space (menuEstimatedHeight + 16px)
+    // Only open upwards if space below is too small AND space above has more room
+    const openUp = spaceBelow < menuEstimatedHeight + 16 && spaceAbove > spaceBelow;
 
-    setMenuPlacement(shouldOpenUp ? "up" : "down");
-    setOpenActionMenuId(id);
+    // Calculate left coordinate in viewport (keeping menu completely on-screen)
+    let left = rect.left;
+    if (left + menuWidth > window.innerWidth - 16) {
+      left = window.innerWidth - menuWidth - 16;
+    }
+    if (left < 16) {
+      left = 16;
+    }
+
+    setMenuPosition({
+      top: openUp ? undefined : rect.bottom + 6,
+      bottom: openUp ? window.innerHeight - rect.top + 6 : undefined,
+      left,
+      placement: openUp ? "up" : "down",
+    });
+    setActiveMenuAccount(acc);
   };
 
   // New account form state
@@ -243,24 +266,33 @@ export function AccountsView() {
     toast.info(isAr ? "تمت إعادة ضبط وتفريغ كل الفلاتر" : "All filters reset");
   };
 
-  // Close action menu on click outside
+  // Close action menu on click outside, scroll, or resize
   useEffect(() => {
-    function handleActionClickOutside(event: MouseEvent) {
-      if (
-        openActionMenuId &&
-        !(event.target as HTMLElement).closest(".action-menu-container")
-      ) {
-        setOpenActionMenuId(null);
+    if (!activeMenuAccount) return;
+
+    function handleScrollOrResize() {
+      setActiveMenuAccount(null);
+      setMenuPosition(null);
+    }
+
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".action-menu-popover") && !target.closest(".action-menu-trigger")) {
+        setActiveMenuAccount(null);
+        setMenuPosition(null);
       }
     }
 
-    if (openActionMenuId) {
-      document.addEventListener("mousedown", handleActionClickOutside);
-    }
+    window.addEventListener("scroll", handleScrollOrResize, true);
+    window.addEventListener("resize", handleScrollOrResize);
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
-      document.removeEventListener("mousedown", handleActionClickOutside);
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [openActionMenuId]);
+  }, [activeMenuAccount]);
 
   // Confirmation Alert Dialog State
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -349,7 +381,8 @@ export function AccountsView() {
   };
 
   const requestDeleteAccount = (id: string, name: string, email: string) => {
-    setOpenActionMenuId(null);
+    setActiveMenuAccount(null);
+    setMenuPosition(null);
     if (isCurrentUser(id)) {
       toast.error(
         isAr
@@ -372,7 +405,8 @@ export function AccountsView() {
   };
 
   const requestToggleStatus = (acc: AdminAccount) => {
-    setOpenActionMenuId(null);
+    setActiveMenuAccount(null);
+    setMenuPosition(null);
     if (isCurrentUser(acc.id)) {
       toast.error(
         isAr
@@ -473,7 +507,8 @@ export function AccountsView() {
     }
     setAccounts((prev) => prev.filter((acc) => acc.id !== id));
     setSelectedAccountIds((prev) => prev.filter((item) => item !== id));
-    setOpenActionMenuId(null);
+    setActiveMenuAccount(null);
+    setMenuPosition(null);
     toast.success(
       isAr
         ? `تم حذف حساب المشرف "${name}" بنجاح`
@@ -643,7 +678,8 @@ export function AccountsView() {
   ];
 
   const openEditModal = (acc: AdminAccount) => {
-    setOpenActionMenuId(null);
+    setActiveMenuAccount(null);
+    setMenuPosition(null);
     setEditingAccount(acc);
     setEditName(isAr ? acc.name : acc.nameEn);
     setEditEmail(acc.email);
@@ -683,7 +719,8 @@ export function AccountsView() {
   };
 
   const openPasswordModal = (acc: AdminAccount) => {
-    setOpenActionMenuId(null);
+    setActiveMenuAccount(null);
+    setMenuPosition(null);
     setPasswordTargetAccount(acc);
     setNewPasswordVal("");
     setConfirmPasswordVal("");
@@ -1076,7 +1113,7 @@ export function AccountsView() {
                         </td>
                       </tr>
                     ) : (
-                      paginatedAccounts.map((acc, index) => {
+                      paginatedAccounts.map((acc) => {
                         const isCurrent = isCurrentUser(acc.id);
                         return (
                           <tr
@@ -1221,7 +1258,7 @@ export function AccountsView() {
 
                             {/* Action Buttons */}
                             <td className="py-4 px-4 text-center">
-                              <div className="flex items-center justify-center gap-1.5 relative action-menu-container">
+                              <div className="flex items-center justify-center gap-1.5">
                                 <button
                                   type="button"
                                   onClick={() => openPasswordModal(acc)}
@@ -1233,107 +1270,16 @@ export function AccountsView() {
 
                                 <button
                                   type="button"
-                                  onClick={(e) =>
-                                    toggleActionMenu(
-                                      e,
-                                      acc.id,
-                                      index,
-                                      paginatedAccounts.length
-                                    )
-                                  }
+                                  onClick={(e) => toggleActionMenu(e, acc)}
                                   title={isAr ? "خيارات الحساب" : "Account options"}
-                                  className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                                    openActionMenuId === acc.id
+                                  className={`action-menu-trigger p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                    activeMenuAccount?.id === acc.id
                                       ? "bg-[#faf5eb] dark:bg-[#282218] text-[#c29547]"
                                       : "text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
                                   }`}
                                 >
                                   <MoreVertical className="w-4 h-4" />
                                 </button>
-
-                                {/* Dropdown Action Popover Menu (Auto-placement: opens upwards on bottom rows to prevent scrollbar) */}
-                                {openActionMenuId === acc.id && (
-                                  <div
-                                    className={`absolute end-0 z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_36px_rgba(0,0,0,0.18)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start ${
-                                      menuPlacement === "up"
-                                        ? "bottom-full mb-1.5 origin-bottom-right"
-                                        : "top-full mt-1.5 origin-top-right"
-                                    }`}
-                                  >
-                                    <button
-                                      type="button"
-                                      onClick={() => openEditModal(acc)}
-                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                    >
-                                      <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
-                                      <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
-                                    </button>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => openPasswordModal(acc)}
-                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                    >
-                                      <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
-                                      <span>{isAr ? "تغيير الرقم السري" : "Change Password"}</span>
-                                    </button>
-
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setOpenActionMenuId(null);
-                                        toast.info(
-                                          isAr
-                                            ? `إدارة صلاحيات ${acc.name} في تاب الصلاحيات`
-                                            : `Manage permissions for ${acc.name}`
-                                        );
-                                      }}
-                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                    >
-                                      <Shield className="w-3.5 h-3.5 text-[#c29547]" />
-                                      <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
-                                    </button>
-
-                                    {!isCurrent && (
-                                      <>
-                                        <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
-
-                                        <button
-                                          type="button"
-                                          onClick={() => requestToggleStatus(acc)}
-                                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                        >
-                                          {acc.status === "active" ? (
-                                            <>
-                                              <Lock className="w-3.5 h-3.5 text-amber-600" />
-                                              <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-                                              <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
-                                            </>
-                                          )}
-                                        </button>
-
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            requestDeleteAccount(
-                                              acc.id,
-                                              isAr ? acc.name : acc.nameEn,
-                                              acc.email
-                                            )
-                                          }
-                                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
-                                        >
-                                          <Trash2 className="w-3.5 h-3.5" />
-                                          <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
-                                        </button>
-                                      </>
-                                    )}
-                                  </div>
-                                )}
                               </div>
                             </td>
                           </tr>
@@ -1815,6 +1761,115 @@ export function AccountsView() {
           </div>
         </div>
       )}
+      {/* Floating Action Menu Popover (Rendered in fixed viewport coordinates to prevent overflow clipping by table container) */}
+      {activeMenuAccount && menuPosition && (
+        <div
+          style={{
+            position: "fixed",
+            left: `${menuPosition.left}px`,
+            ...(menuPosition.top !== undefined ? { top: `${menuPosition.top}px` } : {}),
+            ...(menuPosition.bottom !== undefined ? { bottom: `${menuPosition.bottom}px` } : {}),
+          }}
+          className={cn(
+            "action-menu-popover z-50 w-56 rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.22)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.7)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 text-start select-none",
+            menuPosition.placement === "up" ? "origin-bottom-left" : "origin-top-left"
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              const target = activeMenuAccount;
+              setActiveMenuAccount(null);
+              setMenuPosition(null);
+              openEditModal(target);
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+          >
+            <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
+            <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const target = activeMenuAccount;
+              setActiveMenuAccount(null);
+              setMenuPosition(null);
+              openPasswordModal(target);
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+          >
+            <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
+            <span>{isAr ? "تغيير الرقم السري" : "Change Password"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const target = activeMenuAccount;
+              setActiveMenuAccount(null);
+              setMenuPosition(null);
+              toast.info(
+                isAr
+                  ? `إدارة صلاحيات ${target.name} في تاب الصلاحيات`
+                  : `Manage permissions for ${target.name}`
+              );
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+          >
+            <Shield className="w-3.5 h-3.5 text-[#c29547]" />
+            <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
+          </button>
+
+          {!isCurrentUser(activeMenuAccount.id) && (
+            <>
+              <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
+
+              <button
+                type="button"
+                onClick={() => {
+                  const target = activeMenuAccount;
+                  setActiveMenuAccount(null);
+                  setMenuPosition(null);
+                  requestToggleStatus(target);
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+              >
+                {activeMenuAccount.status === "active" ? (
+                  <>
+                    <Lock className="w-3.5 h-3.5 text-amber-600" />
+                    <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
+                  </>
+                ) : (
+                  <>
+                    <Unlock className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const target = activeMenuAccount;
+                  setActiveMenuAccount(null);
+                  setMenuPosition(null);
+                  requestDeleteAccount(
+                    target.id,
+                    isAr ? target.name : target.nameEn,
+                    target.email
+                  );
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
       <LuxuryAlertDialog
         isOpen={confirmDialog.isOpen}
         onClose={() =>

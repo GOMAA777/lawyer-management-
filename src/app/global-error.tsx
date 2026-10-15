@@ -3,12 +3,13 @@
 import React from "react";
 
 export default function GlobalError({
-  error,
+  error: _error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  void _error;
   const handleHomeClick = () => {
     if (typeof window !== "undefined") {
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
