@@ -27,8 +27,12 @@ export function DashboardTopNavbar() {
   const pathname = usePathname();
   const isDark = theme === "dark";
 
-  const isSubscriptions = pathname === "/subscriptions";
-  const currentBreadcrumb = isSubscriptions ? navT.subscriptions : t.dashboard;
+  const currentBreadcrumb =
+    pathname === "/subscriptions"
+      ? navT.subscriptions
+      : pathname === "/integrations"
+      ? navT.addonsIntegrations
+      : t.dashboard;
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);

@@ -1,90 +1,128 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import "./globals.css";
 
 export default function GlobalError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const handleHomeClick = () => {
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = "/";
+    }
+  };
+
   return (
     <html lang="ar" dir="rtl">
-      <body className="min-h-screen bg-[#fcfbfa] text-[#1c1917] font-sans antialiased selection:bg-[#f3e3c3] selection:text-[#78541c]">
-        <main className="min-h-screen w-full flex flex-col justify-between p-4 sm:p-8 relative overflow-hidden select-none">
-          {/* Ambient Luxury Gold Glows */}
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] bg-[#c29547]/8 rounded-full blur-[140px] pointer-events-none" />
-
-          {/* Top Header */}
-          <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-3 border-b border-[#ded5c6]/60">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full bg-[#faf5eb] border border-[#eeddbb] p-1.5 flex items-center justify-center shadow-xs">
-                <Image
-                  src="/logo.png"
-                  alt="الجودي"
-                  width={34}
-                  height={34}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="text-start">
-                <span className="text-base font-extrabold text-[#c29547] tracking-tight block">
-                  الجودي
-                </span>
-                <span className="text-[10px] font-medium text-[#8c8279] block">
-                  منظومة إدارة المحاماة والاستشارات القانونية
-                </span>
-              </div>
-            </Link>
-          </header>
-
-          {/* Center Error Section */}
-          <div className="relative z-10 w-full max-w-3xl mx-auto my-auto py-10 text-center flex flex-col items-center">
-            <h1 className="text-8xl sm:text-9xl font-black bg-gradient-to-b from-[#e8bf72] via-[#c29547] to-[#8c6220] bg-clip-text text-transparent tracking-tighter leading-none mb-4">
-              500
-            </h1>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1c1917] tracking-tight mb-3">
-              حدث خطأ غير متوقع أثناء تحميل الصفحة
-            </h2>
-            <p className="text-xs sm:text-sm text-[#7c7366] max-w-lg leading-relaxed mb-6">
-              واجه النظام مشكلة مؤقتة أثناء تهيئة واجهة الموقع. يمكنك الضغط على زر إعادة المحاولة أدناه لتحديث الصفحة فوراً.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 w-full max-w-md">
-              <button
-                type="button"
-                onClick={() => reset()}
-                className="flex-1 min-w-[160px] h-12 rounded-full bg-gradient-to-r from-[#d4a759] via-[#c29547] to-[#b38032] hover:opacity-95 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-[0_6px_20px_rgba(194,149,71,0.35)] cursor-pointer"
-              >
-                <span>إعادة المحاولة</span>
-              </button>
-              <Link
-                href="/"
-                className="flex-1 min-w-[160px] h-12 rounded-full border border-[#ded5c6] bg-white text-[#2c2825] hover:border-[#c29547] hover:text-[#c29547] font-bold text-sm flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
-              >
-                <span>العودة للرئيسية</span>
-              </Link>
-            </div>
-
-            {error?.digest && (
-              <div className="mt-5 p-3 rounded-xl bg-white border border-[#ded5c6] text-[11px] font-mono text-[#7c7366] text-start break-all shadow-2xs w-full max-w-md">
-                Digest: {error.digest}
-              </div>
-            )}
+      <body
+        style={{
+          margin: 0,
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#fcfbfa",
+          color: "#1c1917",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          padding: "24px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "480px",
+            background: "#ffffff",
+            padding: "40px 32px",
+            borderRadius: "24px",
+            border: "1px solid #eeddbb",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div
+            style={{
+              width: "56px",
+              height: "56px",
+              borderRadius: "50%",
+              background: "#faf5eb",
+              border: "1px solid #eeddbb",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px auto",
+              fontSize: "24px",
+              color: "#c29547",
+            }}
+          >
+            ⚖️
           </div>
-
-          {/* Footer */}
-          <footer className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-4 border-t border-[#ded5c6]/60 text-xs text-[#8c8279]">
-            <span>© 2005-2026 شركة الجودي للحلول القانونية. جميع الحقوق محفوظة.</span>
-            <Link href="/" className="hover:text-[#c29547] transition-colors">
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: 800,
+              color: "#1c1917",
+              margin: "0 0 12px 0",
+            }}
+          >
+            حدث خطأ غير متوقع
+          </h1>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#6b6357",
+              lineHeight: 1.6,
+              margin: "0 0 24px 0",
+            }}
+          >
+            واجهت المنظومة صعوبة مؤقتة في تهيئة الصفحة الرئيسية. يمكنك الضغط أدناه
+            لإعادة المحاولة أو العودة للرئيسية.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => reset()}
+              style={{
+                padding: "12px 24px",
+                borderRadius: "9999px",
+                backgroundColor: "#c29547",
+                color: "#ffffff",
+                border: "none",
+                fontWeight: 700,
+                fontSize: "13px",
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(194, 149, 71, 0.35)",
+              }}
+            >
+              إعادة المحاولة
+            </button>
+            <button
+              type="button"
+              onClick={handleHomeClick}
+              style={{
+                padding: "12px 24px",
+                borderRadius: "9999px",
+                backgroundColor: "#ffffff",
+                color: "#1c1917",
+                border: "1px solid #ded5c6",
+                fontWeight: 700,
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+            >
               الرئيسية
-            </Link>
-          </footer>
-        </main>
+            </button>
+          </div>
+        </div>
       </body>
     </html>
   );
