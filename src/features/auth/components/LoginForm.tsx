@@ -56,9 +56,9 @@ export function LoginForm() {
     <div className="w-full h-full bg-white dark:bg-[#1a1816] p-8 md:p-12 lg:p-16 flex flex-col justify-between select-none">
       {/* Top Bar: Brand Logo & Sign Up Link */}
       <div className="flex items-center justify-between">
-        {/* Brand Logo & Name */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+        {/* Brand Logo & Name (Static Display) */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs">
             <Image
               src="/logo.png"
               alt={brand.name}
@@ -71,7 +71,7 @@ export function LoginForm() {
           <span className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight">
             {brand.name}
           </span>
-        </Link>
+        </div>
 
         {/* Secure Lawyers Portal Badge */}
         <div className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-[#faf5eb] dark:bg-[#201c17] text-[#c29547] dark:text-[#d4a759] border border-[#eeddbb] dark:border-[#382b18] shadow-2xs">
