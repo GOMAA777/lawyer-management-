@@ -382,32 +382,55 @@ export function DashboardSidebar() {
 
               {/* Sub-menu Dropdown List (rendered directly below the item) */}
               {!isCollapsed && hasDropdown && isOpen && item.subItems && (
-                <div className="ms-6 ps-2.5 border-s border-[#ded5c6] dark:border-[#2f2a24] my-1 space-y-0.5 flex flex-col">
-                  {item.subItems.map((sub) => {
+                <div className="ms-6 relative flex flex-col my-1">
+                  {item.subItems.map((sub, index) => {
+                    const isLast = index === (item.subItems?.length ?? 0) - 1;
                     const isSubActive = activeItem === sub.id;
+
                     return (
-                      <Link
+                      <div
                         key={sub.id}
-                        href={sub.href}
-                        onClick={() => setActiveItem(sub.id)}
-                        className={cn(
-                          "group/sub flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors text-start",
-                          isSubActive
-                            ? "bg-[#faf5eb] dark:bg-[#2b2419] text-[#b8863b] dark:text-[#d4a759] font-semibold"
-                            : "text-[#6c645b] dark:text-[#9e968a] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf8f4] dark:hover:bg-[#201d1a]"
-                        )}
+                        className="relative flex items-center group/sub"
                       >
-                        {/* Dot indicator showing child item relationship */}
+                        {/* 1. Curved branch connector: curves from top down to the middle, then extends horizontally toward the label */}
                         <span
+                          aria-hidden="true"
                           className={cn(
-                            "w-1.5 h-1.5 rounded-full shrink-0 transition-all",
+                            "pointer-events-none absolute start-0 top-0 w-4 h-1/2 border-s border-b transition-colors duration-150",
+                            direction === "rtl" ? "rounded-br-[8px]" : "rounded-bl-[8px]",
                             isSubActive
-                              ? "bg-[#c29547] dark:bg-[#d4a759] ring-2 ring-[#c29547]/30 scale-110"
-                              : "bg-[#beb5a8] dark:bg-[#524b42] group-hover/sub:bg-[#c29547] dark:group-hover/sub:bg-[#d4a759]"
+                              ? "border-[#c29547] dark:border-[#d4a759]"
+                              : "border-[#d8cfc2] dark:border-[#383228] group-hover/sub:border-[#b8863b] dark:group-hover/sub:border-[#d4a759]"
                           )}
                         />
-                        <span className="truncate">{sub.label}</span>
-                      </Link>
+
+                        {/* 2. Vertical trunk line continuing downward for all non-last items */}
+                        {!isLast && (
+                          <span
+                            aria-hidden="true"
+                            className={cn(
+                              "pointer-events-none absolute start-0 top-1/2 bottom-0 w-px transition-colors duration-150",
+                              isSubActive
+                                ? "bg-[#c29547] dark:bg-[#d4a759]"
+                                : "bg-[#d8cfc2] dark:bg-[#383228]"
+                            )}
+                          />
+                        )}
+
+                        {/* 3. Sub-item link without dots */}
+                        <Link
+                          href={sub.href}
+                          onClick={() => setActiveItem(sub.id)}
+                          className={cn(
+                            "flex items-center ps-6 pe-2.5 py-1.5 w-full rounded-md text-xs transition-colors text-start relative",
+                            isSubActive
+                              ? "bg-[#faf5eb] dark:bg-[#2b2419] text-[#b8863b] dark:text-[#d4a759] font-semibold"
+                              : "text-[#6c645b] dark:text-[#9e968a] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf8f4] dark:hover:bg-[#201d1a]"
+                          )}
+                        >
+                          <span className="truncate">{sub.label}</span>
+                        </Link>
+                      </div>
                     );
                   })}
                 </div>
