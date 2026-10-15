@@ -30,7 +30,7 @@ export default function RootLayout({
           <NuqsAdapter>
             {children}
             <Toaster
-              position="bottom-center"
+              position="bottom-left"
               dir="rtl"
               closeButton
               offset={28}

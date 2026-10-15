@@ -146,10 +146,10 @@
   direction: rtl !important;
 }
 
-[data-sonner-toaster][data-x-position="center"] {
+[data-sonner-toaster][data-x-position="left"] {
   bottom: 24px !important;
-  left: 50% !important;
-  transform: translateX(50%) !important;
+  left: 24px !important;
+  right: auto !important;
 }
 
 [data-sonner-toast] {
