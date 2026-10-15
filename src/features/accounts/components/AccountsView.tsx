@@ -235,8 +235,12 @@ export function AccountsView() {
   // New account form state
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newAdminPassword, setNewAdminPassword] = useState("");
+  const [newAdminConfirmPassword, setNewAdminConfirmPassword] = useState("");
+  const [showNewAdminPassword, setShowNewAdminPassword] = useState(false);
+  const [showNewAdminConfirmPassword, setShowNewAdminConfirmPassword] = useState(false);
   const [newRole, setNewRole] = useState<AdminAccount["role"]>("support_lead");
-  const [newScope, setNewScope] = useState("");
+  const [newStatus, setNewStatus] = useState<AdminAccount["status"]>("active");
 
   // Edit account modal state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -244,7 +248,7 @@ export function AccountsView() {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState<AdminAccount["role"]>("support_lead");
-  const [editScope, setEditScope] = useState("");
+  const [editStatus, setEditStatus] = useState<AdminAccount["status"]>("active");
 
   // Change password modal state
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -547,26 +551,72 @@ export function AccountsView() {
 
   const handleCreateAccount = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim() || !newEmail.trim()) return;
+    if (!newName.trim() || !newEmail.trim()) {
+      toast.error(
+        isAr ? "يرجى إدخال اسم المشرف والبريد الإلكتروني" : "Please fill in all required fields"
+      );
+      return;
+    }
 
-    const roleMap: Record<AdminAccount["role"], { ar: string; en: string }> = {
-      super_admin: { ar: "سوبر أدمن (صلاحية كاملة)", en: "Super Admin" },
-      finance_admin: { ar: "مدير الاشتراكات والمالية", en: "Billing Manager" },
-      support_lead: { ar: "أخصائي دعم فني", en: "Support Specialist" },
-      security_auditor: { ar: "مدقق أمان", en: "Security Auditor" },
+    if (!newAdminPassword || newAdminPassword.length < 6) {
+      toast.error(
+        isAr
+          ? "يجب ألا تقل كلمة المرور عن 6 خانات"
+          : "Password must be at least 6 characters"
+      );
+      return;
+    }
+
+    if (newAdminPassword !== newAdminConfirmPassword) {
+      toast.error(
+        isAr
+          ? "كلمتا المرور غير متطابقتين، يرجى إعادة التحقق"
+          : "Passwords do not match"
+      );
+      return;
+    }
+
+    const roleMap: Record<
+      AdminAccount["role"],
+      { ar: string; en: string; scopeAr: string; scopeEn: string }
+    > = {
+      super_admin: {
+        ar: "سوبر أدمن (صلاحية كاملة)",
+        en: "Super Admin (Full Access)",
+        scopeAr: "كافة المكاتب والأنظمة",
+        scopeEn: "All Firms & Systems",
+      },
+      finance_admin: {
+        ar: "مدير الاشتراكات والمالية",
+        en: "Billing & Subscriptions Manager",
+        scopeAr: "الفوترة، بوابات الدفع، الباقات",
+        scopeEn: "Billing, Gateways & Plans",
+      },
+      support_lead: {
+        ar: "أخصائي دعم فني وتشغيل",
+        en: "Support & Operations Lead",
+        scopeAr: "تذاكر المكاتب ومتابعة الخوادم",
+        scopeEn: "Firm Tickets & Server Monitoring",
+      },
+      security_auditor: {
+        ar: "مدقق الأمان والأنظمة",
+        en: "Security & Legal Compliance Auditor",
+        scopeAr: "سجلات النشاط والنسخ الاحتياطي",
+        scopeEn: "Audit Logs & System Backups",
+      },
     };
 
     const newAcc: AdminAccount = {
       id: `acc-${Date.now()}`,
-      name: newName,
-      nameEn: newName,
-      email: newEmail,
+      name: newName.trim(),
+      nameEn: newName.trim(),
+      email: newEmail.trim(),
       role: newRole,
       roleNameAr: roleMap[newRole].ar,
       roleNameEn: roleMap[newRole].en,
-      scope: newScope || (isAr ? "صلاحيات قياسية" : "Standard Scope"),
-      scopeEn: newScope || "Standard Scope",
-      status: "active",
+      scope: roleMap[newRole].scopeAr,
+      scopeEn: roleMap[newRole].scopeEn,
+      status: newStatus,
       lastLogin: isAr ? "تم الإنشاء للتو" : "Just created",
       avatarColor: "from-[#d4a759] to-[#b38032]",
     };
@@ -574,13 +624,18 @@ export function AccountsView() {
     setAccounts([newAcc, ...accounts]);
     toast.success(
       isAr
-        ? `تم إنشاء حساب المشرف "${newName}" بنجاح وإرسال بيانات الدخول إلى ${newEmail}`
-        : `Admin account "${newName}" created successfully. Login sent to ${newEmail}`
+        ? `تم إنشاء حساب المشرف "${newName}" بنجاح (${newStatus === "active" ? "نشط" : "معلق"})`
+        : `Admin account "${newName}" created successfully (${newStatus})`
     );
     setIsAddModalOpen(false);
     setNewName("");
     setNewEmail("");
-    setNewScope("");
+    setNewAdminPassword("");
+    setNewAdminConfirmPassword("");
+    setShowNewAdminPassword(false);
+    setShowNewAdminConfirmPassword(false);
+    setNewRole("support_lead");
+    setNewStatus("active");
   };
 
   // Filtered accounts
@@ -677,6 +732,11 @@ export function AccountsView() {
     { value: "security_auditor", label: isAr ? "مدقق الأمان والأنظمة" : "Security Auditor" },
   ];
 
+  const adminStatusSelectOptions: SelectOption<AdminAccount["status"]>[] = [
+    { value: "active", label: isAr ? "نشط (حساب مفعل)" : "Active" },
+    { value: "suspended", label: isAr ? "معلق (موقوف مؤقتاً)" : "Suspended" },
+  ];
+
   const openEditModal = (acc: AdminAccount) => {
     setActiveMenuAccount(null);
     setMenuPosition(null);
@@ -684,7 +744,7 @@ export function AccountsView() {
     setEditName(isAr ? acc.name : acc.nameEn);
     setEditEmail(acc.email);
     setEditRole(acc.role);
-    setEditScope(isAr ? acc.scope : acc.scopeEn);
+    setEditStatus(acc.status);
     setIsEditModalOpen(true);
   };
 
@@ -703,8 +763,7 @@ export function AccountsView() {
               role: editRole,
               roleNameAr: roleOpt?.label || acc.roleNameAr,
               roleNameEn: roleOpt?.label || acc.roleNameEn,
-              scope: editScope.trim(),
-              scopeEn: editScope.trim(),
+              status: isCurrentUser(acc.id) ? "active" : editStatus,
             }
           : acc
       )
@@ -1384,8 +1443,8 @@ export function AccountsView() {
       {/* Add New Admin Account Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-[#1a1714] border border-[#ded5c6] dark:border-[#2f2a24] shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden text-start">
-            <div className="flex items-center justify-between p-5 border-b border-[#ded5c6]/60 dark:border-[#2f2a24] bg-[#faf5eb] dark:bg-[#201c17]">
+          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto scrollbar-thin rounded-3xl bg-white dark:bg-[#1a1714] border border-[#ded5c6] dark:border-[#2f2a24] shadow-[0_20px_60px_rgba(0,0,0,0.35)] text-start">
+            <div className="sticky top-0 z-20 flex items-center justify-between p-5 border-b border-[#ded5c6]/60 dark:border-[#2f2a24] bg-[#faf5eb] dark:bg-[#201c17] backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-[#fff7e6] dark:bg-[#2b2014] border border-[#eeddbb] dark:border-[#604218] flex items-center justify-center text-[#c29547] dark:text-[#d4a759]">
                   <UserPlus className="w-5 h-5" />
@@ -1396,8 +1455,8 @@ export function AccountsView() {
                   </h2>
                   <p className="text-xs text-[#8c8279] dark:text-[#9e968a]">
                     {isAr
-                      ? "إنشاء حساب بصلاحيات مخصصة للتحكم في المنظومة"
-                      : "Provision administrative credentials"}
+                      ? "تعيين بيانات الدخول وكلمة المرور والدور الإداري وحالة الحساب"
+                      : "Set credentials, passwords, role, and initial account status"}
                   </p>
                 </div>
               </div>
@@ -1411,7 +1470,7 @@ export function AccountsView() {
             </div>
 
             <form onSubmit={handleCreateAccount} className="p-6 pt-7 space-y-5">
-              {/* 1. Full Name Floating Input */}
+              {/* 1. Name Floating Input (اسم) */}
               <div className="relative">
                 <input
                   id="modal-admin-name"
@@ -1430,7 +1489,7 @@ export function AccountsView() {
                 </label>
               </div>
 
-              {/* 2. Official Email Floating Input */}
+              {/* 2. Email Floating Input (بريد) */}
               <div className="relative">
                 <input
                   id="modal-admin-email"
@@ -1449,7 +1508,69 @@ export function AccountsView() {
                 </label>
               </div>
 
-              {/* 3. Administrative Role Floating Select */}
+              {/* 3. Password Floating Input (password) */}
+              <div className="relative flex items-center">
+                <input
+                  id="modal-admin-password"
+                  type={showNewAdminPassword ? "text" : "password"}
+                  required
+                  placeholder=" "
+                  value={newAdminPassword}
+                  onChange={(e) => setNewAdminPassword(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-11 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-admin-password"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "كلمة المرور (Password)" : "Password"}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowNewAdminPassword(!showNewAdminPassword)}
+                  className="absolute end-3.5 p-1 text-[#8c8279] hover:text-[#c29547] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showNewAdminPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              {/* 4. Confirm Password Floating Input (repasssword) */}
+              <div className="relative flex items-center">
+                <input
+                  id="modal-admin-confirm-password"
+                  type={showNewAdminConfirmPassword ? "text" : "password"}
+                  required
+                  placeholder=" "
+                  value={newAdminConfirmPassword}
+                  onChange={(e) => setNewAdminConfirmPassword(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-11 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-admin-confirm-password"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "تأكيد كلمة المرور (Re-password)" : "Confirm Password"}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowNewAdminConfirmPassword(!showNewAdminConfirmPassword)}
+                  className="absolute end-3.5 p-1 text-[#8c8279] hover:text-[#c29547] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showNewAdminConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              {/* 5. Role Floating Select (دور) */}
               <div className="relative">
                 <LuxurySelect<AdminAccount["role"]>
                   value={newRole}
@@ -1459,35 +1580,22 @@ export function AccountsView() {
                   minWidth="w-full"
                 />
                 <label className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] z-10 transition-colors">
-                  {isAr ? "الرتبة الإدارية (Role)" : "Administrative Role"}
+                  {isAr ? "الدور / الرتبة الإدارية (Role)" : "Administrative Role"}
                 </label>
               </div>
 
-              {/* 4. Scope Floating Input */}
+              {/* 6. Status Floating Select (الحالة) */}
               <div className="relative">
-                <input
-                  id="modal-admin-scope"
-                  type="text"
-                  placeholder=" "
-                  value={newScope}
-                  onChange={(e) => setNewScope(e.target.value)}
-                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                <LuxurySelect<AdminAccount["status"]>
+                  value={newStatus}
+                  onChange={(val) => setNewStatus(val)}
+                  options={adminStatusSelectOptions}
+                  className="w-full"
+                  minWidth="w-full"
                 />
-                <label
-                  htmlFor="modal-admin-scope"
-                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
-                >
-                  {isAr ? "نطاق الصلاحيات المسندة (Scope)" : "Access Scope"}
+                <label className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] z-10 transition-colors">
+                  {isAr ? "الحالة (Status)" : "Account Status"}
                 </label>
-              </div>
-
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#faf5eb] dark:bg-[#221e1a] border border-[#eeddbb]/80 dark:border-[#4d3a1f] text-xs text-[#8c8279] dark:text-[#aba295]">
-                <Lock className="w-4 h-4 text-[#c29547] shrink-0" />
-                <span>
-                  {isAr
-                    ? "سيتم إنشاء كلمة مرور عشوائية وتشفيرها، وإرسال رابط التفعيل إلى بريد المشرف."
-                    : "A random encrypted temporary password will be dispatched to the admin's email."}
-                </span>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#ded5c6]/40 dark:border-[#2f2a24]">
@@ -1594,21 +1702,18 @@ export function AccountsView() {
                 </label>
               </div>
 
-              {/* 4. Scope Floating Input */}
+              {/* 4. Status Floating Select */}
               <div className="relative">
-                <input
-                  id="modal-edit-admin-scope"
-                  type="text"
-                  placeholder=" "
-                  value={editScope}
-                  onChange={(e) => setEditScope(e.target.value)}
-                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                <LuxurySelect<AdminAccount["status"]>
+                  value={editStatus}
+                  onChange={(val) => setEditStatus(val)}
+                  options={adminStatusSelectOptions}
+                  className="w-full"
+                  minWidth="w-full"
+                  disabled={isCurrentUser(editingAccount.id)}
                 />
-                <label
-                  htmlFor="modal-edit-admin-scope"
-                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
-                >
-                  {isAr ? "نطاق الصلاحيات المسندة (Scope)" : "Access Scope"}
+                <label className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] z-10 transition-colors">
+                  {isAr ? "الحالة (Status)" : "Account Status"}
                 </label>
               </div>
 

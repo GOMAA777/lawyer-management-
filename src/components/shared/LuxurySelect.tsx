@@ -20,6 +20,7 @@ interface LuxurySelectProps<T extends string | number = string> {
   className?: string;
   dropdownClassName?: string;
   minWidth?: string;
+  disabled?: boolean;
 }
 
 export function LuxurySelect<T extends string | number = string>({
@@ -32,6 +33,7 @@ export function LuxurySelect<T extends string | number = string>({
   className = "",
   dropdownClassName = "",
   minWidth = "min-w-[140px]",
+  disabled = false,
 }: LuxurySelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -70,8 +72,13 @@ export function LuxurySelect<T extends string | number = string>({
       {/* Trigger Button */}
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`w-full flex items-center justify-between gap-2.5 rounded-xl border transition-all cursor-pointer select-none ${
+        disabled={disabled}
+        onClick={() => !disabled && setIsOpen((prev) => !prev)}
+        className={`w-full flex items-center justify-between gap-2.5 rounded-xl border transition-all select-none ${
+          disabled
+            ? "opacity-60 cursor-not-allowed bg-stone-100 dark:bg-[#1a1816] border-[#ded5c6]/60 dark:border-[#2f2a24]"
+            : "cursor-pointer"
+        } ${
           compact
             ? "h-8 px-2.5 text-xs font-bold"
             : "h-10.5 px-3.5 text-xs font-semibold"
