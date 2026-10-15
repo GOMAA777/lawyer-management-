@@ -821,10 +821,10 @@ export function AccountsView() {
                             <span>
                               {acc.status === "active"
                                 ? isAr
-                                  ? "نشط ومفعل"
+                                  ? "نشط"
                                   : "Active"
                                 : isAr
-                                ? "معلق ومحظور"
+                                ? "معلق"
                                 : "Suspended"}
                             </span>
                           </button>
