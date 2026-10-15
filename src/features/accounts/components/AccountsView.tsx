@@ -215,6 +215,7 @@ export function AccountsView() {
   }, [openActionMenuId]);
 
   const handleBulkActivate = () => {
+    const count = selectedAccountIds.length;
     setAccounts((prev) =>
       prev.map((acc) =>
         selectedAccountIds.includes(acc.id) ? { ...acc, status: "active" } : acc
@@ -222,13 +223,14 @@ export function AccountsView() {
     );
     toast.success(
       isAr
-        ? `تم تفعيل ${selectedAccountIds.length} حساب بنجاح`
-        : `Activated ${selectedAccountIds.length} accounts`
+        ? `تم تفعيل ${count} حساب بنجاح`
+        : `Activated ${count} accounts`
     );
     setSelectedAccountIds([]);
   };
 
   const handleBulkSuspend = () => {
+    const count = selectedAccountIds.length;
     setAccounts((prev) =>
       prev.map((acc) =>
         selectedAccountIds.includes(acc.id)
@@ -238,8 +240,22 @@ export function AccountsView() {
     );
     toast.success(
       isAr
-        ? `تم تعليق ${selectedAccountIds.length} حساب بنجاح`
-        : `Suspended ${selectedAccountIds.length} accounts`
+        ? `تم إلغاء تفعيل وتعليق ${count} حساب بنجاح`
+        : `Deactivated ${count} accounts`
+    );
+    setSelectedAccountIds([]);
+  };
+
+  const handleBulkDelete = () => {
+    const count = selectedAccountIds.length;
+    if (count === 0) return;
+    setAccounts((prev) =>
+      prev.filter((acc) => !selectedAccountIds.includes(acc.id))
+    );
+    toast.success(
+      isAr
+        ? `تم مسح وحذف ${count} من حسابات المشرفين المحددة بنجاح`
+        : `Deleted ${count} selected accounts successfully`
     );
     setSelectedAccountIds([]);
   };
@@ -613,7 +629,7 @@ export function AccountsView() {
             {/* Bulk Actions Notification Bar */}
             {selectedAccountIds.length > 0 && (
               <div className="p-3.5 px-4 rounded-2xl border border-[#c29547]/40 bg-[#faf5eb] dark:bg-[#201c17] flex flex-wrap items-center justify-between gap-3 shadow-xs animate-in fade-in duration-200">
-                <div className="flex items-center gap-2.5 text-xs font-bold text-[#966e2e] dark:text-[#eeddbb]">
+                <div className="flex flex-wrap items-center gap-2.5 text-xs font-bold text-[#966e2e] dark:text-[#eeddbb]">
                   <span className="w-6 h-6 rounded-lg bg-[#c29547] text-white flex items-center justify-center text-xs shadow-2xs font-mono">
                     {selectedAccountIds.length}
                   </span>
@@ -622,22 +638,52 @@ export function AccountsView() {
                       ? `تم تحديد ${selectedAccountIds.length} من حسابات المشرفين`
                       : `${selectedAccountIds.length} accounts selected`}
                   </span>
+                  {selectedAccountIds.length < filtered.length && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setSelectedAccountIds(filtered.map((a) => a.id))
+                      }
+                      className="text-xs text-[#c29547] hover:text-[#966e2e] underline cursor-pointer font-bold"
+                    >
+                      {isAr
+                        ? `(تحديد كافة الـ ${filtered.length} حساب)`
+                        : `(Select all ${filtered.length})`}
+                    </button>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* زر التفعيل */}
                   <button
                     type="button"
                     onClick={handleBulkActivate}
-                    className="px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
-                    {isAr ? "تفعيل المحددة" : "Activate Selected"}
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>{isAr ? "تفعيل المحددة" : "Activate"}</span>
                   </button>
+
+                  {/* زر إلغاء التفعيل / التعليق */}
                   <button
                     type="button"
                     onClick={handleBulkSuspend}
-                    className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 text-xs font-bold hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
-                    {isAr ? "تعليق المحددة" : "Suspend Selected"}
+                    <Lock className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
+                    <span>{isAr ? "إلغاء تفعيل المحددة" : "Deactivate"}</span>
                   </button>
+
+                  {/* زر المسح / الحذف */}
+                  <button
+                    type="button"
+                    onClick={handleBulkDelete}
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 text-white border border-rose-700 hover:bg-rose-700 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>{isAr ? "مسح وحذف المحددة" : "Delete"}</span>
+                  </button>
+
+                  {/* زر إلغاء التحديد */}
                   <button
                     type="button"
                     onClick={() => setSelectedAccountIds([])}
