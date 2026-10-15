@@ -1611,7 +1611,7 @@ export function AccountsView() {
                   className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#d4a759] via-[#c29547] to-[#b38032] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-[0_4px_16px_rgba(194,149,71,0.3)] transition-all cursor-pointer"
                 >
                   <Check className="w-4 h-4" />
-                  <span>{isAr ? "إنشاء وتفعيل الحساب" : "Create Account"}</span>
+                  <span>{isAr ? "إنشاء الحساب" : "Create Account"}</span>
                 </button>
               </div>
             </form>
