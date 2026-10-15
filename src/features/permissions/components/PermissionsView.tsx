@@ -156,7 +156,7 @@ export function PermissionsView() {
                   </div>
 
                   <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1c1917] dark:text-[#f5f4f0]">
-                    {isAr ? "القوائم والصلاحيات (Menus & Permissions)" : "Menus & Access Permissions"}
+                    {isAr ? "إدارة الصلاحيات والرتب (Permissions)" : "Access Roles & Permissions"}
                   </h1>
 
                   <p className="text-sm sm:text-base text-[#6b6357] dark:text-[#a8a196] max-w-2xl leading-relaxed">

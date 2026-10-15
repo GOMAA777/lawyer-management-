@@ -34,8 +34,10 @@ export function DashboardTopNavbar() {
       ? navT.addonsIntegrations
       : pathname === "/accounts"
       ? navT.accounts
+      : pathname === "/menus"
+      ? navT.menus
       : pathname === "/permissions"
-      ? navT.menusPermissions
+      ? navT.permissions
       : t.dashboard;
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);

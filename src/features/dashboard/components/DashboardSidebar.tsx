@@ -165,8 +165,10 @@ export function DashboardSidebar() {
       ? "sub-integrations"
       : pathname === "/accounts"
       ? "sub-accounts"
+      : pathname === "/menus"
+      ? "sub-menus"
       : pathname === "/permissions"
-      ? "sub-menus-permissions"
+      ? "sub-permissions"
       : pathname === "/"
       ? "dashboard"
       : (selectedId ?? "dashboard");
@@ -180,6 +182,7 @@ export function DashboardSidebar() {
     "settings-menu":
       pathname === "/integrations" ||
       pathname === "/accounts" ||
+      pathname === "/menus" ||
       pathname === "/permissions",
   }));
 
@@ -300,7 +303,8 @@ export function DashboardSidebar() {
           subItems: [
             { id: "sub-integrations", label: t.addonsIntegrations, href: "/integrations" },
             { id: "sub-accounts", label: t.accounts, href: "/accounts" },
-            { id: "sub-menus-permissions", label: t.menusPermissions, href: "/permissions" },
+            { id: "sub-menus", label: t.menus, href: "/menus" },
+            { id: "sub-permissions", label: t.permissions, href: "/permissions" },
             { id: "sub-site-settings", label: t.siteSettings, href: "#" },
             { id: "sub-mail-settings", label: t.mailSettings, href: "#" },
             { id: "sub-system-backups", label: t.systemSettings, href: "#" },
