@@ -163,6 +163,10 @@ export function DashboardSidebar() {
       ? "sub-subscriptions"
       : pathname === "/integrations"
       ? "sub-integrations"
+      : pathname === "/accounts"
+      ? "sub-accounts"
+      : pathname === "/permissions"
+      ? "sub-menus-permissions"
       : pathname === "/"
       ? "dashboard"
       : (selectedId ?? "dashboard");
@@ -173,7 +177,10 @@ export function DashboardSidebar() {
     "sales-menu": false,
     "finance-menu": pathname === "/subscriptions",
     "legal-menu": false,
-    "settings-menu": pathname === "/integrations",
+    "settings-menu":
+      pathname === "/integrations" ||
+      pathname === "/accounts" ||
+      pathname === "/permissions",
   }));
 
   // Structure the 6 requested SaaS Super Admin Sections
@@ -292,6 +299,8 @@ export function DashboardSidebar() {
           icon: Settings,
           subItems: [
             { id: "sub-integrations", label: t.addonsIntegrations, href: "/integrations" },
+            { id: "sub-accounts", label: t.accounts, href: "/accounts" },
+            { id: "sub-menus-permissions", label: t.menusPermissions, href: "/permissions" },
             { id: "sub-site-settings", label: t.siteSettings, href: "#" },
             { id: "sub-mail-settings", label: t.mailSettings, href: "#" },
             { id: "sub-system-backups", label: t.systemSettings, href: "#" },
