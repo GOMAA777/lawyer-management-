@@ -25,6 +25,8 @@ import {
   Trash2,
   Shield,
   Unlock,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
@@ -212,6 +214,22 @@ export function AccountsView() {
   const [newEmail, setNewEmail] = useState("");
   const [newRole, setNewRole] = useState<AdminAccount["role"]>("support_lead");
   const [newScope, setNewScope] = useState("");
+
+  // Edit account modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<AdminAccount | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editRole, setEditRole] = useState<AdminAccount["role"]>("support_lead");
+  const [editScope, setEditScope] = useState("");
+
+  // Change password modal state
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordTargetAccount, setPasswordTargetAccount] = useState<AdminAccount | null>(null);
+  const [newPasswordVal, setNewPasswordVal] = useState("");
+  const [confirmPasswordVal, setConfirmPasswordVal] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const hasActiveFilters = Boolean(
     search.trim() !== "" || roleFilter !== "all" || statusFilter !== "all"
@@ -624,6 +642,84 @@ export function AccountsView() {
     { value: "security_auditor", label: isAr ? "مدقق الأمان والأنظمة" : "Security Auditor" },
   ];
 
+  const openEditModal = (acc: AdminAccount) => {
+    setOpenActionMenuId(null);
+    setEditingAccount(acc);
+    setEditName(isAr ? acc.name : acc.nameEn);
+    setEditEmail(acc.email);
+    setEditRole(acc.role);
+    setEditScope(isAr ? acc.scope : acc.scopeEn);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAccount) return;
+    const roleOpt = newRoleOptions.find((r) => r.value === editRole);
+    setAccounts((prev) =>
+      prev.map((acc) =>
+        acc.id === editingAccount.id
+          ? {
+              ...acc,
+              name: editName.trim(),
+              nameEn: editName.trim(),
+              email: editEmail.trim(),
+              role: editRole,
+              roleNameAr: roleOpt?.label || acc.roleNameAr,
+              roleNameEn: roleOpt?.label || acc.roleNameEn,
+              scope: editScope.trim(),
+              scopeEn: editScope.trim(),
+            }
+          : acc
+      )
+    );
+    setIsEditModalOpen(false);
+    setEditingAccount(null);
+    toast.success(
+      isAr
+        ? `تم تحديث بيانات المشرف "${editName}" بنجاح`
+        : `Admin account "${editName}" updated successfully`
+    );
+  };
+
+  const openPasswordModal = (acc: AdminAccount) => {
+    setOpenActionMenuId(null);
+    setPasswordTargetAccount(acc);
+    setNewPasswordVal("");
+    setConfirmPasswordVal("");
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+    setIsPasswordModalOpen(true);
+  };
+
+  const handleSavePassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordTargetAccount) return;
+    if (!newPasswordVal || newPasswordVal.length < 6) {
+      toast.error(
+        isAr
+          ? "يجب أن تتكون كلمة المرور من 6 خانات على الأقل"
+          : "Password must be at least 6 characters"
+      );
+      return;
+    }
+    if (newPasswordVal !== confirmPasswordVal) {
+      toast.error(
+        isAr
+          ? "كلمتا المرور غير متطابقتين، يرجى التحقق وإعادة المحاولة"
+          : "Passwords do not match"
+      );
+      return;
+    }
+    setIsPasswordModalOpen(false);
+    setPasswordTargetAccount(null);
+    toast.success(
+      isAr
+        ? `تم تغيير وتحديث الرقم السري لحساب "${passwordTargetAccount.name}" بنجاح`
+        : `Password updated successfully for "${passwordTargetAccount.name}"`
+    );
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#fcfbfa] dark:bg-[#121110] text-[#1c1917] dark:text-[#f5f4f0] transition-colors duration-200 relative">
       {/* 1. Main Navigation Sidebar */}
@@ -1000,8 +1096,8 @@ export function AccountsView() {
                                 title={
                                   isCurrent
                                     ? isAr
-                                      ? "حسابك الحالي محمي تلقائياً من التحديد أو الحذف"
-                                      : "Current account is protected from selection and deletion"
+                                      ? "الحساب الحالي غير قابل للتحديد المجمع"
+                                      : "Current account cannot be bulk-selected"
                                     : undefined
                                 }
                               >
@@ -1012,8 +1108,8 @@ export function AccountsView() {
                                   title={
                                     isCurrent
                                       ? isAr
-                                        ? "حسابك الحالي محمي تلقائياً من التحديد أو الحذف"
-                                        : "Current account is protected from selection and deletion"
+                                        ? "الحساب الحالي غير قابل للتحديد المجمع"
+                                        : "Current account cannot be bulk-selected"
                                       : isAr
                                       ? `تحديد حساب ${acc.name}`
                                       : `Select ${acc.nameEn}`
@@ -1084,18 +1180,11 @@ export function AccountsView() {
                             <td className="py-4 px-4">
                               {isCurrent ? (
                                 <span
-                                  title={
-                                    isAr
-                                      ? "حسابك الحالي نشط ومحمي من الإيقاف أو التعليق"
-                                      : "Current account is active and protected from suspension"
-                                  }
+                                  title={isAr ? "نشط" : "Active"}
                                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800/60 shadow-2xs select-none cursor-default"
                                 >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                   <span>{isAr ? "نشط" : "Active"}</span>
-                                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-200/60 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-extrabold">
-                                    {isAr ? "محمي" : "Protected"}
-                                  </span>
                                 </span>
                               ) : (
                                 <button
@@ -1135,14 +1224,8 @@ export function AccountsView() {
                               <div className="flex items-center justify-center gap-1.5 relative action-menu-container">
                                 <button
                                   type="button"
-                                  onClick={() => {
-                                    toast.info(
-                                      isAr
-                                        ? `تم إرسال رابط إعادة تعيين كلمة المرور إلى ${acc.email}`
-                                        : `Password reset link sent to ${acc.email}`
-                                    );
-                                  }}
-                                  title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}
+                                  onClick={() => openPasswordModal(acc)}
+                                  title={isAr ? "تغيير الرقم السري" : "Change Password"}
                                   className="p-1.5 rounded-lg text-[#8c8279] hover:text-[#c29547] hover:bg-[#faf5eb] dark:hover:bg-[#201d1a] transition-colors cursor-pointer"
                                 >
                                   <KeyRound className="w-4 h-4" />
@@ -1179,18 +1262,20 @@ export function AccountsView() {
                                   >
                                     <button
                                       type="button"
-                                      onClick={() => {
-                                        setOpenActionMenuId(null);
-                                        toast.info(
-                                          isAr
-                                            ? `نافذة تعديل بيانات ${acc.name} - قيد التطوير`
-                                            : `Edit details for ${acc.name}`
-                                        );
-                                      }}
+                                      onClick={() => openEditModal(acc)}
                                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
                                     >
                                       <Edit3 className="w-3.5 h-3.5 text-[#c29547]" />
                                       <span>{isAr ? "تعديل البيانات" : "Edit Profile"}</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => openPasswordModal(acc)}
+                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                    >
+                                      <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
+                                      <span>{isAr ? "تغيير الرقم السري" : "Change Password"}</span>
                                     </button>
 
                                     <button
@@ -1209,95 +1294,43 @@ export function AccountsView() {
                                       <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
                                     </button>
 
-                                    {/* Suspend or Protected */}
-                                    {isCurrent ? (
-                                      <div
-                                        title={
-                                          isAr
-                                            ? "لا يمكنك تعليق حسابك النشط الحالي منعاً لفقدان الوصول"
-                                            : "You cannot suspend your own active account"
-                                        }
-                                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#8c8279] dark:text-[#6b6256] cursor-not-allowed opacity-60 bg-[#faf8f4] dark:bg-[#1a1714] select-none"
-                                      >
-                                        <span className="flex items-center gap-2.5">
-                                          <Lock className="w-3.5 h-3.5 text-[#8c8279]" />
-                                          <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
-                                        </span>
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#f0ebd8] dark:bg-[#282218] text-[#966e2e] dark:text-[#eeddbb] font-bold">
-                                          {isAr ? "محمي" : "Protected"}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <button
-                                        type="button"
-                                        onClick={() => requestToggleStatus(acc)}
-                                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                      >
-                                        {acc.status === "active" ? (
-                                          <>
-                                            <Lock className="w-3.5 h-3.5 text-amber-600" />
-                                            <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-                                            <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
-                                          </>
-                                        )}
-                                      </button>
-                                    )}
+                                    {!isCurrent && (
+                                      <>
+                                        <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
 
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setOpenActionMenuId(null);
-                                        toast.success(
-                                          isAr
-                                            ? `تم إرسال رابط إعادة التعيين إلى ${acc.email}`
-                                            : `Password reset dispatched to ${acc.email}`
-                                        );
-                                      }}
-                                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-                                    >
-                                      <KeyRound className="w-3.5 h-3.5 text-[#c29547]" />
-                                      <span>{isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"}</span>
-                                    </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => requestToggleStatus(acc)}
+                                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
+                                        >
+                                          {acc.status === "active" ? (
+                                            <>
+                                              <Lock className="w-3.5 h-3.5 text-amber-600" />
+                                              <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <Unlock className="w-3.5 h-3.5 text-emerald-600" />
+                                              <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
+                                            </>
+                                          )}
+                                        </button>
 
-                                    <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
-
-                                    {/* Delete or Protected */}
-                                    {isCurrent ? (
-                                      <div
-                                        title={
-                                          isAr
-                                            ? "لا يمكن حذف الحساب المسجل به حالياً في النظام منعاً لفقدان السيطرة على لوحة التحكم"
-                                            : "Cannot delete the currently logged-in account"
-                                        }
-                                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#8c8279] dark:text-[#6b6256] cursor-not-allowed opacity-60 bg-rose-50/40 dark:bg-rose-950/20 border border-dashed border-rose-200 dark:border-rose-900/40 select-none"
-                                      >
-                                        <span className="flex items-center gap-2.5">
-                                          <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                                          <span>{isAr ? "حذف الحساب" : "Delete Account"}</span>
-                                        </span>
-                                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 font-bold">
-                                          {isAr ? "غير مسموح" : "Not Allowed"}
-                                        </span>
-                                      </div>
-                                    ) : (
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          requestDeleteAccount(
-                                            acc.id,
-                                            isAr ? acc.name : acc.nameEn,
-                                            acc.email
-                                          )
-                                        }
-                                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
-                                      >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                        <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
-                                      </button>
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            requestDeleteAccount(
+                                              acc.id,
+                                              isAr ? acc.name : acc.nameEn,
+                                              acc.email
+                                            )
+                                          }
+                                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                          <span>{isAr ? "حذف الحساب نهائياً" : "Delete Account"}</span>
+                                        </button>
+                                      </>
                                     )}
                                   </div>
                                 )}
@@ -1532,7 +1565,256 @@ export function AccountsView() {
         </div>
       )}
 
-      {/* Luxury Alert Dialog Confirmation Modal */}
+      {/* Edit Admin Account Modal */}
+      {isEditModalOpen && editingAccount && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl bg-white dark:bg-[#1a1714] border border-[#ded5c6] dark:border-[#2f2a24] shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden text-start">
+            <div className="flex items-center justify-between p-5 border-b border-[#ded5c6]/60 dark:border-[#2f2a24] bg-[#faf5eb] dark:bg-[#201c17]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#fff7e6] dark:bg-[#2b2014] border border-[#eeddbb] dark:border-[#604218] flex items-center justify-center text-[#c29547] dark:text-[#d4a759]">
+                  <Edit3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-extrabold text-[#2c2825] dark:text-[#f5f4f0]">
+                    {isAr ? "تعديل بيانات المشرف" : "Edit Admin Profile"}
+                  </h2>
+                  <p className="text-xs text-[#8c8279] dark:text-[#9e968a]">
+                    {editingAccount.email}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setEditingAccount(null);
+                }}
+                className="p-1.5 rounded-full text-[#8c8279] hover:text-[#2c2825] dark:hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-6 pt-7 space-y-5">
+              {/* 1. Full Name Floating Input */}
+              <div className="relative">
+                <input
+                  id="modal-edit-admin-name"
+                  type="text"
+                  required
+                  placeholder=" "
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-bold bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-edit-admin-name"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "اسم المشرف بالكامل" : "Full Name"}
+                </label>
+              </div>
+
+              {/* 2. Official Email Floating Input */}
+              <div className="relative">
+                <input
+                  id="modal-edit-admin-email"
+                  type="email"
+                  required
+                  placeholder=" "
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-edit-admin-email"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "البريد الإلكتروني الرسمي" : "Official Email"}
+                </label>
+              </div>
+
+              {/* 3. Administrative Role Floating Select */}
+              <div className="relative">
+                <LuxurySelect<AdminAccount["role"]>
+                  value={editRole}
+                  onChange={(val) => setEditRole(val)}
+                  options={newRoleOptions}
+                  className="w-full"
+                  minWidth="w-full"
+                />
+                <label className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] z-10 transition-colors">
+                  {isAr ? "الرتبة الإدارية (Role)" : "Administrative Role"}
+                </label>
+              </div>
+
+              {/* 4. Scope Floating Input */}
+              <div className="relative">
+                <input
+                  id="modal-edit-admin-scope"
+                  type="text"
+                  placeholder=" "
+                  value={editScope}
+                  onChange={(e) => setEditScope(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-4 text-xs font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-edit-admin-scope"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "نطاق الصلاحيات المسندة (Scope)" : "Access Scope"}
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#ded5c6]/40 dark:border-[#2f2a24]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setEditingAccount(null);
+                  }}
+                  className="px-4 py-2.5 rounded-full text-xs font-bold text-[#524b43] dark:text-[#c4bcb1] hover:bg-stone-100 dark:hover:bg-[#25201b] transition-colors cursor-pointer"
+                >
+                  {isAr ? "إلغاء" : "Cancel"}
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#d4a759] via-[#c29547] to-[#b38032] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-[0_4px_16px_rgba(194,149,71,0.3)] transition-all cursor-pointer"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{isAr ? "حفظ التعديلات" : "Save Changes"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {isPasswordModalOpen && passwordTargetAccount && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md rounded-3xl bg-white dark:bg-[#1a1714] border border-[#ded5c6] dark:border-[#2f2a24] shadow-[0_20px_60px_rgba(0,0,0,0.35)] overflow-hidden text-start">
+            <div className="flex items-center justify-between p-5 border-b border-[#ded5c6]/60 dark:border-[#2f2a24] bg-[#faf5eb] dark:bg-[#201c17]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#fff7e6] dark:bg-[#2b2014] border border-[#eeddbb] dark:border-[#604218] flex items-center justify-center text-[#c29547] dark:text-[#d4a759]">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-extrabold text-[#2c2825] dark:text-[#f5f4f0]">
+                    {isAr ? "تغيير الرقم السري" : "Change Password"}
+                  </h2>
+                  <p className="text-xs text-[#8c8279] dark:text-[#9e968a]">
+                    {passwordTargetAccount.name} ({passwordTargetAccount.email})
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPasswordModalOpen(false);
+                  setPasswordTargetAccount(null);
+                }}
+                className="p-1.5 rounded-full text-[#8c8279] hover:text-[#2c2825] dark:hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePassword} className="p-6 pt-7 space-y-5">
+              {/* New Password Floating Input */}
+              <div className="relative flex items-center">
+                <input
+                  id="modal-new-password"
+                  type={showNewPassword ? "text" : "password"}
+                  required
+                  placeholder=" "
+                  value={newPasswordVal}
+                  onChange={(e) => setNewPasswordVal(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-11 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-new-password"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "كلمة المرور الجديدة" : "New Password"}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute end-3.5 p-1 text-[#8c8279] hover:text-[#c29547] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showNewPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              {/* Confirm Password Floating Input */}
+              <div className="relative flex items-center">
+                <input
+                  id="modal-confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  placeholder=" "
+                  value={confirmPasswordVal}
+                  onChange={(e) => setConfirmPasswordVal(e.target.value)}
+                  className="peer w-full h-12 rounded-2xl ps-4 pe-11 text-xs font-mono font-medium bg-white dark:bg-[#201d1a] text-[#2c2825] dark:text-[#f5f4f0] border border-[#ded5c6] dark:border-[#2f2a24] focus:outline-none focus:border-[#c29547] dark:focus:border-[#d4a759] focus:ring-3 focus:ring-[#c29547]/15 transition-all shadow-2xs"
+                />
+                <label
+                  htmlFor="modal-confirm-password"
+                  className="pointer-events-none absolute start-4 top-0 -translate-y-1/2 bg-white dark:bg-[#1a1714] px-1.5 text-xs font-bold text-[#c29547] dark:text-[#d4a759] transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-xs peer-placeholder-shown:font-normal peer-placeholder-shown:text-[#8c8279] dark:peer-placeholder-shown:text-[#787166] peer-placeholder-shown:bg-transparent peer-focus:top-0 peer-focus:text-xs peer-focus:font-bold peer-focus:text-[#c29547] dark:peer-focus:text-[#d4a759] peer-focus:bg-white dark:peer-focus:bg-[#1a1816]"
+                >
+                  {isAr ? "تأكيد كلمة المرور" : "Confirm Password"}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute end-3.5 p-1 text-[#8c8279] hover:text-[#c29547] transition-colors cursor-pointer"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#faf5eb] dark:bg-[#221e1a] border border-[#eeddbb]/80 dark:border-[#4d3a1f] text-xs text-[#8c8279] dark:text-[#aba295]">
+                <Lock className="w-4 h-4 text-[#c29547] shrink-0" />
+                <span>
+                  {isAr
+                    ? "يجب ألا تقل كلمة المرور عن 6 خانات لتأمين حساب المشرف."
+                    : "Password must be at least 6 characters long."}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#ded5c6]/40 dark:border-[#2f2a24]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPasswordModalOpen(false);
+                    setPasswordTargetAccount(null);
+                  }}
+                  className="px-4 py-2.5 rounded-full text-xs font-bold text-[#524b43] dark:text-[#c4bcb1] hover:bg-stone-100 dark:hover:bg-[#25201b] transition-colors cursor-pointer"
+                >
+                  {isAr ? "إلغاء" : "Cancel"}
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#d4a759] via-[#c29547] to-[#b38032] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-[0_4px_16px_rgba(194,149,71,0.3)] transition-all cursor-pointer"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  <span>{isAr ? "تحديث الرقم السري" : "Update Password"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       <LuxuryAlertDialog
         isOpen={confirmDialog.isOpen}
         onClose={() =>
