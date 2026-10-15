@@ -96,9 +96,9 @@ export function DashboardTopNavbar() {
           </button>
 
           {/* Floating Tooltip */}
-          <div className="absolute top-full mt-2 start-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
             {language === "ar" ? "التبديل إلى English (EN)" : "Switch to العربية (AR)"}
-            <div className="absolute -top-1 start-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
           </div>
         </div>
 
@@ -139,35 +139,47 @@ export function DashboardTopNavbar() {
           </button>
 
           {/* Floating Tooltip */}
-          <div className="absolute top-full mt-2 start-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
             {direction === "rtl" ? "تبديل لليسار (LTR)" : "تبديل لليمين (RTL)"}
-            <div className="absolute -top-1 start-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
           </div>
         </div>
 
         {/* Theme Toggle Button */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="w-8 h-8 rounded-full bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] flex items-center justify-center text-[#554e44] dark:text-[#c4bcb1] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#282420] transition-all shadow-2xs active:scale-95 cursor-pointer"
-          title={t.themeToggle}
-        >
-          {isDark ? (
-            <Sun className="w-4 h-4 text-[#eab308]" />
-          ) : (
-            <Moon className="w-4 h-4" />
-          )}
-        </button>
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] flex items-center justify-center text-[#554e44] dark:text-[#c4bcb1] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#282420] transition-all shadow-2xs active:scale-95 cursor-pointer"
+            aria-label={t.themeToggle}
+          >
+            {isDark ? (
+              <Sun className="w-4 h-4 text-[#eab308]" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+          </button>
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
+            {t.themeToggle}
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
+          </div>
+        </div>
 
         {/* Notification / Alert */}
-        <button
-          type="button"
-          className="w-8 h-8 rounded-full bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] flex items-center justify-center text-[#7c7366] dark:text-[#a8a195] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] transition-colors relative shadow-2xs cursor-pointer"
-          title={t.notifications}
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1 end-1 w-1.5 h-1.5 bg-[#c29547] rounded-full" />
-        </button>
+        <div className="relative group">
+          <button
+            type="button"
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] flex items-center justify-center text-[#7c7366] dark:text-[#a8a195] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] transition-colors relative shadow-2xs cursor-pointer"
+            aria-label={t.notifications}
+          >
+            <Bell className="w-4 h-4" />
+            <span className="absolute top-1 end-1 w-1.5 h-1.5 bg-[#c29547] rounded-full" />
+          </button>
+          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
+            {t.notifications}
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
+          </div>
+        </div>
 
         {/* User Profile Avatar with Dropdown */}
         <div className="relative" ref={profileMenuRef}>
