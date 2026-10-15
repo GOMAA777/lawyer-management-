@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
 import { DashboardTopNavbar } from "@/features/dashboard/components/DashboardTopNavbar";
 import { ScalesOfJusticeWatermark } from "@/components/shared/ScalesOfJusticeWatermark";
+import { LuxurySelect, SelectOption } from "@/components/shared/LuxurySelect";
 import { useUIStore } from "@/stores/use-ui-store";
 
 interface AdminAccount {
@@ -272,6 +273,35 @@ export function AccountsView() {
   const suspendedCount = accounts.filter((a) => a.status === "suspended").length;
   const superCount = accounts.filter((a) => a.role === "super_admin").length;
 
+  // Combobox Options
+  const roleOptions: SelectOption<string>[] = [
+    { value: "all", label: isAr ? "كل الرتب والأدوار" : "All Roles" },
+    { value: "super_admin", label: isAr ? "سوبر أدمن" : "Super Admin" },
+    { value: "finance_admin", label: isAr ? "المالية والاشتراكات" : "Finance Admin" },
+    { value: "support_lead", label: isAr ? "الدعم الفني" : "Support Lead" },
+    { value: "security_auditor", label: isAr ? "مدقق الأمان" : "Security Auditor" },
+  ];
+
+  const statusOptions: SelectOption<string>[] = [
+    { value: "all", label: isAr ? "كل الحالات" : "All Status" },
+    { value: "active", label: isAr ? "الحسابات النشطة" : "Active" },
+    { value: "suspended", label: isAr ? "الحسابات المعلقة" : "Suspended" },
+  ];
+
+  const pageSizeOptions: SelectOption<number>[] = [
+    { value: 5, label: "5" },
+    { value: 10, label: "10" },
+    { value: 20, label: "20" },
+    { value: 50, label: "50" },
+  ];
+
+  const newRoleOptions: SelectOption<AdminAccount["role"]>[] = [
+    { value: "super_admin", label: isAr ? "سوبر أدمن (تحكم كامل)" : "Super Admin" },
+    { value: "finance_admin", label: isAr ? "مدير الاشتراكات والمالية" : "Finance Admin" },
+    { value: "support_lead", label: isAr ? "أخصائي دعم فني وتشغيل" : "Support Lead" },
+    { value: "security_auditor", label: isAr ? "مدقق الأمان والأنظمة" : "Security Auditor" },
+  ];
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#fcfbfa] dark:bg-[#121110] text-[#1c1917] dark:text-[#f5f4f0] transition-colors duration-200 relative">
       {/* 1. Main Navigation Sidebar */}
@@ -455,33 +485,25 @@ export function AccountsView() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <select
+                <LuxurySelect
                   value={roleFilter}
-                  onChange={(e) => {
-                    setRoleFilter(e.target.value);
+                  onChange={(val) => {
+                    setRoleFilter(val);
                     setCurrentPage(1);
                   }}
-                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
-                >
-                  <option value="all">{isAr ? "كل الرتب والأدوار" : "All Roles"}</option>
-                  <option value="super_admin">{isAr ? "سوبر أدمن" : "Super Admin"}</option>
-                  <option value="finance_admin">{isAr ? "المالية والاشتراكات" : "Finance Admin"}</option>
-                  <option value="support_lead">{isAr ? "الدعم الفني" : "Support Lead"}</option>
-                  <option value="security_auditor">{isAr ? "مدقق الأمان" : "Security Auditor"}</option>
-                </select>
+                  options={roleOptions}
+                  minWidth="min-w-[170px]"
+                />
 
-                <select
+                <LuxurySelect
                   value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
+                  onChange={(val) => {
+                    setStatusFilter(val);
                     setCurrentPage(1);
                   }}
-                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
-                >
-                  <option value="all">{isAr ? "كل الحالات" : "All Status"}</option>
-                  <option value="active">{isAr ? "الحسابات النشطة" : "Active"}</option>
-                  <option value="suspended">{isAr ? "الحسابات المعلقة" : "Suspended"}</option>
-                </select>
+                  options={statusOptions}
+                  minWidth="min-w-[150px]"
+                />
 
                 <button
                   type="button"
@@ -662,19 +684,18 @@ export function AccountsView() {
                 <div className="flex flex-wrap items-center gap-4 text-[#7c7366] dark:text-[#a8a196]">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{isAr ? "صفوف لكل صفحة:" : "Rows per page:"}</span>
-                    <select
+                    <LuxurySelect<number>
                       value={pageSize}
-                      onChange={(e) => {
-                        setPageSize(Number(e.target.value));
+                      onChange={(val) => {
+                        setPageSize(val);
                         setCurrentPage(1);
                       }}
-                      className="h-8 px-2.5 rounded-lg bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                      <option value={50}>50</option>
-                    </select>
+                      options={pageSizeOptions}
+                      placement="top"
+                      compact={true}
+                      minWidth="min-w-[70px]"
+                      className="w-18"
+                    />
                   </div>
                   <span className="text-[#ded5c6] dark:text-[#2f2a24] hidden sm:inline">|</span>
                   <span className="font-medium">
@@ -810,16 +831,13 @@ export function AccountsView() {
                 <label className="block text-xs font-bold text-[#2c2825] dark:text-[#e4ded5] mb-1.5">
                   {isAr ? "الرتبة الإدارية (Role)" : "Administrative Role"}
                 </label>
-                <select
+                <LuxurySelect<AdminAccount["role"]>
                   value={newRole}
-                  onChange={(e) => setNewRole(e.target.value as AdminAccount["role"])}
-                  className="w-full h-11 rounded-2xl px-3.5 bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
-                >
-                  <option value="super_admin">{isAr ? "سوبر أدمن (تحكم كامل)" : "Super Admin"}</option>
-                  <option value="finance_admin">{isAr ? "مدير الاشتراكات والمالية" : "Finance Admin"}</option>
-                  <option value="support_lead">{isAr ? "أخصائي دعم فني وتشغيل" : "Support Lead"}</option>
-                  <option value="security_auditor">{isAr ? "مدقق الأمان والأنظمة" : "Security Auditor"}</option>
-                </select>
+                  onChange={(val) => setNewRole(val)}
+                  options={newRoleOptions}
+                  className="w-full"
+                  minWidth="w-full"
+                />
               </div>
 
               <div>
