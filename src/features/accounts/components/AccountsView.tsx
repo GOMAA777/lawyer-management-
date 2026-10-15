@@ -705,8 +705,8 @@ export function AccountsView() {
                   </span>
                 </div>
 
-                {/* Right: Page navigation controls */}
-                <div className="flex items-center gap-1.5">
+                {/* Right: Page navigation controls in LTR order (1, 2, 3) */}
+                <div dir="ltr" className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setCurrentPage(1)}
@@ -714,7 +714,7 @@ export function AccountsView() {
                     title={isAr ? "الصفحة الأولى" : "First page"}
                     className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                   >
-                    {isAr ? <ChevronsRight className="w-4 h-4" /> : <ChevronsLeft className="w-4 h-4" />}
+                    <ChevronsLeft className="w-4 h-4" />
                   </button>
                   <button
                     type="button"
@@ -723,10 +723,10 @@ export function AccountsView() {
                     title={isAr ? "الصفحة السابقة" : "Previous page"}
                     className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                   >
-                    {isAr ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
 
-                  {/* Page numbers */}
+                  {/* Page numbers (LTR 1, 2, 3...) */}
                   <div className="flex items-center gap-1 px-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
                       <button
@@ -751,7 +751,7 @@ export function AccountsView() {
                     title={isAr ? "الصفحة التالية" : "Next page"}
                     className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                   >
-                    {isAr ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                   <button
                     type="button"
@@ -760,7 +760,7 @@ export function AccountsView() {
                     title={isAr ? "الصفحة الأخيرة" : "Last page"}
                     className="w-8 h-8 rounded-lg border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#201d1a] text-[#524b43] dark:text-[#c4bcb1] hover:border-[#c29547] hover:text-[#c29547] disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer"
                   >
-                    {isAr ? <ChevronsLeft className="w-4 h-4" /> : <ChevronsRight className="w-4 h-4" />}
+                    <ChevronsRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
