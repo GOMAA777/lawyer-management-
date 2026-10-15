@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   User,
   CreditCard,
@@ -62,11 +63,21 @@ export function DashboardSidebar() {
   const t = translations[language].nav;
   const brand = translations[language].brand;
 
-  const [activeItem, setActiveItem] = useState("manage-client");
+  const pathname = usePathname();
+  const [activeItem, setActiveItem] = useState(() => {
+    if (pathname === "/subscriptions" || pathname === "/") return "subscription";
+    return "manage-client";
+  });
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
 
+  // Sync active item when route changes
+  React.useEffect(() => {
+    if (pathname === "/subscriptions" || pathname === "/") {
+      setActiveItem("subscription");
+    }
+  }, [pathname]);
 
   const navItems: NavItem[] = [
     {
@@ -84,7 +95,7 @@ export function DashboardSidebar() {
     {
       id: "subscription",
       label: t.subscriptions,
-      href: "#",
+      href: "/subscriptions",
       icon: CreditCard,
     },
     {

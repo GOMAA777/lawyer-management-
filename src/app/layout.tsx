@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -25,10 +26,12 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={cn(cairo.variable, "font-sans")}>
       <body className="min-h-screen bg-background text-foreground antialiased selection:bg-[#f3e3c3] selection:text-[#78541c]">
-        <NuqsAdapter>
-          {children}
-          <Toaster richColors position="top-left" />
-        </NuqsAdapter>
+        <Suspense fallback={null}>
+          <NuqsAdapter>
+            {children}
+            <Toaster richColors position="top-left" />
+          </NuqsAdapter>
+        </Suspense>
       </body>
     </html>
   );

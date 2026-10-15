@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Home,
   ChevronLeft,
@@ -24,7 +25,12 @@ export function DashboardTopNavbar() {
   const { language, toggleLanguage, theme, toggleTheme, direction, toggleDirection } =
     useUIStore();
   const t = translations[language].topbar;
+  const navT = translations[language].nav;
+  const pathname = usePathname();
   const isDark = theme === "dark";
+
+  const isSubscriptions = pathname === "/subscriptions" || pathname === "/";
+  const currentBreadcrumb = isSubscriptions ? navT.subscriptions : t.dashboard;
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -49,19 +55,20 @@ export function DashboardTopNavbar() {
     <header className="h-14 shrink-0 border-b border-[#ded5c6] dark:border-[#2f2a24] bg-white/90 dark:bg-[#171513]/90 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-[0_2px_12px_rgba(80,65,45,0.03)] dark:shadow-[0_2px_12px_rgba(0,0,0,0.4)] transition-colors duration-200">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb navigation" className="flex items-center gap-2 text-xs">
-        <span
+        <Link
+          href="/"
           className="p-1.5 rounded-lg text-[#8f8679] dark:text-[#a8a195] hover:text-[#c29547] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] transition-colors cursor-pointer"
           title={t.home}
         >
           <Home className="w-3.5 h-3.5" />
-        </span>
+        </Link>
         {direction === "rtl" ? (
           <ChevronLeft className="w-3 h-3 text-[#c0b8ac] dark:text-[#524b43]" />
         ) : (
           <ChevronRight className="w-3 h-3 text-[#c0b8ac] dark:text-[#524b43]" />
         )}
         <span className="text-[#3a3530] dark:text-[#f5f4f0] font-semibold text-xs">
-          {t.dashboard}
+          {currentBreadcrumb}
         </span>
       </nav>
 
