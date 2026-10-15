@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, ShieldCheck, LogIn, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useUIStore } from "@/stores/use-ui-store";
 import { translations } from "@/lib/i18n";
@@ -38,7 +39,6 @@ export function LoginForm() {
     setIsSubmitting(true);
     try {
       const res = await loginAction(data);
-
       if (res?.data?.success) {
         toast.success(t.loginSuccess);
         router.push("/");
@@ -53,25 +53,34 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full h-full bg-white dark:bg-[#1a1816] p-8 md:p-12 lg:p-16 flex flex-col justify-between select-none">
-      {/* Top Bar: Brand Logo & Sign Up Link */}
-      <div className="flex items-center justify-between">
-        {/* Brand Logo & Name (Static Display) */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs">
-            <Image
-              src="/logo.png"
-              alt={brand.name}
-              width={32}
-              height={32}
-              className="w-full h-full object-contain"
-              priority
-            />
-          </div>
-          <span className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight">
-            {brand.name}
-          </span>
-        </div>
+    <div className="w-full h-full bg-white dark:bg-[#1a1816] p-8 md:p-12 lg:p-16 flex flex-col justify-between select-none overflow-hidden">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={language}
+          initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full h-full flex flex-col justify-between"
+        >
+          {/* Top Bar: Brand Logo & Sign Up Link */}
+          <div className="flex items-center justify-between">
+            {/* Brand Logo & Name (Static Display) */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs">
+                <Image
+                  src="/logo.png"
+                  alt={brand.name}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              </div>
+              <span className="text-lg font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight">
+                {brand.name}
+              </span>
+            </div>
 
         {/* Secure Lawyers Portal Badge */}
         <div className="flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-[#faf5eb] dark:bg-[#201c17] text-[#c29547] dark:text-[#d4a759] border border-[#eeddbb] dark:border-[#382b18] shadow-2xs">
@@ -193,6 +202,8 @@ export function LoginForm() {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
+  </AnimatePresence>
+</div>
   );
 }

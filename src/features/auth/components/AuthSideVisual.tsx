@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { useUIStore } from "@/stores/use-ui-store";
 import { translations } from "@/lib/i18n";
 import { Scale, ShieldCheck } from "lucide-react";
@@ -19,8 +20,17 @@ export function AuthSideVisual() {
         <div className="absolute w-[160px] h-[160px] rounded-full bg-[#c29547]/5 blur-2xl" />
       </div>
 
-      {/* Top: Small Tagline */}
-      <div className="relative z-10 text-start">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={language}
+          initial={{ opacity: 0, y: 8, filter: "blur(4px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 w-full h-full flex flex-col justify-between"
+        >
+          {/* Top: Small Tagline */}
+          <div className="text-start">
         <p className="text-xs text-[#a8a195] font-medium tracking-wide max-w-xs leading-relaxed opacity-90">
           {t.leftTagline}
         </p>
@@ -114,6 +124,8 @@ export function AuthSideVisual() {
             : "End-to-end encrypted legal case records & client privacy"}
         </span>
       </div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
