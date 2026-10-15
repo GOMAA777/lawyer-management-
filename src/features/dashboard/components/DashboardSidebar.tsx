@@ -769,34 +769,10 @@ export function DashboardSidebar() {
               </div>
             </div>
 
-            {/* Upgrade to Pro Card / Button (Exact match from Image 1) */}
-            <div className="px-1 py-1">
-              <Link
-                href="/subscriptions"
-                onClick={() => {
-                  setIsUserMenuOpen(false);
-                  toast.info(
-                    isAr
-                      ? "الانتقال إلى باقات الاشتراك والترقية"
-                      : "Navigating to plans & upgrade"
-                  );
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-[#faf5eb] dark:bg-[#25201b] hover:bg-[#f3ead8] dark:hover:bg-[#2e2720] border border-[#eeddbb] dark:border-[#423422] text-[#2c2825] dark:text-[#f5f4f0] transition-colors group cursor-pointer text-start shadow-2xs"
-              >
-                <Sparkles className="w-4 h-4 text-[#c29547] dark:text-[#d4a759] shrink-0 transition-transform group-hover:scale-110" />
-                <span className="text-xs font-bold flex-1 truncate">
-                  {isAr ? "ترقية الباقة إلى Pro" : "Upgrade to Pro"}
-                </span>
-                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-[#c29547] text-white">
-                  PRO
-                </span>
-              </Link>
-            </div>
-
             {/* Divider */}
             <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
 
-            {/* Menu Item 1: Account (الملف الشخصي والحساب) */}
+            {/* Menu Item: Account (الملف الشخصي والحساب) */}
             <button
               type="button"
               onClick={() => {
@@ -811,33 +787,6 @@ export function DashboardSidebar() {
             >
               <BadgeCheck className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
               <span>{isAr ? "الملف الشخصي والحساب" : "Account"}</span>
-            </button>
-
-            {/* Menu Item 2: Billing (الفوترة والاشتراكات) */}
-            <Link
-              href="/subscriptions"
-              onClick={() => setIsUserMenuOpen(false)}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#e4ded5] hover:bg-[#faf5eb] dark:hover:bg-[#25201b] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer text-start"
-            >
-              <CreditCard className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
-              <span>{isAr ? "الفوترة والاشتراكات" : "Billing"}</span>
-            </Link>
-
-            {/* Menu Item 3: Notifications (الإشعارات) */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsUserMenuOpen(false);
-                toast.info(
-                  isAr
-                    ? "لا توجد إشعارات جديدة غير مقروءة"
-                    : "No unread notifications"
-                );
-              }}
-              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#e4ded5] hover:bg-[#faf5eb] dark:hover:bg-[#25201b] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer text-start"
-            >
-              <Bell className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
-              <span>{isAr ? "الإشعارات والتنبيهات" : "Notifications"}</span>
             </button>
 
             {/* Divider */}
