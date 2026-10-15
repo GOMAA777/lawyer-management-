@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -18,6 +18,9 @@ import {
   ChevronRight,
   ChevronLeft,
   Search,
+  ChevronsUpDown,
+  BadgeCheck,
+  LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -185,6 +188,36 @@ export function DashboardSidebar() {
       pathname === "/menus" ||
       pathname === "/permissions",
   }));
+
+  const isAr = language === "ar";
+  const topbarT = translations[language].topbar;
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  // Close user menu on click outside or escape key
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        isUserMenuOpen &&
+        !(event.target as HTMLElement).closest(".sidebar-user-menu-container")
+      ) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && isUserMenuOpen) {
+        setIsUserMenuOpen(false);
+      }
+    }
+
+    if (isUserMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isUserMenuOpen]);
 
   // Structure the 6 requested SaaS Super Admin Sections
   const navSections: NavSection[] = [
@@ -645,29 +678,182 @@ export function DashboardSidebar() {
         ))}
       </div>
 
-      {/* Footer User Mini-Status Badge */}
-      <div className="p-3 border-t border-[#ded5c6] dark:border-[#2f2a24] shrink-0">
+      {/* Footer User Profile & Popover Dropdown (shadcn sidebar nav-user style) */}
+      <div className="p-2.5 border-t border-[#ded5c6] dark:border-[#2f2a24] shrink-0 relative sidebar-user-menu-container">
+        {/* User Menu Trigger Button */}
         {!isCollapsed ? (
-          <div className="flex items-center gap-3 p-2 rounded-xl bg-white/70 dark:bg-[#201d1a]/70 border border-[#ded5c6]/60 dark:border-[#2f2a24]">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#c29547] to-[#d4a759] text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsUserMenuOpen((prev) => !prev)}
+            className={cn(
+              "w-full flex items-center gap-2.5 p-2 rounded-xl text-start transition-all cursor-pointer select-none",
+              isUserMenuOpen
+                ? "bg-[#faf5eb] dark:bg-[#25201b] border border-[#eeddbb] dark:border-[#423422] shadow-xs"
+                : "hover:bg-[#faf5eb] dark:hover:bg-[#201d1a] border border-transparent"
+            )}
+            title={isAr ? "خيارات الحساب والمستخدم" : "User and account options"}
+          >
+            {/* Avatar with luxury gradient & online status */}
+            <div className="relative shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#c29547] to-[#d4a759] text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+                EP
+              </div>
+              <span className="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 rounded-full bg-[#10b981] border-2 border-white dark:border-[#1a1816]" />
+            </div>
+
+            {/* User Details */}
+            <div className="flex-1 min-w-0 text-start leading-tight">
+              <span className="text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] truncate block">
+                {topbarT.userName}
+              </span>
+              <span className="text-[11px] text-[#8c8279] dark:text-[#9e968a] truncate block">
+                {topbarT.userEmail}
+              </span>
+            </div>
+
+            {/* ChevronsUpDown icon */}
+            <ChevronsUpDown className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a] shrink-0" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsUserMenuOpen((prev) => !prev)}
+            className={cn(
+              "w-10 h-10 mx-auto rounded-xl flex items-center justify-center relative cursor-pointer transition-all",
+              isUserMenuOpen
+                ? "bg-[#faf5eb] dark:bg-[#25201b] ring-2 ring-[#c29547]"
+                : "hover:bg-[#faf5eb] dark:hover:bg-[#201d1a]"
+            )}
+            title={`${topbarT.userName} (${topbarT.userEmail})`}
+          >
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#c29547] to-[#d4a759] text-white flex items-center justify-center font-bold text-xs shadow-2xs">
               EP
             </div>
-            <div className="flex-1 min-w-0 text-start">
-              <span className="text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] truncate block">
-                Eljudy Prog
-              </span>
-              <span className="text-[10px] text-[#8c8279] dark:text-[#9e968a] truncate block">
-                Super Admin Active
-              </span>
-            </div>
-            <span className="w-2 h-2 rounded-full bg-[#10b981] shadow-[0_0_6px_#10b981]" />
-          </div>
-        ) : (
+            <span className="absolute bottom-1 end-1 w-2.5 h-2.5 rounded-full bg-[#10b981] border-2 border-white dark:border-[#1a1816]" />
+          </button>
+        )}
+
+        {/* Floating Popover Menu (Matches exact layout from shadcn Image 1) */}
+        {isUserMenuOpen && (
           <div
-            className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#c29547] to-[#d4a759] text-white flex items-center justify-center font-bold text-xs shadow-xs mx-auto"
-            title="Super Admin - Eljudy Prog"
+            className={cn(
+              "rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 select-none z-50 text-start",
+              isCollapsed
+                ? "absolute bottom-1 end-full me-2.5 w-64"
+                : "absolute bottom-full mb-2 start-2 end-2"
+            )}
           >
-            EP
+            {/* Header: User Avatar + Name + Email + Pro Badge */}
+            <div className="flex items-center gap-3 p-2.5 rounded-xl text-start">
+              <div className="relative shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#c29547] to-[#d4a759] text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                  EP
+                </div>
+                <span className="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 rounded-full bg-[#10b981] border-2 border-white dark:border-[#1a1714]" />
+              </div>
+              <div className="flex-1 min-w-0 text-start">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] truncate block">
+                    {topbarT.userName}
+                  </span>
+                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-md bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30">
+                    Pro
+                  </span>
+                </div>
+                <span className="text-[11px] text-[#8c8279] dark:text-[#9e968a] truncate block">
+                  {topbarT.userEmail}
+                </span>
+              </div>
+            </div>
+
+            {/* Upgrade to Pro Card / Button (Exact match from Image 1) */}
+            <div className="px-1 py-1">
+              <Link
+                href="/subscriptions"
+                onClick={() => {
+                  setIsUserMenuOpen(false);
+                  toast.info(
+                    isAr
+                      ? "الانتقال إلى باقات الاشتراك والترقية"
+                      : "Navigating to plans & upgrade"
+                  );
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-[#faf5eb] dark:bg-[#25201b] hover:bg-[#f3ead8] dark:hover:bg-[#2e2720] border border-[#eeddbb] dark:border-[#423422] text-[#2c2825] dark:text-[#f5f4f0] transition-colors group cursor-pointer text-start shadow-2xs"
+              >
+                <Sparkles className="w-4 h-4 text-[#c29547] dark:text-[#d4a759] shrink-0 transition-transform group-hover:scale-110" />
+                <span className="text-xs font-bold flex-1 truncate">
+                  {isAr ? "ترقية الباقة إلى Pro" : "Upgrade to Pro"}
+                </span>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-[#c29547] text-white">
+                  PRO
+                </span>
+              </Link>
+            </div>
+
+            {/* Divider */}
+            <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
+
+            {/* Menu Item 1: Account (الملف الشخصي والحساب) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsUserMenuOpen(false);
+                toast.info(
+                  isAr
+                    ? "الملف الشخصي وإعدادات الحساب - قيد التجهيز"
+                    : "Account & profile settings"
+                );
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#e4ded5] hover:bg-[#faf5eb] dark:hover:bg-[#25201b] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer text-start"
+            >
+              <BadgeCheck className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
+              <span>{isAr ? "الملف الشخصي والحساب" : "Account"}</span>
+            </button>
+
+            {/* Menu Item 2: Billing (الفوترة والاشتراكات) */}
+            <Link
+              href="/subscriptions"
+              onClick={() => setIsUserMenuOpen(false)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#e4ded5] hover:bg-[#faf5eb] dark:hover:bg-[#25201b] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer text-start"
+            >
+              <CreditCard className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
+              <span>{isAr ? "الفوترة والاشتراكات" : "Billing"}</span>
+            </Link>
+
+            {/* Menu Item 3: Notifications (الإشعارات) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsUserMenuOpen(false);
+                toast.info(
+                  isAr
+                    ? "لا توجد إشعارات جديدة غير مقروءة"
+                    : "No unread notifications"
+                );
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#e4ded5] hover:bg-[#faf5eb] dark:hover:bg-[#25201b] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer text-start"
+            >
+              <Bell className="w-4 h-4 text-[#8c8279] dark:text-[#9e968a]" />
+              <span>{isAr ? "الإشعارات والتنبيهات" : "Notifications"}</span>
+            </button>
+
+            {/* Divider */}
+            <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
+
+            {/* Menu Item 4: Log out (تسجيل الخروج) */}
+            <Link
+              href="/login"
+              onClick={() => {
+                setIsUserMenuOpen(false);
+                toast.success(
+                  isAr ? "تم تسجيل الخروج بنجاح" : "Logged out successfully"
+                );
+              }}
+              className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer text-start"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>{isAr ? "تسجيل الخروج" : "Log out"}</span>
+            </Link>
           </div>
         )}
       </div>
