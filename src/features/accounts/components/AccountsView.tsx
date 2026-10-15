@@ -65,7 +65,7 @@ const initialAccounts: AdminAccount[] = [
     scopeEn: "Billing, Gateways & Plans",
     status: "active",
     lastLogin: "منذ 15 دقيقة",
-    avatarColor: "from-blue-600 to-indigo-600",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
   },
   {
     id: "acc-3",
@@ -79,7 +79,7 @@ const initialAccounts: AdminAccount[] = [
     scopeEn: "Firm Tickets & Server Monitoring",
     status: "active",
     lastLogin: "منذ ساعتين",
-    avatarColor: "from-emerald-600 to-teal-600",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
   },
   {
     id: "acc-4",
@@ -93,7 +93,7 @@ const initialAccounts: AdminAccount[] = [
     scopeEn: "Audit Logs & System Backups",
     status: "active",
     lastLogin: "منذ يوم واحد",
-    avatarColor: "from-purple-600 to-violet-600",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
   },
   {
     id: "acc-5",
@@ -107,7 +107,7 @@ const initialAccounts: AdminAccount[] = [
     scopeEn: "Firm Tickets & Chat",
     status: "suspended",
     lastLogin: "منذ 14 يوماً",
-    avatarColor: "from-stone-500 to-stone-700",
+    avatarColor: "from-[#d4a759] to-[#b38032]",
   },
 ];
 
@@ -445,20 +445,10 @@ export function AccountsView() {
                           </div>
                         </td>
 
-                        {/* Role Badge */}
+                        {/* Role Badge - Unified to the first user's luxury gold aesthetic */}
                         <td className="py-4 px-4">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold ${
-                              acc.role === "super_admin"
-                                ? "bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30"
-                                : acc.role === "finance_admin"
-                                ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-                                : acc.role === "support_lead"
-                                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                                : "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800"
-                            }`}
-                          >
-                            <ShieldCheck className="w-3 h-3 shrink-0" />
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30 shadow-2xs">
+                            <ShieldCheck className="w-3 h-3 text-[#c29547] shrink-0" />
                             <span>{isAr ? acc.roleNameAr : acc.roleNameEn}</span>
                           </span>
                         </td>
