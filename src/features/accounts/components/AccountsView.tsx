@@ -557,8 +557,8 @@ export function AccountsView() {
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="p-4 rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#1a1714] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-              <div className="relative w-full sm:w-72 md:w-80 shrink-0">
+            <div className="p-4 rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#1a1714] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-3">
+              <div className="relative flex-1 min-w-[220px]">
                 <Search className="w-4 h-4 absolute start-3.5 top-1/2 -translate-y-1/2 text-[#8c8279]" />
                 <input
                   type="text"
@@ -589,7 +589,7 @@ export function AccountsView() {
                 )}
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <LuxurySelect
                   value={roleFilter}
                   onChange={(val) => {
