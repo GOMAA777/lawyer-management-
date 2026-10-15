@@ -162,7 +162,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeItem =
-    pathname === "/invoices"
+    pathname === "/payment-gateways"
+      ? "sub-payment-gateways"
+      : pathname === "/invoices"
       ? "sub-invoices"
       : pathname === "/plans"
       ? "sub-pricing-plans"
@@ -189,7 +191,10 @@ export function DashboardSidebar() {
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(() => ({
     "sales-menu": pathname === "/trials" || pathname === "/law-firms",
     "finance-menu":
-      pathname === "/subscriptions" || pathname === "/plans" || pathname === "/invoices",
+      pathname === "/subscriptions" ||
+      pathname === "/plans" ||
+      pathname === "/invoices" ||
+      pathname === "/payment-gateways",
     "legal-menu": false,
     "settings-menu":
       pathname === "/integrations" ||
@@ -280,7 +285,7 @@ export function DashboardSidebar() {
             { id: "sub-pricing-plans", label: t.pricingPlans, href: "/plans" },
             { id: "sub-invoices", label: t.invoices, href: "/invoices" },
             { id: "sub-coupons", label: t.coupons, href: "#" },
-            { id: "sub-payment-gateways", label: t.paymentGateways, href: "#" },
+            { id: "sub-payment-gateways", label: t.paymentGateways, href: "/payment-gateways" },
           ],
         },
       ],
