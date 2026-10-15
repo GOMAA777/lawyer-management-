@@ -29,7 +29,17 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <NuqsAdapter>
             {children}
-            <Toaster richColors position="top-left" />
+            <Toaster
+              position="bottom-center"
+              dir="rtl"
+              closeButton
+              offset={28}
+              toastOptions={{
+                style: {
+                  fontFamily: "var(--font-cairo), sans-serif",
+                },
+              }}
+            />
           </NuqsAdapter>
         </Suspense>
       </body>
