@@ -29,7 +29,7 @@ export function DashboardTopNavbar() {
   const pathname = usePathname();
   const isDark = theme === "dark";
 
-  const isSubscriptions = pathname === "/subscriptions" || pathname === "/";
+  const isSubscriptions = pathname === "/subscriptions";
   const currentBreadcrumb = isSubscriptions ? navT.subscriptions : t.dashboard;
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -231,8 +231,8 @@ export function DashboardTopNavbar() {
                 </button>
 
                 {/* Subscription Link */}
-                <button
-                  type="button"
+                <Link
+                  href="/subscriptions"
                   onClick={() => setIsProfileOpen(false)}
                   className="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-[#faf8f4] dark:hover:bg-[#221f1b] transition-colors group cursor-pointer text-start"
                 >
@@ -249,7 +249,7 @@ export function DashboardTopNavbar() {
                   ) : (
                     <ChevronRight className="w-3.5 h-3.5 text-[#a89e90] dark:text-[#787166] group-hover:text-[#c29547] dark:group-hover:text-[#d4a759] transition-colors" />
                   )}
-                </button>
+                </Link>
 
                 {/* Logout Link */}
                 <Link

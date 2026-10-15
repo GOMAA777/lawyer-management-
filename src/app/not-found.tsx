@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "404 - الصفحة غير موجودة | شركة الجودي للتسويق الإلكتروني",
-  description: "عذراً، الصفحة المطلوبة غير موجودة في منصة الجودي لإدارة حملات الواتساب والأتمتة السحابية",
+  title: "404 - الصفحة غير موجودة | منصة الجودي لإدارة المحاماة",
+  description: "عذراً، الصفحة المطلوبة غير موجودة في منصة الجودي لإدارة مكاتب وشركات المحاماة",
 };
 
 export default function NotFound() {
@@ -39,10 +39,10 @@ export default function NotFound() {
           </div>
           <div className="text-start">
             <span className="text-base font-extrabold text-[#c29547] dark:text-[#d4a759] tracking-tight block">
-              الجودي للتسويق الإلكتروني
+              الجودي لإدارة المحاماة
             </span>
             <span className="text-[10px] font-medium text-[#8c8279] dark:text-[#9e968a] block">
-              منصة إدارة القضايا والمكاتب القانونية
+              المنصة المتكاملة لإدارة مكاتب وشركات المحاماة
             </span>
           </div>
         </Link>
@@ -125,7 +125,7 @@ export default function NotFound() {
           </Link>
 
           <Link
-            href="/"
+            href="/subscriptions"
             className="bg-white dark:bg-[#1a1816] p-4 rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] hover:border-[#c29547] dark:hover:border-[#d4a759] shadow-2xs transition-all group flex items-center justify-between text-start"
           >
             <div className="flex items-center gap-3">
@@ -137,7 +137,7 @@ export default function NotFound() {
                   الاشتراكات
                 </span>
                 <span className="text-[10px] text-[#8c8279] dark:text-[#787166]">
-                  الباقات والفواتير
+                  اشتراكات وباقات المحامين
                 </span>
               </div>
             </div>
@@ -154,10 +154,10 @@ export default function NotFound() {
               </div>
               <div>
                 <span className="text-xs font-bold text-[#1c1917] dark:text-[#f5f4f0] block group-hover:text-[#c29547] transition-colors">
-                  حملات الواتساب
+                  المساعد الذكي والقضايا
                 </span>
                 <span className="text-[10px] text-[#8c8279] dark:text-[#787166]">
-                  إرسال الرسائل الذكية
+                  إدارة القضايا والملفات القانونية
                 </span>
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function NotFound() {
 
       {/* Bottom Footer */}
       <footer className="relative z-10 w-full max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 py-4 border-t border-[#ded5c6]/60 dark:border-[#2f2a24] text-xs text-[#8c8279] dark:text-[#787166]">
-        <span>© 2005-2026 شركة الجودي للتسويق الإلكتروني. جميع الحقوق محفوظة.</span>
+        <span>© 2005-2026 شركة الجودي للأنظمة القانونية. جميع الحقوق محفوظة.</span>
         <div className="flex items-center gap-4 text-xs font-medium">
           <Link href="/" className="hover:text-[#c29547] transition-colors">
             الرئيسية

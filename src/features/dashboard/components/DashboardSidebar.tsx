@@ -58,6 +58,99 @@ interface NavItem {
   subItems?: SubNavItem[];
 }
 
+function SubmenuBranchConnector({
+  isLast,
+  isActive,
+  direction,
+}: {
+  isLast: boolean;
+  isActive: boolean;
+  direction: "rtl" | "ltr";
+}) {
+  const isRtl = direction === "rtl";
+  // Width of connector is 24px, row height is 38px
+  // In RTL, trunk starts at x = 16 (aligned with parent icon center), curves left to x = 5
+  // In LTR, trunk starts at x = 8 (aligned with parent icon center), curves right to x = 19
+  const trunkX = isRtl ? 16 : 8;
+  const targetX = isRtl ? 5 : 19;
+  const circleX = isRtl ? 4 : 20;
+
+  // Smooth Bézier curve from trunk (trunkX, 0) down to branch ending at (targetX, 19)
+  const pathD = isRtl
+    ? `M 16 0 V 10 Q 16 19 8 19 L 5 19`
+    : `M 8 0 V 10 Q 8 19 16 19 L 19 19`;
+
+  return (
+    <div className="w-6 shrink-0 h-[38px] relative self-stretch flex items-center pointer-events-none select-none">
+      <svg
+        viewBox="0 0 24 38"
+        className="w-full h-full overflow-visible"
+        preserveAspectRatio="none"
+      >
+        {/* Continuous Trunk Continuing Downward if not last item */}
+        {!isLast && (
+          <line
+            x1={trunkX}
+            y1={10}
+            x2={trunkX}
+            y2={38}
+            strokeWidth="1.8"
+            className={cn(
+              "transition-colors duration-200",
+              isActive
+                ? "stroke-[#c29547] dark:stroke-[#d4a759]"
+                : "stroke-[#ded5c6] dark:stroke-[#383126] group-hover/sub:stroke-[#c29547]/60 dark:group-hover/sub:stroke-[#d4a759]/60"
+            )}
+            strokeLinecap="round"
+          />
+        )}
+
+        {/* Curved Branch Path */}
+        <path
+          d={pathD}
+          fill="none"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(
+            "transition-colors duration-200",
+            isActive
+              ? "stroke-[#c29547] dark:stroke-[#d4a759]"
+              : "stroke-[#ded5c6] dark:stroke-[#383126] group-hover/sub:stroke-[#c29547] dark:group-hover/sub:stroke-[#d4a759]"
+          )}
+        />
+
+        {/* Jewel Node Bullet at tip of curve */}
+        {isActive ? (
+          <g>
+            {/* Outer golden halo glow */}
+            <circle
+              cx={circleX}
+              cy={19}
+              r={4.5}
+              className="fill-[#c29547]/25 dark:fill-[#d4a759]/30"
+            />
+            {/* Solid gold jewel center */}
+            <circle
+              cx={circleX}
+              cy={19}
+              r={2.8}
+              className="fill-[#c29547] dark:fill-[#d4a759]"
+            />
+          </g>
+        ) : (
+          <circle
+            cx={circleX}
+            cy={19}
+            r={2.2}
+            className="fill-white dark:fill-[#1a1714] stroke-[#c0b5a4] dark:stroke-[#544b3e] stroke-[1.5] group-hover/sub:stroke-[#c29547] group-hover/sub:fill-[#c29547] transition-all duration-150"
+          />
+        )}
+      </svg>
+    </div>
+  );
+}
+
 export function DashboardSidebar() {
   const { language, direction } = useUIStore();
   const t = translations[language].nav;
@@ -65,8 +158,8 @@ export function DashboardSidebar() {
 
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState(() => {
-    if (pathname === "/subscriptions" || pathname === "/") return "subscription";
-    return "manage-client";
+    if (pathname === "/subscriptions") return "subscription";
+    return "dashboard";
   });
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -74,8 +167,10 @@ export function DashboardSidebar() {
 
   // Sync active item when route changes
   React.useEffect(() => {
-    if (pathname === "/subscriptions" || pathname === "/") {
+    if (pathname === "/subscriptions") {
       setActiveItem("subscription");
+    } else if (pathname === "/") {
+      setActiveItem("dashboard");
     }
   }, [pathname]);
 
@@ -326,7 +421,10 @@ export function DashboardSidebar() {
             >
               <Link
                 href={item.href}
-                onClick={() => {
+                onClick={(e) => {
+                  if (item.href === "#") {
+                    e.preventDefault();
+                  }
                   setActiveItem(item.id);
                   if (hasDropdown && !isCollapsed) {
                     setOpenDropdowns((prev) => ({
@@ -382,7 +480,22 @@ export function DashboardSidebar() {
 
               {/* Sub-menu Dropdown List (rendered directly below the item) */}
               {!isCollapsed && hasDropdown && isOpen && item.subItems && (
-                <div className="ms-6 relative flex flex-col my-1">
+                <div className="ms-3 pe-2 relative flex flex-col my-1">
+                  {/* Top vertical lead-in line from parent icon */}
+                  <div className="w-6 h-2 relative pointer-events-none">
+                    <svg viewBox="0 0 24 8" className="w-full h-full overflow-visible">
+                      <line
+                        x1={direction === "rtl" ? 16 : 8}
+                        y1={0}
+                        x2={direction === "rtl" ? 16 : 8}
+                        y2={8}
+                        strokeWidth="1.8"
+                        className="stroke-[#ded5c6] dark:stroke-[#383126]"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+
                   {item.subItems.map((sub, index) => {
                     const isLast = index === (item.subItems?.length ?? 0) - 1;
                     const isSubActive = activeItem === sub.id;
@@ -392,43 +505,36 @@ export function DashboardSidebar() {
                         key={sub.id}
                         className="relative flex items-center group/sub"
                       >
-                        {/* 1. Curved branch connector: curves from top down to the middle, then extends horizontally toward the label */}
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "pointer-events-none absolute start-0 top-0 w-4 h-1/2 border-s border-b transition-colors duration-150",
-                            direction === "rtl" ? "rounded-br-[8px]" : "rounded-bl-[8px]",
-                            isSubActive
-                              ? "border-[#c29547] dark:border-[#d4a759]"
-                              : "border-[#d8cfc2] dark:border-[#383228] group-hover/sub:border-[#b8863b] dark:group-hover/sub:border-[#d4a759]"
-                          )}
+                        {/* 1. Flawless Vector Tree Connector & Jewel Node */}
+                        <SubmenuBranchConnector
+                          isLast={isLast}
+                          isActive={isSubActive}
+                          direction={direction}
                         />
 
-                        {/* 2. Vertical trunk line continuing downward for all non-last items */}
-                        {!isLast && (
-                          <span
-                            aria-hidden="true"
-                            className={cn(
-                              "pointer-events-none absolute start-0 top-1/2 bottom-0 w-px transition-colors duration-150",
-                              isSubActive
-                                ? "bg-[#c29547] dark:bg-[#d4a759]"
-                                : "bg-[#d8cfc2] dark:bg-[#383228]"
-                            )}
-                          />
-                        )}
-
-                        {/* 3. Sub-item link without dots */}
+                        {/* 2. Sub-item Link Pill (strictly outside connector gutter to prevent overlapping) */}
                         <Link
                           href={sub.href}
-                          onClick={() => setActiveItem(sub.id)}
+                          onClick={(e) => {
+                            if (sub.href === "#") {
+                              e.preventDefault();
+                            }
+                            setActiveItem(sub.id);
+                          }}
                           className={cn(
-                            "flex items-center ps-6 pe-2.5 py-1.5 w-full rounded-md text-xs transition-colors text-start relative",
+                            "flex-1 flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all text-start relative",
+                            direction === "rtl"
+                              ? "group-hover/sub:-translate-x-0.5"
+                              : "group-hover/sub:translate-x-0.5",
                             isSubActive
-                              ? "bg-[#faf5eb] dark:bg-[#2b2419] text-[#b8863b] dark:text-[#d4a759] font-semibold"
-                              : "text-[#6c645b] dark:text-[#9e968a] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf8f4] dark:hover:bg-[#201d1a]"
+                              ? "bg-[#faf5eb] dark:bg-[#282117] text-[#b8863b] dark:text-[#d4a759] font-bold border border-[#eeddbb] dark:border-[#523e20] shadow-[0_2px_8px_-1px_rgba(194,149,71,0.18)]"
+                              : "text-[#5a5247] dark:text-[#aba295] hover:text-[#b8863b] dark:hover:text-[#d4a759] hover:bg-[#faf7f0] dark:hover:bg-[#201d1a] border border-transparent"
                           )}
                         >
                           <span className="truncate">{sub.label}</span>
+                          {isSubActive && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#c29547] dark:bg-[#d4a759] shrink-0 ms-2" />
+                          )}
                         </Link>
                       </div>
                     );
