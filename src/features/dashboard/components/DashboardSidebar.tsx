@@ -759,8 +759,8 @@ export function DashboardSidebar() {
                   <span className="text-xs font-bold text-[#2c2825] dark:text-[#f5f4f0] truncate block">
                     {topbarT.userName}
                   </span>
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded-md bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30">
-                    Pro
+                  <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-[#c29547]/15 text-[#966e2e] dark:text-[#eeddbb] border border-[#c29547]/30 whitespace-nowrap">
+                    {topbarT.userRole}
                   </span>
                 </div>
                 <span className="text-[11px] text-[#8c8279] dark:text-[#9e968a] truncate block">
