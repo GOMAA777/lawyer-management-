@@ -32,6 +32,7 @@ import { DashboardTopNavbar } from "@/features/dashboard/components/DashboardTop
 import { ScalesOfJusticeWatermark } from "@/components/shared/ScalesOfJusticeWatermark";
 import { LuxurySelect, SelectOption } from "@/components/shared/LuxurySelect";
 import { LuxuryCheckbox } from "@/components/shared/LuxuryCheckbox";
+import { LuxuryAlertDialog } from "@/components/shared/LuxuryAlertDialog";
 import { useUIStore } from "@/stores/use-ui-store";
 
 interface AdminAccount {
@@ -214,6 +215,122 @@ export function AccountsView() {
       document.removeEventListener("mousedown", handleActionClickOutside);
     };
   }, [openActionMenuId]);
+
+  // Confirmation Alert Dialog State
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    confirmLabel?: string;
+    variant: "danger" | "warning" | "success" | "info";
+    itemDetails?: {
+      name?: string;
+      email?: string;
+      count?: number;
+    };
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    variant: "danger",
+    onConfirm: () => {},
+  });
+
+  const requestBulkActivate = () => {
+    const count = selectedAccountIds.length;
+    if (count === 0) return;
+    setConfirmDialog({
+      isOpen: true,
+      variant: "success",
+      title: isAr ? "تأكيد تنشيط وتفعيل الحسابات" : "Confirm Activate Selected Accounts",
+      description: isAr
+        ? `هل أنت متأكد من رغبتك في تفعيل كافة الحسابات المحددة؟ سيتمكن المشرفون من تسجيل الدخول واستخدام صلاحياتهم فوراً.`
+        : "Are you sure you want to activate all selected accounts?",
+      confirmLabel: isAr ? "تنشيط وتفعيل الكل" : "Activate All",
+      itemDetails: { count },
+      onConfirm: () => handleBulkActivate(),
+    });
+  };
+
+  const requestBulkSuspend = () => {
+    const count = selectedAccountIds.length;
+    if (count === 0) return;
+    setConfirmDialog({
+      isOpen: true,
+      variant: "warning",
+      title: isAr ? "تأكيد إلغاء تفعيل وتعليق الحسابات" : "Confirm Suspend Selected Accounts",
+      description: isAr
+        ? `هل أنت متأكد من رغبتك في تعليق كافة الحسابات المحددة مؤقتاً؟ سيتوقف وصول المشرفين المحددين للوحة التحكم.`
+        : "Are you sure you want to suspend and deactivate all selected accounts?",
+      confirmLabel: isAr ? "إلغاء التفعيل والتعليق" : "Deactivate All",
+      itemDetails: { count },
+      onConfirm: () => handleBulkSuspend(),
+    });
+  };
+
+  const requestBulkDelete = () => {
+    const count = selectedAccountIds.length;
+    if (count === 0) return;
+    setConfirmDialog({
+      isOpen: true,
+      variant: "danger",
+      title: isAr ? "تأكيد مسح وحذف الحسابات المحددة" : "Confirm Delete Selected Accounts",
+      description: isAr
+        ? `هل أنت متأكد من مسح وحذف كافة الحسابات المحددة نهائياً؟ هذا الإجراء لا يمكن التراجع عنه أبداً وسيتم حذف كافة بياناتهم.`
+        : "Are you sure you want to permanently delete all selected accounts? This action cannot be undone.",
+      confirmLabel: isAr ? "نعم، مسح وحذف الكل" : "Yes, Delete All",
+      itemDetails: { count },
+      onConfirm: () => handleBulkDelete(),
+    });
+  };
+
+  const requestDeleteAccount = (id: string, name: string, email: string) => {
+    setOpenActionMenuId(null);
+    setConfirmDialog({
+      isOpen: true,
+      variant: "danger",
+      title: isAr ? "تأكيد حذف حساب المشرف" : "Confirm Delete Admin Account",
+      description: isAr
+        ? `هل أنت متأكد من رغبتك في حذف حساب "${name}" نهائياً من النظام؟ لا يمكن التراجع عن هذا الإجراء.`
+        : `Are you sure you want to permanently delete the account of "${name}"?`,
+      confirmLabel: isAr ? "نعم، حذف الحساب" : "Yes, Delete Account",
+      itemDetails: { name, email },
+      onConfirm: () => handleDeleteAccount(id, name),
+    });
+  };
+
+  const requestToggleStatus = (acc: AdminAccount) => {
+    setOpenActionMenuId(null);
+    const isCurrentlyActive = acc.status === "active";
+    const name = isAr ? acc.name : acc.nameEn;
+
+    if (isCurrentlyActive) {
+      setConfirmDialog({
+        isOpen: true,
+        variant: "warning",
+        title: isAr ? "تأكيد تعليق الحساب مؤقتاً" : "Confirm Suspend Account",
+        description: isAr
+          ? `هل أنت متأكد من رغبتك في تعليق حساب المشرف "${name}"؟ سيتعذر عليه تسجيل الدخول حتى يُعاد تفعيله.`
+          : `Are you sure you want to suspend the account for "${name}"?`,
+        confirmLabel: isAr ? "تعليق الحساب" : "Suspend Account",
+        itemDetails: { name, email: acc.email },
+        onConfirm: () => handleToggleStatus(acc.id),
+      });
+    } else {
+      setConfirmDialog({
+        isOpen: true,
+        variant: "success",
+        title: isAr ? "تأكيد تنشيط وتفعيل الحساب" : "Confirm Activate Account",
+        description: isAr
+          ? `هل أنت متأكد من رغبتك في تنشيط وتفعيل حساب المشرف "${name}"؟ سيتمكن من تسجيل الدخول فوراً.`
+          : `Are you sure you want to activate the account for "${name}"?`,
+        confirmLabel: isAr ? "تنشيط الحساب" : "Activate Account",
+        itemDetails: { name, email: acc.email },
+        onConfirm: () => handleToggleStatus(acc.id),
+      });
+    }
+  };
 
   const handleBulkActivate = () => {
     const count = selectedAccountIds.length;
@@ -661,7 +778,7 @@ export function AccountsView() {
                   {/* زر التفعيل */}
                   <button
                     type="button"
-                    onClick={handleBulkActivate}
+                    onClick={requestBulkActivate}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -671,7 +788,7 @@ export function AccountsView() {
                   {/* زر إلغاء التفعيل / التعليق */}
                   <button
                     type="button"
-                    onClick={handleBulkSuspend}
+                    onClick={requestBulkSuspend}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
                     <Lock className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
@@ -681,7 +798,7 @@ export function AccountsView() {
                   {/* زر المسح / الحذف */}
                   <button
                     type="button"
-                    onClick={handleBulkDelete}
+                    onClick={requestBulkDelete}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 text-white border border-rose-700 hover:bg-rose-700 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -813,7 +930,7 @@ export function AccountsView() {
                         <td className="py-4 px-4">
                           <button
                             type="button"
-                            onClick={() => handleToggleStatus(acc.id)}
+                            onClick={() => requestToggleStatus(acc)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all border ${
                               acc.status === "active"
                                 ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-300/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 shadow-2xs"
@@ -916,10 +1033,7 @@ export function AccountsView() {
 
                                 <button
                                   type="button"
-                                  onClick={() => {
-                                    handleToggleStatus(acc.id);
-                                    setOpenActionMenuId(null);
-                                  }}
+                                  onClick={() => requestToggleStatus(acc)}
                                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
                                 >
                                   {acc.status === "active" ? (
@@ -956,7 +1070,11 @@ export function AccountsView() {
                                 <button
                                   type="button"
                                   onClick={() =>
-                                    handleDeleteAccount(acc.id, isAr ? acc.name : acc.nameEn)
+                                    requestDeleteAccount(
+                                      acc.id,
+                                      isAr ? acc.name : acc.nameEn,
+                                      acc.email
+                                    )
                                   }
                                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                                 >
@@ -1178,6 +1296,21 @@ export function AccountsView() {
           </div>
         </div>
       )}
+
+      {/* Luxury Alert Dialog Confirmation Modal */}
+      <LuxuryAlertDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() =>
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }))
+        }
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        description={confirmDialog.description}
+        confirmLabel={confirmDialog.confirmLabel}
+        cancelLabel={isAr ? "إلغاء التراجع" : "Cancel"}
+        variant={confirmDialog.variant}
+        itemDetails={confirmDialog.itemDetails}
+      />
     </div>
   );
 }

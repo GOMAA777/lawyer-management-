@@ -396,7 +396,7 @@ export function DashboardSidebar() {
     <aside
       aria-label="القائمة الجانبية الرئيسية"
       className={cn(
-        "relative flex flex-col h-screen shrink-0 border-e border-[#ded5c6] dark:border-[#2f2a24] bg-[#faf8f4] dark:bg-[#1a1816] transition-all duration-300 z-40 select-none shadow-[2px_0_12px_rgba(80,65,45,0.03)] dark:shadow-[2px_0_12px_rgba(0,0,0,0.5)]",
+        "relative flex flex-col h-screen shrink-0 border-e border-[#ded5c6] dark:border-[#2f2a24] bg-[#faf8f4] dark:bg-[#1a1816] transition-all duration-300 z-30 select-none shadow-[2px_0_12px_rgba(80,65,45,0.03)] dark:shadow-[2px_0_12px_rgba(0,0,0,0.5)]",
         isCollapsed ? "w-20" : "w-72"
       )}
     >
@@ -733,10 +733,15 @@ export function DashboardSidebar() {
           </button>
         )}
 
-        {/* Floating Popover Menu (Pops out from the SIDE of the sidebar) */}
+        {/* Floating Popover Menu (Matches exact layout from shadcn Image 1) */}
         {isUserMenuOpen && (
           <div
-            className="absolute bottom-1 end-full me-3 w-[275px] rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.16)] dark:shadow-[0_16px_48px_rgba(0,0,0,0.7)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 select-none z-50 text-start"
+            className={cn(
+              "rounded-2xl border border-[#eeddbb] dark:border-[#382b18] bg-white dark:bg-[#1a1714] p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.14)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.6)] backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150 select-none z-50 text-start",
+              isCollapsed
+                ? "absolute bottom-1 end-full me-2.5 w-64"
+                : "absolute bottom-full mb-2 start-2 end-2"
+            )}
           >
             {/* Header: User Avatar + Name + Email + Pro Badge */}
             <div className="flex items-center gap-3 p-2.5 rounded-xl text-start">
