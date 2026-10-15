@@ -162,7 +162,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeItem =
-    pathname === "/subscriptions"
+    pathname === "/law-firms"
+      ? "sub-law-firms"
+      : pathname === "/subscriptions"
       ? "sub-subscriptions"
       : pathname === "/integrations"
       ? "sub-integrations"
@@ -181,7 +183,7 @@ export function DashboardSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(() => ({
-    "sales-menu": pathname === "/trials",
+    "sales-menu": pathname === "/trials" || pathname === "/law-firms",
     "finance-menu": pathname === "/subscriptions",
     "legal-menu": false,
     "settings-menu":
@@ -252,7 +254,7 @@ export function DashboardSidebar() {
           href: "#",
           icon: Building2,
           subItems: [
-            { id: "sub-law-firms", label: t.lawFirms, href: "#" },
+            { id: "sub-law-firms", label: t.lawFirms, href: "/law-firms" },
             { id: "sub-leads", label: t.leads, href: "/trials" },
             { id: "sub-storage", label: t.storage, href: "#" },
           ],
