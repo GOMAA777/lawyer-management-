@@ -16,6 +16,7 @@ import {
   X,
   Check,
   Lock,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardSidebar } from "@/features/dashboard/components/DashboardSidebar";
@@ -126,6 +127,17 @@ export function AccountsView() {
   const [newEmail, setNewEmail] = useState("");
   const [newRole, setNewRole] = useState<AdminAccount["role"]>("support_lead");
   const [newScope, setNewScope] = useState("");
+
+  const hasActiveFilters = Boolean(
+    search.trim() !== "" || roleFilter !== "all" || statusFilter !== "all"
+  );
+
+  const handleResetFilters = () => {
+    setSearch("");
+    setRoleFilter("all");
+    setStatusFilter("all");
+    toast.info(isAr ? "تمت إعادة ضبط وتفريغ كل الفلاتر" : "All filters reset");
+  };
 
   const handleToggleStatus = (id: string) => {
     setAccounts((prev) =>
@@ -353,7 +365,7 @@ export function AccountsView() {
 
             {/* Filter & Search Bar */}
             <div className="p-4 rounded-2xl border border-[#ded5c6] dark:border-[#2f2a24] bg-white dark:bg-[#1a1714] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-              <div className="relative flex-1">
+              <div className="relative w-full sm:w-72 md:w-80 shrink-0">
                 <Search className="w-4 h-4 absolute start-3.5 top-1/2 -translate-y-1/2 text-[#8c8279]" />
                 <input
                   type="text"
@@ -361,18 +373,28 @@ export function AccountsView() {
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={
                     isAr
-                      ? "ابحث بالاسم، البريد الإلكتروني، أو الدور الوظيفي..."
+                      ? "ابحث بالاسم، البريد، أو الدور..."
                       : "Search by name, email, or role..."
                   }
-                  className="w-full h-10.5 ps-10 pe-4 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-medium text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="w-full h-10.5 ps-10 pe-9 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-medium text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
                 />
+                {search && (
+                  <button
+                    type="button"
+                    onClick={() => setSearch("")}
+                    title={isAr ? "مسح البحث" : "Clear search"}
+                    className="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-[#8c8279] hover:text-[#1c1917] dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
                 >
                   <option value="all">{isAr ? "كل الرتب والأدوار" : "All Roles"}</option>
                   <option value="super_admin">{isAr ? "سوبر أدمن" : "Super Admin"}</option>
@@ -384,12 +406,26 @@ export function AccountsView() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547]"
+                  className="h-10.5 px-3 rounded-xl bg-[#faf8f4] dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-semibold text-[#1c1917] dark:text-[#f5f4f0] focus:outline-none focus:border-[#c29547] cursor-pointer"
                 >
                   <option value="all">{isAr ? "كل الحالات" : "All Status"}</option>
                   <option value="active">{isAr ? "الحسابات النشطة" : "Active"}</option>
                   <option value="suspended">{isAr ? "الحسابات المعلقة" : "Suspended"}</option>
                 </select>
+
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  title={isAr ? "إعادة ضبط وتفريغ كل الفلاتر" : "Reset all filters"}
+                  className={`h-10.5 px-3.5 rounded-xl border text-xs font-semibold inline-flex items-center gap-1.5 transition-all cursor-pointer ${
+                    hasActiveFilters
+                      ? "bg-[#faf5eb] dark:bg-[#282218] border-[#eeddbb] dark:border-[#4d3a1f] text-[#966e2e] dark:text-[#eeddbb] hover:border-[#c29547] shadow-2xs"
+                      : "bg-[#faf8f4] dark:bg-[#201d1a] border-[#ded5c6] dark:border-[#2f2a24] text-[#7c7366] dark:text-[#a8a196] hover:border-[#c29547] hover:text-[#c29547]"
+                  }`}
+                >
+                  <RotateCcw className={`w-3.5 h-3.5 ${hasActiveFilters ? "text-[#c29547]" : "text-[#8c8279]"}`} />
+                  <span>{isAr ? "إعادة ضبط" : "Reset Filters"}</span>
+                </button>
               </div>
             </div>
 
