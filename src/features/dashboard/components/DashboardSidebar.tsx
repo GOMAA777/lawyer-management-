@@ -72,7 +72,6 @@ function SubmenuBranchConnector({
   // In RTL, trunk starts at x = 16 (aligned with parent icon center), curves left to x = 5
   // In LTR, trunk starts at x = 8 (aligned with parent icon center), curves right to x = 19
   const trunkX = isRtl ? 16 : 8;
-  const targetX = isRtl ? 5 : 19;
   const circleX = isRtl ? 4 : 20;
 
   // Smooth Bézier curve from trunk (trunkX, 0) down to branch ending at (targetX, 19)
@@ -157,22 +156,16 @@ export function DashboardSidebar() {
   const brand = translations[language].brand;
 
   const pathname = usePathname();
-  const [activeItem, setActiveItem] = useState(() => {
-    if (pathname === "/subscriptions") return "subscription";
-    return "dashboard";
-  });
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const activeItem =
+    pathname === "/subscriptions"
+      ? "subscription"
+      : pathname === "/"
+      ? "dashboard"
+      : (selectedId ?? "dashboard");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
-
-  // Sync active item when route changes
-  React.useEffect(() => {
-    if (pathname === "/subscriptions") {
-      setActiveItem("subscription");
-    } else if (pathname === "/") {
-      setActiveItem("dashboard");
-    }
-  }, [pathname]);
 
   const navItems: NavItem[] = [
     {
@@ -425,7 +418,7 @@ export function DashboardSidebar() {
                   if (item.href === "#") {
                     e.preventDefault();
                   }
-                  setActiveItem(item.id);
+                  setSelectedId(item.id);
                   if (hasDropdown && !isCollapsed) {
                     setOpenDropdowns((prev) => ({
                       ...prev,
@@ -519,7 +512,7 @@ export function DashboardSidebar() {
                             if (sub.href === "#") {
                               e.preventDefault();
                             }
-                            setActiveItem(sub.id);
+                            setSelectedId(sub.id);
                           }}
                           className={cn(
                             "flex-1 flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all text-start relative",

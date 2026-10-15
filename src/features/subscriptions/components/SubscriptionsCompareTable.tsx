@@ -132,7 +132,7 @@ export function SubscriptionsCompareTable({
 
             {/* Table Body by Categories */}
             <tbody>
-              {categories.map((cat, catIdx) => (
+              {categories.map((cat) => (
                 <React.Fragment key={cat.category}>
                   {/* Category Header Row */}
                   <tr className="bg-[#fcfbfa] dark:bg-[#161412] border-b border-[#eee6d9] dark:border-[#28221a]">

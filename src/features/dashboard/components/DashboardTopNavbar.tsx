@@ -7,10 +7,8 @@ import {
   Home,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
   Moon,
   Sun,
-  Languages,
   Bell,
   User,
   DollarSign,
@@ -74,17 +72,25 @@ export function DashboardTopNavbar() {
 
       {/* Actions: Language, RTL/LTR Direction, Theme, Notifications & Profile */}
       <div className="flex items-center gap-2.5">
-        {/* Language Switcher Pill */}
-        <button
-          type="button"
-          onClick={toggleLanguage}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-[#4a443e] dark:text-[#e4ded5] bg-white dark:bg-[#201d1a] hover:bg-[#faf7f0] dark:hover:bg-[#282420] transition-all border border-[#ded5c6] dark:border-[#383229] shadow-2xs hover:border-[#c29547] dark:hover:border-[#d4a759] cursor-pointer"
-          title={t.languageToggle}
-        >
-          <ChevronDown className="w-3.5 h-3.5 text-[#8f8679] dark:text-[#a8a195]" />
-          <span>{language === "ar" ? "Lang Arabic" : "Lang English"}</span>
-          <Languages className="w-4 h-4 text-[#c29547] dark:text-[#d4a759]" />
-        </button>
+        {/* Language Switcher Circle Toggle (AR / EN) */}
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="w-8 h-8 rounded-full bg-white dark:bg-[#201d1a] border border-[#ded5c6] dark:border-[#2f2a24] hover:border-[#c29547] dark:hover:border-[#d4a759] flex items-center justify-center text-[#c29547] dark:text-[#d4a759] hover:bg-[#faf5eb] dark:hover:bg-[#2b2419] transition-all shadow-2xs active:scale-95 cursor-pointer"
+            aria-label={language === "ar" ? "التبديل إلى English (EN)" : "Switch to العربية (AR)"}
+          >
+            <span className="text-[11px] font-extrabold tracking-wider uppercase select-none transition-transform group-hover:scale-105">
+              {language === "ar" ? "AR" : "EN"}
+            </span>
+          </button>
+
+          {/* Floating Tooltip */}
+          <div className="absolute top-full mt-2 start-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-[#1f242d] dark:bg-[#252b36] text-white text-[11px] font-semibold whitespace-nowrap shadow-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-50">
+            {language === "ar" ? "التبديل إلى English (EN)" : "Switch to العربية (AR)"}
+            <div className="absolute -top-1 start-1/2 -translate-x-1/2 w-2 h-2 bg-[#1f242d] dark:bg-[#252b36] rotate-45" />
+          </div>
+        </div>
 
         {/* RTL / LTR Direction Toggle Button */}
         <div className="relative group">

@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 
 export default function GlobalError({
@@ -19,9 +21,9 @@ export default function GlobalError({
 
           {/* Top Header */}
           <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-3 border-b border-[#ded5c6]/60">
-            <a href="/" className="flex items-center gap-3 group">
+            <Link href="/" className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-full bg-[#faf5eb] border border-[#eeddbb] p-1.5 flex items-center justify-center shadow-xs">
-                <img
+                <Image
                   src="/logo.png"
                   alt="الجودي"
                   width={34}
@@ -37,7 +39,7 @@ export default function GlobalError({
                   منظومة إدارة المحاماة والاستشارات القانونية
                 </span>
               </div>
-            </a>
+            </Link>
           </header>
 
           {/* Center Error Section */}
@@ -60,12 +62,12 @@ export default function GlobalError({
               >
                 <span>إعادة المحاولة</span>
               </button>
-              <a
+              <Link
                 href="/"
                 className="flex-1 min-w-[160px] h-12 rounded-full border border-[#ded5c6] bg-white text-[#2c2825] hover:border-[#c29547] hover:text-[#c29547] font-bold text-sm flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
               >
                 <span>العودة للرئيسية</span>
-              </a>
+              </Link>
             </div>
 
             {error?.digest && (
@@ -78,9 +80,9 @@ export default function GlobalError({
           {/* Footer */}
           <footer className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-4 border-t border-[#ded5c6]/60 text-xs text-[#8c8279]">
             <span>© 2005-2026 شركة الجودي للحلول القانونية. جميع الحقوق محفوظة.</span>
-            <a href="/" className="hover:text-[#c29547] transition-colors">
+            <Link href="/" className="hover:text-[#c29547] transition-colors">
               الرئيسية
-            </a>
+            </Link>
           </footer>
         </main>
       </body>

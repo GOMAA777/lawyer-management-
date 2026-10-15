@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Check, Star } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface SubscriptionsPricingCardsProps {
   billingCycle: "monthly" | "annual";
