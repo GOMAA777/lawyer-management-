@@ -23,8 +23,6 @@ import {
   ChevronsRight,
   Edit3,
   Trash2,
-  Shield,
-  Unlock,
   Eye,
   EyeOff,
 } from "lucide-react";
@@ -205,7 +203,7 @@ export function AccountsView() {
 
     const rect = e.currentTarget.getBoundingClientRect();
     const isCurrent = isCurrentUser(acc.id);
-    const menuEstimatedHeight = isCurrent ? 140 : 230;
+    const menuEstimatedHeight = isCurrent ? 85 : 130;
     const menuWidth = 224; // w-56
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -1960,50 +1958,9 @@ export function AccountsView() {
             <span>{isAr ? "تغيير الرقم السري" : "Change Password"}</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              const target = activeMenuAccount;
-              setActiveMenuAccount(null);
-              setMenuPosition(null);
-              toast.info(
-                isAr
-                  ? `إدارة صلاحيات ${target.name} في تاب الصلاحيات`
-                  : `Manage permissions for ${target.name}`
-              );
-            }}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-          >
-            <Shield className="w-3.5 h-3.5 text-[#c29547]" />
-            <span>{isAr ? "تعديل الصلاحيات" : "Permissions"}</span>
-          </button>
-
           {!isCurrentUser(activeMenuAccount.id) && (
             <>
               <div className="my-1 border-t border-[#ded5c6]/60 dark:border-[#2f2a24]" />
-
-              <button
-                type="button"
-                onClick={() => {
-                  const target = activeMenuAccount;
-                  setActiveMenuAccount(null);
-                  setMenuPosition(null);
-                  requestToggleStatus(target);
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#2c2825] dark:text-[#f5f4f0] hover:bg-[#faf5eb] dark:hover:bg-[#282218] hover:text-[#c29547] transition-colors cursor-pointer"
-              >
-                {activeMenuAccount.status === "active" ? (
-                  <>
-                    <Lock className="w-3.5 h-3.5 text-amber-600" />
-                    <span>{isAr ? "تعليق الحساب مؤقتاً" : "Suspend Account"}</span>
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{isAr ? "تنشيط وتفعيل الحساب" : "Activate Account"}</span>
-                  </>
-                )}
-              </button>
 
               <button
                 type="button"
