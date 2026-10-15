@@ -162,7 +162,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeItem =
-    pathname === "/plans"
+    pathname === "/invoices"
+      ? "sub-invoices"
+      : pathname === "/plans"
       ? "sub-pricing-plans"
       : pathname === "/law-firms"
       ? "sub-law-firms"
@@ -186,7 +188,8 @@ export function DashboardSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>(() => ({
     "sales-menu": pathname === "/trials" || pathname === "/law-firms",
-    "finance-menu": pathname === "/subscriptions" || pathname === "/plans",
+    "finance-menu":
+      pathname === "/subscriptions" || pathname === "/plans" || pathname === "/invoices",
     "legal-menu": false,
     "settings-menu":
       pathname === "/integrations" ||
@@ -275,7 +278,7 @@ export function DashboardSidebar() {
           subItems: [
             { id: "sub-subscriptions", label: t.subscriptions, href: "/subscriptions" },
             { id: "sub-pricing-plans", label: t.pricingPlans, href: "/plans" },
-            { id: "sub-invoices", label: t.invoices, href: "#" },
+            { id: "sub-invoices", label: t.invoices, href: "/invoices" },
             { id: "sub-coupons", label: t.coupons, href: "#" },
             { id: "sub-payment-gateways", label: t.paymentGateways, href: "#" },
           ],
