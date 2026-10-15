@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, ShieldCheck, LogIn, ChevronDown, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck, LogIn, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useUIStore } from "@/stores/use-ui-store";
 import { translations } from "@/lib/i18n";
@@ -186,10 +186,10 @@ export function LoginForm() {
           <button
             type="button"
             onClick={toggleLanguage}
-            className="flex items-center gap-1 font-semibold text-[#524b43] dark:text-[#c4bcb1] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer"
+            className="font-semibold text-[#524b43] dark:text-[#c4bcb1] hover:text-[#c29547] dark:hover:text-[#d4a759] transition-colors cursor-pointer"
+            title={language === "ar" ? "التبديل إلى English" : "Switch to العربية"}
           >
-            <span>{language === "ar" ? "العربية" : "English"}</span>
-            <ChevronDown className="w-3.5 h-3.5" />
+            {language === "ar" ? "العربية" : "English"}
           </button>
         </div>
       </div>
