@@ -162,7 +162,9 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const activeItem =
-    pathname === "/tickets"
+    pathname === "/notifications"
+      ? "notifications"
+      : pathname === "/tickets"
       ? "support-tickets"
       : pathname === "/payment-gateways"
       ? "sub-payment-gateways"
@@ -328,7 +330,7 @@ export function DashboardSidebar() {
         {
           id: "notifications",
           label: t.notifications,
-          href: "#",
+          href: "/notifications",
           icon: Bell,
         },
         {
