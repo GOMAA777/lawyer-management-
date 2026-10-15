@@ -782,36 +782,37 @@ export function AccountsView() {
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                    <span>{isAr ? "تفعيل المحددة" : "Activate"}</span>
+                    <span>{isAr ? "تفعيل" : "Activate"}</span>
                   </button>
 
-                  {/* زر إلغاء التفعيل / التعليق */}
+                  {/* زر التعليق */}
                   <button
                     type="button"
                     onClick={requestBulkSuspend}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors cursor-pointer shadow-2xs"
                   >
                     <Lock className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
-                    <span>{isAr ? "إلغاء تفعيل المحددة" : "Deactivate"}</span>
+                    <span>{isAr ? "تعليق" : "Suspend"}</span>
                   </button>
 
-                  {/* زر المسح / الحذف */}
+                  {/* زر الحذف */}
                   <button
                     type="button"
                     onClick={requestBulkDelete}
                     className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 text-white border border-rose-700 hover:bg-rose-700 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>{isAr ? "مسح وحذف المحددة" : "Delete"}</span>
+                    <span>{isAr ? "حذف" : "Delete"}</span>
                   </button>
 
                   {/* زر إلغاء التحديد */}
                   <button
                     type="button"
                     onClick={() => setSelectedAccountIds([])}
-                    className="px-3 py-1.5 rounded-xl border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#7c7366] dark:text-[#a8a196] hover:bg-white dark:hover:bg-[#282218] transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#ded5c6] dark:border-[#2f2a24] text-xs font-bold text-[#7c7366] dark:text-[#a8a196] hover:bg-white dark:hover:bg-[#282218] transition-colors cursor-pointer"
                   >
-                    {isAr ? "إلغاء التحديد" : "Deselect"}
+                    <X className="w-3.5 h-3.5" />
+                    <span>{isAr ? "إلغاء" : "Deselect"}</span>
                   </button>
                 </div>
               </div>
