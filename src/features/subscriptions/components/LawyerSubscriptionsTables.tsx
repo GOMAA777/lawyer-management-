@@ -121,7 +121,7 @@ export function LawyerSubscriptionsTables() {
                       <div className="w-7 h-7 rounded-full bg-[#fbf6ec] dark:bg-[#2b2419] border border-[#eeddbb] dark:border-[#4d3a1f] flex items-center justify-center shrink-0">
                         {sub.isAlJoudy ? (
                           <Image
-                            src="/logo.png"
+                            src="/dashboard/logo.png"
                             alt="Al-Joudy"
                             width={16}
                             height={16}
@@ -180,7 +180,7 @@ export function LawyerSubscriptionsTables() {
                       <div className="w-7 h-7 rounded-full bg-[#fbf6ec] dark:bg-[#2b2419] border border-[#eeddbb] dark:border-[#4d3a1f] flex items-center justify-center shrink-0">
                         {firm.isAlJoudy ? (
                           <Image
-                            src="/logo.png"
+                            src="/dashboard/logo.png"
                             alt="Al-Joudy"
                             width={16}
                             height={16}

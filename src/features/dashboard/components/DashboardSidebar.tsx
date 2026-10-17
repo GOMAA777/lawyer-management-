@@ -430,7 +430,7 @@ export function DashboardSidebar() {
             {/* Real Golden Brand Logo */}
             <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs shrink-0 hover:scale-105 transition-transform">
               <Image
-                src="/logo.png"
+                src="/dashboard/logo.png"
                 alt={brand.name}
                 width={36}
                 height={36}
@@ -460,7 +460,7 @@ export function DashboardSidebar() {
             title={brand.name}
           >
             <Image
-              src="/logo.png"
+              src="/dashboard/logo.png"
               alt={brand.name}
               width={34}
               height={34}

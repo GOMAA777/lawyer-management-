@@ -69,7 +69,7 @@ export function LoginForm() {
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-2xs">
                 <Image
-                  src="/logo.png"
+                  src="/dashboard/logo.png"
                   alt={brand.name}
                   width={32}
                   height={32}

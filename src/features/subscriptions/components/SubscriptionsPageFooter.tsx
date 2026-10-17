@@ -14,7 +14,7 @@ export function SubscriptionsPageFooter() {
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1 flex items-center justify-center">
               <Image
-                src="/logo.png"
+                src="/dashboard/logo.png"
                 alt="الجودي"
                 width={32}
                 height={32}

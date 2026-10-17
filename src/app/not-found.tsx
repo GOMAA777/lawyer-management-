@@ -29,7 +29,7 @@ export default function NotFound() {
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-full bg-[#faf5eb] dark:bg-[#201c17] border border-[#eeddbb] dark:border-[#382b18] p-1.5 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
             <Image
-              src="/logo.png"
+              src="/dashboard/logo.png"
               alt="الجودي"
               width={34}
               height={34}
